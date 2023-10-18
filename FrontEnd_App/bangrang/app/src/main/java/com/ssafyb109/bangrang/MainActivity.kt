@@ -1,8 +1,11 @@
 package com.ssafyb109.bangrang
 
+import android.Manifest
 import com.ssafyb109.bangrang.view.EventPage
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -13,6 +16,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -24,12 +29,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
+import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import com.ssafyb109.bangrang.view.BottomBar
 import com.ssafyb109.bangrang.view.FavoritePage
 import com.ssafyb109.bangrang.view.HomePage
 import com.ssafyb109.bangrang.view.LoginPage
 import com.ssafyb109.bangrang.view.MapPage
 import com.ssafyb109.bangrang.view.MyPage
+import com.ssafyb109.bangrang.view.PermissionPage
 import com.ssafyb109.bangrang.view.RankPage
 import com.ssafyb109.bangrang.view.SignupPage
 import com.ssafyb109.bangrang.view.TopBar
@@ -76,21 +83,37 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavigation(navController: NavHostController) {
     val userViewModel: UserViewModel = hiltViewModel()
+    val context = LocalContext.current
+
+    // 권한 확인
+    val hasAllPermissions = arrayOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_BACKGROUND_LOCATION
+    ).all {
+        ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+    }
 
     // 시작화면
-    val startDestination = "Login"
+    val startDestination = if (hasAllPermissions) {
+        "Login"
+    } else {
+        "Permission"
+    }
 
-    Surface(modifier = Modifier.fillMaxSize(), color = customBackgroundColor) {
+    Surface(modifier = Modifier.fillMaxSize()) {
         Column {
             val currentDestination =
                 navController.currentBackStackEntryAsState().value?.destination?.route
 
-            if (currentDestination != "Login" && currentDestination != "SignUp") {
+            if (currentDestination != "Login" && currentDestination != "SignUp" &&
+                currentDestination != "Permission") {
                 TopBar(navController)
             }
 
             Box(modifier = Modifier.weight(1f)) {
                 NavHost(navController, startDestination = startDestination) {
+                    composable("Permission") { PermissionPage(navController) }
                     composable("Login") { LoginPage(navController, userViewModel) }
                     composable("Signup") { SignupPage(navController, userViewModel) }
 
@@ -104,10 +127,10 @@ fun AppNavigation(navController: NavHostController) {
                 }
             }
 
-            if (currentDestination != "Login" && currentDestination != "SignUp") {
+            if (currentDestination != "Login" && currentDestination != "SignUp" &&
+                currentDestination != "Permission") {
                 BottomBar(navController)
             }
         }
     }
 }
-

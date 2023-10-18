@@ -13,8 +13,20 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(private val repository: UserRepository) : ViewModel() {
 
+    // 로그인 응답
     private val _loginResponse = MutableStateFlow<ResultType?>(null)
     val loginResponse: StateFlow<ResultType?> = _loginResponse
+
+    // GPS
+    private val _currentLocation = MutableStateFlow<Pair<Double, Double>?>(null)
+    val currentLocation: StateFlow<Pair<Double, Double>?> = _currentLocation
+
+    fun updateLocation() {
+        val location = repository.getLastLocation()
+        location?.let {
+            _currentLocation.value = Pair(it.latitude, it.longitude)
+        }
+    }
 
     // 구글 로그인
     fun sendTokenToServer(token: String) {

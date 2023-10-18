@@ -55,7 +55,7 @@ fun LoginPage(
     ) {
         // 로고 부분
         Image(
-            painter = painterResource(id = R.drawable.logo),
+            painter = painterResource(id = R.drawable.app_logo),
             contentDescription = "로고",
             contentScale = ContentScale.Fit,
             modifier = Modifier

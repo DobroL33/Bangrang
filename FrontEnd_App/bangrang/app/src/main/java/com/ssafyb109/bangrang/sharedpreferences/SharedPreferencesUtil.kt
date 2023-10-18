@@ -12,7 +12,6 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         private const val USER_IDX = "1111111111"
         private const val USER_NICKNAME = "user_nickname"
         private const val USER_TOKEN = "user_token"
-        private const val PERMISSIONS_CHECKED = "user_permissions"
     }
 
     private val sharedPreferences: SharedPreferences
@@ -68,18 +67,5 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
     // 저장된 사용자 토큰을 가져오는 메서드
     fun getUserToken(): String? {
         return sharedPreferences.getString(USER_TOKEN, null)
-    }
-
-    // 권한 확인 여부를 저장하는 메서드
-    fun setPermissionsChecked() {
-        with(sharedPreferences.edit()) {
-            putBoolean(PERMISSIONS_CHECKED, true)
-            apply()
-        }
-    }
-
-    // 권한 확인 여부를 가져오는 메서드
-    fun isPermissionsChecked(): Boolean {
-        return sharedPreferences.getBoolean(PERMISSIONS_CHECKED, false)
     }
 }

@@ -94,6 +94,9 @@ dependencies {
     implementation ("com.kakao.sdk:v2-user:2.17.0")
     // 구글 로그인
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
+    // GPS
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+
 
 
     testImplementation("junit:junit:4.13.2")
