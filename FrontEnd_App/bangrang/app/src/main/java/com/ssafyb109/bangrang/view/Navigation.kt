@@ -41,11 +41,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.ui.theme.logocolor
@@ -67,23 +67,29 @@ fun TopBar(navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Spacer(modifier = Modifier.width(60.dp))
+
+                Image(
+                    painter = painterResource(id = R.drawable.app_logo),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .scale(1f)
+                        .clickable(onClick = { navController.navigate("Home") })
+                )
+
                 val interactionSource = remember { MutableInteractionSource() }
-                Box(modifier = Modifier.padding(top = 12.dp, start = 12.dp)) {
+                Box(modifier = Modifier.padding(end = 12.dp)) {
                     Image(
-                        painter = painterResource(id = R.drawable.app_logo),
-                        contentDescription = null,
-                        Modifier
-                            .padding(start = 140.dp)
-                            .scale(1f)
+                        painter = painterResource(id = R.drawable.alertbell),
+                        contentDescription = "Notification",
+                        modifier = Modifier
                             .clickable(
                                 interactionSource = interactionSource,
                                 indication = null,
-                                onClick = { navController.navigate("Home") }
+                                onClick = { navController.navigate("AlarmPage") }
                             )
                     )
                 }
-
-                Spacer(modifier = Modifier.height(20.dp))
             }
             Spacer(
                 modifier = Modifier
@@ -193,7 +199,21 @@ fun ExpandingCenterMenu(onItemSelected: (String) -> Unit) {
             .size(300.dp)
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
-            drawCircle(color = logocolor, radius = size.minDimension / 2f)
+            val topY = 0f
+            val bottomY = size.height
+            val gradientBrush = Brush.verticalGradient(
+                colors = listOf(
+                    Color(0xFF1DAEFF),  // 하늘색
+                    Color(0xFFA776CD)   // 보라색
+                ),
+                startY = topY,
+                endY = bottomY
+            )
+            drawCircle(
+                brush = gradientBrush,
+                center = center,
+                radius = size.minDimension / 2f
+            )
         }
         val startDegree = 18f
         val totalDegrees = 144f

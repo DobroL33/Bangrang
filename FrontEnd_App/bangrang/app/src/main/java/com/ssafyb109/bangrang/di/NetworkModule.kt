@@ -1,6 +1,7 @@
 package com.ssafyb109.bangrang.di
 
 import android.content.Context
+import com.ssafyb109.bangrang.api.EventService
 import com.ssafyb109.bangrang.api.UserService
 import com.ssafyb109.bangrang.sharedpreferences.NullOnEmptyConverterFactory
 import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
@@ -48,6 +49,12 @@ object NetworkModule {
     @Singleton
     fun provideUserService(retrofit: Retrofit): UserService {
         return retrofit.create(UserService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventService(retrofit: Retrofit): EventService {
+        return retrofit.create(EventService::class.java)
     }
 
     @Module
