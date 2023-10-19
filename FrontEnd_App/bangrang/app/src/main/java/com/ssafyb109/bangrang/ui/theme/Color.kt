@@ -11,3 +11,9 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val logocolor = Color(red = 59, green = 161, blue = 255)
+
+val lightSkyBlue = Color(red = 226, green = 245, blue = 255)
+val heavySkyBlue = Color(red = 29, green = 174, blue = 255)
+val skyBlue = Color(red = 133, green = 211, blue=255)
+val profileGray = Color(red = 243, green = 243, blue = 243)
+val textGray = Color(red = 188, green = 188, blue = 188)

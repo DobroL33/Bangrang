@@ -56,7 +56,7 @@ fun HomePage(
 //    }
 
     LaunchedEffect(Unit) {
-        eventViewModel.selectEvent(activeLocation.toString())
+        eventViewModel.selectEvent()
     }
 
 
@@ -86,7 +86,7 @@ fun HomePage(
             }
 
             item {
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             item {
@@ -94,15 +94,7 @@ fun HomePage(
             }
 
             item {
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-
-            item {
                 LocationSelector(activeLocation)
-            }
-
-            item {
-                Text(text = "선택된 위치는 ${activeLocation.value} 입니다.")
             }
 
             item {
@@ -112,8 +104,8 @@ fun HomePage(
             item {
                 // LazyRow 카드들
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(selectedEvent.data ?: listOf()) { event ->
-                        CardItem(event = event)
+                    items(selectedEvent) { event ->
+                        CardItem(event = event, navController)
                     }
                 }
             }
@@ -132,8 +124,8 @@ fun HomePage(
 
             item {
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(selectedEvent.data ?: listOf()) { event ->
-                        CardItem(event = event)
+                    items(selectedEvent) { event ->
+                        CardItem(event = event, navController)
                     }
                 }
             }
@@ -152,13 +144,22 @@ fun HomePage(
 
             item {
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(selectedEvent.data ?: listOf()) { event ->
-                        CardItem(event = event)
+                    items(selectedEvent) { event ->
+                        CardItem(event = event, navController)
                     }
                 }
             }
+
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
             item {
                 CopyrightNotice()
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -196,7 +197,7 @@ fun LocationSelector(activeLocation: MutableState<String>) {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        items(items = listOf("전국", "서울", "부산", "인천", "대전", "대구", "광주", "울산", "세종", "제주")) { item ->
+        items(items = listOf("전국", "서울", "부산", "인천", "대전", "대구", "광주", "울산", "세종", "제주", "경주")) { item ->
             LocationButton(locationName = item, activeLocation = activeLocation) {
                 activeLocation.value = it
             }

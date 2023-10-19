@@ -1,4 +1,4 @@
-package com.example.minimap
+package com.ssafyb109.bangrang
 
 import org.junit.Test
 

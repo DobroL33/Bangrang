@@ -51,9 +51,10 @@ fun RankPage(
         ) {
             tabs.forEach { tabName ->
                 Tab(
-                    text = { Text(tabName) },
+                    text = { Text(tabName, fontSize = 18.sp) },
                     selected = tabSelection == tabName,
-                    onClick = { tabSelection = tabName }
+                    onClick = { tabSelection = tabName },
+                    modifier = Modifier.padding(horizontal = 12.dp)
                 )
             }
         }
@@ -85,14 +86,14 @@ fun TotalRanking() {
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "${activeLocation.value} 정복도 랭킹", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(text = "${activeLocation.value} 정복도 랭킹", fontWeight = FontWeight.Bold, fontSize = 26.sp)
             }
             Spacer(modifier = Modifier.height(8.dp))
         }
 
         item {
             Text(text = "오늘 01시00분 기준")
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(70.dp))
         }
 
         item {
@@ -104,8 +105,8 @@ fun TotalRanking() {
             Spacer(modifier = Modifier.height(32.dp))
         }
 
-        items((4..6).toList()) { rank ->
-            RankRow(rank = rank, nickname = "XXX")
+        items((4..10).toList()) { rank ->
+            RankRow(rank = rank, nickname = "Sample Data", percent = 50)
         }
 
         item {
@@ -115,7 +116,11 @@ fun TotalRanking() {
         }
 
         item {
-            RankRow(rank = 12000, nickname = "박해종")
+            RankRow(rank = 12000, nickname = "박해종", percent = 10)
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(40.dp))
         }
 
     }
@@ -124,24 +129,24 @@ fun TotalRanking() {
 @Composable
 fun PodiumLayout() {
     // 임시 사용자 데이터
-    val user1 = User(painterResource(R.drawable.zzz), 98, "샘플유저1")
-    val user2 = User(painterResource(R.drawable.zzz), 95, "샘플유저2")
-    val user3 = User(painterResource(R.drawable.zzz), 92, "샘플유저3")
+    val user1 = User(painterResource(R.drawable.emptyperson), 98, "샘플유저1")
+    val user2 = User(painterResource(R.drawable.emptyperson), 95, "샘플유저2")
+    val user3 = User(painterResource(R.drawable.emptyperson), 92, "샘플유저3")
 
     Box(modifier = Modifier.fillMaxWidth()) {
         // 2등
-        UserPodiumCard(user2.image, user2.percentage, user2.userId, Modifier.align(Alignment.CenterStart))
+        UserCard(user2.image, user2.percentage, user2.userId, Modifier.align(Alignment.CenterStart), rank = 2)
 
         // 1등
-        UserPodiumCard(user1.image, user1.percentage, user1.userId, Modifier.align(Alignment.TopCenter))
+        UserCard(user1.image, user1.percentage, user1.userId, Modifier.align(Alignment.TopCenter).offset(y = (-60).dp), rank = 1)
 
         // 3등
-        UserPodiumCard(user3.image, user3.percentage, user3.userId, Modifier.align(Alignment.CenterEnd))
+        UserCard(user3.image, user3.percentage, user3.userId, Modifier.align(Alignment.CenterEnd), rank = 3)
     }
 }
 
 @Composable
-fun RankRow(rank: Int, nickname:String) {
+fun RankRow(rank: Int, nickname:String, percent: Int) {
     val SkyBlue = Color(0xFF87CEEB)
 
     Row(
@@ -158,24 +163,45 @@ fun RankRow(rank: Int, nickname:String) {
         )
 
         // 닉네임 표시
-        Text(text = "${nickname} 님", fontSize = 20.sp)
+        Text(text = "$nickname 님", fontSize = 20.sp)
 
         // 정복도 표시
-        Text(text = "XX%", fontSize = 20.sp)
+        Text(text = "$percent%", fontSize = 20.sp)
     }
 }
 
 @Composable
-fun UserPodiumCard(image: Painter, percentage: Int, userId: String, modifier: Modifier = Modifier) {
+fun UserCard(image: Painter, percentage: Int, userId: String, modifier: Modifier = Modifier, rank: Int) {
+    val medal = when(rank) {
+        1 -> painterResource(id = R.drawable.first)
+        2 -> painterResource(id = R.drawable.second)
+        3 -> painterResource(id = R.drawable.third)
+        else -> null
+    }
+
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.size(100.dp)
+        modifier = modifier.size(120.dp)
     ) {
 
         Image(painter = image, contentDescription = null, modifier = Modifier
             .fillMaxSize()
             .clip(CircleShape))
 
-        Text("$percentage%\n$userId", fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.align(Alignment.Center))
+        medal?.let {
+            Image(painter = it, contentDescription = "Medal for rank $rank", modifier = Modifier
+                .align(Alignment.TopCenter)
+                .size(30.dp))
+        }
+
+        Text(
+            text = "$percentage%\n$userId",
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.align(Alignment.Center)
+        )
     }
 }
+

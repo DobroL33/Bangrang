@@ -126,39 +126,39 @@ fun BottomBar(navController: NavHostController) {
         }
     }
 
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            .height(72.dp)
+    ) {
+        // 그림자 추가를 위한 Box
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                .height(72.dp)
+                .height(0.4.dp)
+                .shadow(elevation = 0.4.dp, shape = RectangleShape)
+        )
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // 그림자 추가를 위한 Box
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(0.4.dp)
-                    .shadow(elevation = 0.4.dp, shape = RectangleShape)
-            )
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Spacer(modifier = Modifier.width(32.dp))
+            Spacer(modifier = Modifier.width(32.dp))
 
-                BottomBarButton("홈") {
-                    navController.navigate("Home")
-                }
-
-                CentralButton() {
-                    isMenuExpanded.value = !isMenuExpanded.value
-                }
-
-                BottomBarButton("지도") {
-                    navController.navigate("MapPage")
-                }
-                Spacer(modifier = Modifier.width(32.dp))
+            BottomBarButton("홈") {
+                navController.navigate("Home")
             }
+
+            CentralButton() {
+                isMenuExpanded.value = !isMenuExpanded.value
+            }
+
+            BottomBarButton("지도") {
+                navController.navigate("MapPage")
+            }
+            Spacer(modifier = Modifier.width(32.dp))
+        }
     }
 }
 

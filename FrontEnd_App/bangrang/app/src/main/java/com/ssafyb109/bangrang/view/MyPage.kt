@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -23,9 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ssafyb109.bangrang.R
+import com.ssafyb109.bangrang.ui.theme.profileGray
+import com.ssafyb109.bangrang.ui.theme.textGray
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
-
-val LightGray = Color(0xFFE0E0E0)
 
 @Composable
 fun MyPage(
@@ -40,8 +41,8 @@ fun MyPage(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
-                .background(LightGray)
+                .height(250.dp)
+                .background(profileGray)
         ) {
 
             Row(
@@ -51,10 +52,10 @@ fun MyPage(
 
                 // 사진
                 Image(
-                    painter = painterResource(id = R.drawable.zzz),
+                    painter = painterResource(id = R.drawable.emptyperson),
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(top = 60.dp)
+                        .padding(top = 60.dp, start = 20.dp)
                         .clip(CircleShape)
                 )
 
@@ -66,32 +67,37 @@ fun MyPage(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.clickable { TODO(/* 로그아웃 로직 */) }
+                            .padding(top = 8.dp)
                     ) {
+                        Text(text = "Logout", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                        Spacer(modifier = Modifier.width(8.dp))
                         Icon(Icons.Default.ExitToApp, contentDescription = "Logout", modifier = Modifier.size(24.dp).padding(end = 8.dp, top = 8.dp).scale(1.5f))
-                        Text(text = "로그아웃", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                     }
 
                     Spacer(modifier = Modifier.height(60.dp))
 
                     Text(text = "안녕하세요!", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                    Text(text = "xxx 방랑자님", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                    Text(text = "정복 현황: xx%", fontSize = 16.sp)
+                    Text(text = "박해종 방랑자님", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "정복 현황 : 10%", fontSize = 16.sp)
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(text = "알림 설정",fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Text(text = "알림 설정",fontWeight = FontWeight.Bold, fontSize = 20.sp, color = textGray)
 
+        Spacer(modifier = Modifier.height(8.dp))
         Divider(color = Color.Gray, thickness = 1.dp)
 
         SwitchSettingItem("알림 수신", true)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(text = "회원 정보 수정",fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Text(text = "회원 정보 수정",fontWeight = FontWeight.Bold, fontSize = 20.sp, color = textGray)
 
+        Spacer(modifier = Modifier.height(8.dp))
         Divider(color = Color.Gray, thickness = 1.dp)
 
         SettingItem("닉네임 변경")
@@ -125,6 +131,6 @@ fun SettingItem(title: String) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = title,fontWeight = FontWeight.Bold, fontSize = 20.sp)
-        Text(text = ">",fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Icon(Icons.Default.KeyboardArrowRight, contentDescription = null, modifier = Modifier.size(28.dp))
     }
 }

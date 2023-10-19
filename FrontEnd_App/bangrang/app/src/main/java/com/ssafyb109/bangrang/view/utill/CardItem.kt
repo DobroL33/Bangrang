@@ -2,6 +2,7 @@ package com.ssafyb109.bangrang.view.utill
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,18 +28,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.ssafyb109.bangrang.api.EventSelectListResponseDTO
 
 @Composable
-fun CardItem(event: EventSelectListResponseDTO) {
+fun CardItem(event: EventSelectListResponseDTO, navController: NavHostController) {
     var isHeartFilled by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
-            .size(width = (12f/10f) * 250.dp, height = 250.dp)
+            .clickable {
+                navController.navigate("EventDetailPage/${event.eventIdx}")
+            }
+            .size(width = 280.dp, height = 280.dp)
             .padding(4.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 8.dp
@@ -79,10 +85,9 @@ fun CardItem(event: EventSelectListResponseDTO) {
                 contentAlignment = Alignment.Center
             ) {
                 Column {
-                    Text(event.title, fontWeight = FontWeight.Bold) // 제목 추가
-                    Text(event.content)
-                    Text("시작일: ${event.startDate}")
-                    Text("종료일: ${event.endDate}")
+                    Text(event.title, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    Text("시작일: ${DateToKorean(event.startDate)}")
+                    Text("종료일: ${DateToKorean(event.endDate)}")
                 }
             }
         }

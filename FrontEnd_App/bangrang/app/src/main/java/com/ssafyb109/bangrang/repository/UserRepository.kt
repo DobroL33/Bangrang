@@ -1,23 +1,21 @@
 package com.ssafyb109.bangrang.repository
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
-import android.location.Location
-import android.util.Log
-import androidx.core.content.ContextCompat
-//import com.google.android.gms.location.FusedLocationProviderClient
-//import com.google.android.gms.location.LocationServices
 import com.ssafyb109.bangrang.api.LoginRequestDTO
+import com.ssafyb109.bangrang.api.StampResponseDTO
 import com.ssafyb109.bangrang.api.UserService
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import retrofit2.Response
+import java.net.ConnectException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
     private val userService: UserService,
     @ApplicationContext private val context: Context
 ) {
-//    private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
     suspend fun verifyGoogleToken(token: String): ResultType {
         return try {
@@ -33,22 +31,27 @@ class UserRepository @Inject constructor(
             ResultType.ERROR
         }
     }
+    fun getUserStamps(): Flow<Response<StampResponseDTO>> = flow {
+        try {
+            val response = userService.userStamp()
+            emit(response)
+        } catch (e: Exception) {
+            handleNetworkException(e)
+        }
+    }
 
-//    fun getLastLocation(): Location? {
-//        var retrievedLocation: Location? = null
-//
-//        if (ContextCompat.checkSelfPermission(
-//                context,
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            Log.d("@@@@@@@@@@@@@@@@@","@@@@@@@@@@@@@@@@@@@@@")
-//            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-//                retrievedLocation = location
-//            }
-//        }
-//        return retrievedLocation
-//    }
+    private fun handleNetworkException(e: Exception) {
+        when (e) {
+            is ConnectException, is UnknownHostException -> {
+                // 인터넷 연결 실패
+            }
+            else -> {
+                // 그 외
+            }
+        }
+    }
+
+
 }
 
 enum class ResultType {

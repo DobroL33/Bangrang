@@ -1,14 +1,17 @@
 package com.ssafyb109.bangrang
 
+import com.ssafyb109.bangrang.view.FullScreenImagePage
 import android.Manifest
 import com.ssafyb109.bangrang.view.EventPage
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,8 +32,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
-import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import com.ssafyb109.bangrang.view.BottomBar
+import com.ssafyb109.bangrang.view.CollectionPage
+import com.ssafyb109.bangrang.view.EventDetailPage
 import com.ssafyb109.bangrang.view.FavoritePage
 import com.ssafyb109.bangrang.view.HomePage
 import com.ssafyb109.bangrang.view.LoginPage
@@ -39,6 +43,7 @@ import com.ssafyb109.bangrang.view.MyPage
 import com.ssafyb109.bangrang.view.PermissionPage
 import com.ssafyb109.bangrang.view.RankPage
 import com.ssafyb109.bangrang.view.SignupPage
+import com.ssafyb109.bangrang.view.StampPage
 import com.ssafyb109.bangrang.view.TopBar
 import com.ssafyb109.bangrang.view.handleGoogleSignInResult
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
@@ -51,6 +56,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
     private val userViewModel: UserViewModel by viewModels()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -80,6 +86,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(navController: NavHostController) {
     val userViewModel: UserViewModel = hiltViewModel()
@@ -120,9 +127,23 @@ fun AppNavigation(navController: NavHostController) {
                     composable("Home") { HomePage(navController, userViewModel) }
                     composable("MapPage") { MapPage(navController, userViewModel) }
                     composable("EventPage") { EventPage(navController, userViewModel) }
+                    composable("EventDetailPage/{index}") { backStackEntry ->
+                        val eventIdx = backStackEntry.arguments?.getString("index")
+                        EventDetailPage(navController,userViewModel, eventIdx!!)
+                    }
+                    composable("StampPage") { StampPage(navController, userViewModel) }
+                    composable("CollectionPage") { CollectionPage(navController, userViewModel) }
                     composable("FavoritePage") { FavoritePage(navController, userViewModel) }
                     composable("RankPage") { RankPage(navController, userViewModel) }
                     composable("MyPage") { MyPage(navController, userViewModel) }
+
+                    composable("FullScreenImagePage/{imageUrl}") { backStackEntry ->
+                        val encodedImageUrl = backStackEntry.arguments?.getString("imageUrl")
+                        if (encodedImageUrl != null) {
+                            val decodedImageUrl = Uri.decode(encodedImageUrl)
+                            FullScreenImagePage(navController, decodedImageUrl)
+                        }
+                    }
 
                 }
             }

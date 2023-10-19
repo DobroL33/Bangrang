@@ -44,7 +44,7 @@ fun NaverMap(height: Dp = Dp.Unspecified) {
 
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
         // 카메라 초기 위치를 설정합니다.
-        position = CameraPosition(seoul, 11.0)
+        position = CameraPosition(seoul, 15.0)
     }
 
     Box(Modifier.fillMaxWidth().height(height)) {
