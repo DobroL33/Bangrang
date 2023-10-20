@@ -119,6 +119,10 @@ fun LoginPage(
             Text(text = "임시 홈이동")
         }
 
+        Button(onClick = { navController.navigate("SignUp") }) {
+            Text(text = "임시 닉네임 이동")
+        }
+
     }
 }
 

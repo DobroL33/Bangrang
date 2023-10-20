@@ -52,6 +52,10 @@ fun EventPage(
 
     val activeLocation = remember { mutableStateOf("전국") }
 
+    val filteredEvents = selectedEvent.filter {
+        (activeLocation.value == "전국" || it.address.contains(activeLocation.value))
+    }
+
     LaunchedEffect(Unit) {
         eventViewModel.selectEvent()
     }
@@ -95,7 +99,7 @@ fun EventPage(
 
             item {
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(selectedEvent) { event ->
+                    items(filteredEvents) { event ->
                         CardItem(event = event, navController)
                     }
                 }

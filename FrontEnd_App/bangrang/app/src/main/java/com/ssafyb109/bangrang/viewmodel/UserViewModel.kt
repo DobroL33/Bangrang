@@ -1,6 +1,7 @@
 package com.ssafyb109.bangrang.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafyb109.bangrang.api.StampDetail
@@ -12,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,13 +27,24 @@ class UserViewModel @Inject constructor(
     private val _loginResponse = MutableStateFlow<ResultType?>(null)
     val loginResponse: StateFlow<ResultType?> = _loginResponse
 
+    // 닉네임 검증 응답
+    private val _nicknameAvailability = MutableStateFlow<Boolean?>(null)
+    val nicknameAvailability: StateFlow<Boolean?> = _nicknameAvailability
+
+    // 닉네임 등록 응답
+    private val _nicknameRegistrationResponse = MutableStateFlow<Boolean?>(null)
+    val nicknameRegistrationResponse: StateFlow<Boolean?> = _nicknameRegistrationResponse
+
     // 스탬프 응답 (전체 스탬프)
     private val _stampsResponse = MutableStateFlow(getDefaultStampResponseData())
     val stampsResponse: StateFlow<StampResponseDTO> = _stampsResponse
 
     // 에러
-    private val _errorMessage = MutableStateFlow<String>("")
-    val errorMessage: StateFlow<String> = _errorMessage
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+    fun clearErrorMessage() {
+        _errorMessage.value = null
+    }
 
 
     // GPS
@@ -63,6 +76,30 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    // 닉네임 중복 검사
+    fun checkNicknameAvailability(nickName: String) {
+        viewModelScope.launch {
+            val response = repository.checkNicknameAvailability(nickName)
+            _nicknameAvailability.value = response
+            if (!response) {
+                _errorMessage.emit(repository.lastError ?: "알 수 없는 에러")
+            }
+        }
+    }
+
+    // 닉네임 등록
+    fun registerNickname(nickName: String) {
+        viewModelScope.launch {
+            val response = repository.registerNickname(nickName)
+            _nicknameRegistrationResponse.value = response
+            if (!response) {
+                _errorMessage.emit(repository.lastError ?: "알 수 없는 에러")
+            }
+        }
+    }
+
+
+
     // 전체 스탬프 가져오기
     fun fetchUserStamps() {
         viewModelScope.launch {
@@ -76,6 +113,7 @@ class UserViewModel @Inject constructor(
             }
         }
     }
+
 
 
 

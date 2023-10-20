@@ -52,6 +52,10 @@ fun HomePage(
     val currentAddress by userViewModel.currentAddress.collectAsState()
     val activeLocation = remember { mutableStateOf("전국") }
 
+    val filteredEvents = selectedEvent.filter {
+        (activeLocation.value == "전국" || it.address.contains(activeLocation.value))
+    }
+
 //    LaunchedEffect(Unit) {
 //        userViewModel.updateLocation()
 //    }
@@ -105,7 +109,7 @@ fun HomePage(
             item {
                 // LazyRow 카드들
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(selectedEvent) { event ->
+                    items(filteredEvents) { event ->
                         CardItem(event = event, navController)
                     }
                 }

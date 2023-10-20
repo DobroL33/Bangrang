@@ -43,7 +43,7 @@ import com.ssafyb109.bangrang.view.MapPage
 import com.ssafyb109.bangrang.view.MyPage
 import com.ssafyb109.bangrang.view.PermissionPage
 import com.ssafyb109.bangrang.view.RankPage
-import com.ssafyb109.bangrang.view.SignupPage
+import com.ssafyb109.bangrang.view.SignUpPage
 import com.ssafyb109.bangrang.view.StampPage
 import com.ssafyb109.bangrang.view.TopBar
 import com.ssafyb109.bangrang.view.handleGoogleSignInResult
@@ -123,7 +123,7 @@ fun AppNavigation(navController: NavHostController) {
                 NavHost(navController, startDestination = startDestination) {
                     composable("Permission") { PermissionPage(navController) }
                     composable("Login") { LoginPage(navController, userViewModel) }
-                    composable("Signup") { SignupPage(navController, userViewModel) }
+                    composable("SignUp") { SignUpPage(navController, userViewModel) }
 
                     composable("Home") { HomePage(navController, userViewModel) }
                     composable("MapPage") { MapPage(navController, userViewModel) }

@@ -60,10 +60,10 @@ fun FavoritePage(
     val activeLocation = remember { mutableStateOf("전국") }
     val searchText = remember { mutableStateOf("") }
 
-    val filteredEvents = selectedEvent?.filter {
+    val filteredEvents = selectedEvent.filter {
         (searchText.value.isEmpty() || it.title.contains(searchText.value)) &&
                 (activeLocation.value == "전국" || it.address.contains(activeLocation.value))
-    } ?: emptyList()
+    }
 
     LaunchedEffect(Unit) {
         eventViewModel.selectEvent()
