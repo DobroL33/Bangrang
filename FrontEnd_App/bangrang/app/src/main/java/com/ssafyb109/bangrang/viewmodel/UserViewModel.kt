@@ -87,14 +87,14 @@ private fun getDefaultStampResponseData(): StampResponseDTO {
         totalNum = 8,
         totalType = 2,
         stamps = listOf(
-            StampDetail(stampName = "경주스탬프 1", stampLocation = "경주", stampTime = "2023-10-18 10:00:00"),
-            StampDetail(stampName = "경주스탬프 2", stampLocation = "경주", stampTime = "2023-10-18 11:00:00"),
-            StampDetail(stampName = "경주스탬프 3", stampLocation = "경주", stampTime = "2023-10-18 12:00:00"),
-            StampDetail(stampName = "경주스탬프 4", stampLocation = "경주", stampTime = "2023-10-18 13:00:00"),
-            StampDetail(stampName = "경주스탬프 5", stampLocation = "경주", stampTime = "2023-10-18 14:00:00"),
-            StampDetail(stampName = "서울스탬프 1", stampLocation = "서울", stampTime = "2023-10-18 15:00:00"),
-            StampDetail(stampName = "서울스탬프 2", stampLocation = "서울", stampTime = "2023-10-18 16:00:00"),
-            StampDetail(stampName = "서울스탬프 3", stampLocation = "서울", stampTime = "2023-10-18 17:00:00")
+            StampDetail(stampName = "경주 천년고도 - 대릉원(천마총)", stampLocation = "경주", stampTime = "2023-10-18 10:00:00"),
+            StampDetail(stampName = "경주 천년고도 - 첨성대", stampLocation = "경주", stampTime = "2023-10-18 11:00:00"),
+            StampDetail(stampName = "경주 천년고도 - 오릉", stampLocation = "경주", stampTime = "2023-10-18 12:00:00"),
+            StampDetail(stampName = "경주 천년고도 - 불국사", stampLocation = "경주", stampTime = "2023-10-18 13:00:00"),
+            StampDetail(stampName = "경주 천년고도 - 석굴암", stampLocation = "경주", stampTime = "2023-10-18 14:00:00"),
+            StampDetail(stampName = "서울의 과거 - 1코스", stampLocation = "서울", stampTime = "2023-10-18 15:00:00"),
+            StampDetail(stampName = "서울의 패션 - 3코스 ", stampLocation = "서울", stampTime = "2023-10-18 16:00:00"),
+            StampDetail(stampName = "서울의 힐링 - 5코스", stampLocation = "서울", stampTime = "2023-10-18 17:00:00")
         )
     )
 }

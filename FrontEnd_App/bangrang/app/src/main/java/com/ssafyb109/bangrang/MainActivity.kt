@@ -32,6 +32,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
+import com.ssafyb109.bangrang.view.AlarmPage
 import com.ssafyb109.bangrang.view.BottomBar
 import com.ssafyb109.bangrang.view.CollectionPage
 import com.ssafyb109.bangrang.view.EventDetailPage
@@ -126,6 +127,7 @@ fun AppNavigation(navController: NavHostController) {
 
                     composable("Home") { HomePage(navController, userViewModel) }
                     composable("MapPage") { MapPage(navController, userViewModel) }
+                    composable("AlarmPage") { AlarmPage(navController, userViewModel) }
                     composable("EventPage") { EventPage(navController, userViewModel) }
                     composable("EventDetailPage/{index}") { backStackEntry ->
                         val eventIdx = backStackEntry.arguments?.getString("index")

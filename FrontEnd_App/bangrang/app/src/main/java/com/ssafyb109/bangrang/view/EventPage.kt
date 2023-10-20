@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -36,6 +37,7 @@ import androidx.navigation.NavHostController
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.ui.theme.skyBlue
 import com.ssafyb109.bangrang.view.utill.CardItem
+import com.ssafyb109.bangrang.view.utill.LocationSelector
 import com.ssafyb109.bangrang.viewmodel.EventViewModel
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
@@ -81,7 +83,7 @@ fun EventPage(
 //                )
                 //임시
                 Text(
-                    text = "대전에 이런 이벤트가?!",
+                    text = "${activeLocation.value}에 이런 이벤트가?!",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -132,7 +134,7 @@ fun CustomRectangles(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(180.dp)
             .background(skyBlue, shape = RoundedCornerShape(20.dp))
             .padding(top = 30.dp, start = 15.dp, end = 15.dp),
         contentAlignment = Alignment.Center
@@ -150,7 +152,7 @@ fun CustomRectangles(navController: NavHostController) {
             ) {
                 Box(
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(80.dp)
                         .background(Color.White, shape = RoundedCornerShape(20.dp)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -159,6 +161,8 @@ fun CustomRectangles(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("모은 도장", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
+
+            Spacer(modifier = Modifier.width(12.dp))
 
             // 두 번째 정사각형
             Column(
@@ -172,13 +176,15 @@ fun CustomRectangles(navController: NavHostController) {
                     painter = painterResource(id = R.drawable.stamp),
                     contentDescription = "Stamp",
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(80.dp)
                         .background(Color.White, shape = RoundedCornerShape(20.dp))
                         .padding(4.dp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("도장 찍기", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
+
+            Spacer(modifier = Modifier.width(12.dp))
 
             // 세 번째 정사각형
             Column(
@@ -191,7 +197,7 @@ fun CustomRectangles(navController: NavHostController) {
                     painter = painterResource(id = R.drawable.collectionbook),
                     contentDescription = "Collection Book",
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(80.dp)
                         .background(Color.White, shape = RoundedCornerShape(20.dp))
                         .padding(4.dp)
                 )

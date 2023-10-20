@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.times
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ssafyb109.bangrang.view.utill.CardItem
+import com.ssafyb109.bangrang.view.utill.LocationSelector
 import com.ssafyb109.bangrang.viewmodel.EventViewModel
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
@@ -82,7 +83,7 @@ fun HomePage(
             }
 
             item {
-                NaverMap(height = 200.dp)
+                NaverMap(height = 200.dp, false)
             }
 
             item {
@@ -160,46 +161,6 @@ fun HomePage(
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
-    }
-}
-
-@Composable
-fun LocationButton(locationName: String, activeLocation: MutableState<String>, onClick: (String) -> Unit) {
-    val isClicked = locationName == activeLocation.value
-
-    val inactiveColor = Color(0xFFD6D6D6)
-
-    Button(
-        onClick = { onClick(locationName) },
-        shape = RoundedCornerShape(50),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isClicked) Color.Blue else inactiveColor,
-            contentColor = Color.White
-        ),
-        modifier = Modifier
-            .clip(RoundedCornerShape(50))
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-    ) {
-        Text(
-            text = locationName,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-fun LocationSelector(activeLocation: MutableState<String>) {
-
-    LazyRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        items(items = listOf("전국", "서울", "부산", "인천", "대전", "대구", "광주", "울산", "세종", "제주", "경주")) { item ->
-            LocationButton(locationName = item, activeLocation = activeLocation) {
-                activeLocation.value = it
             }
         }
     }

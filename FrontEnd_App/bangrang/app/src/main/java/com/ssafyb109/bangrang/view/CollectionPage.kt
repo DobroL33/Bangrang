@@ -32,6 +32,7 @@ import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.api.StampDetail
 import com.ssafyb109.bangrang.ui.theme.heavySkyBlue
 import com.ssafyb109.bangrang.ui.theme.lightSkyBlue
+import com.ssafyb109.bangrang.view.utill.LocationSelector
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
 
@@ -44,7 +45,6 @@ fun CollectionPage(
 
     val stampsResponse by userViewModel.stampsResponse.collectAsState()
 
-    val skyBlue = Color(0xFF87CEEB)
     val searchText = remember { mutableStateOf("") }
     val activeLocation = remember { mutableStateOf("전국") }
 

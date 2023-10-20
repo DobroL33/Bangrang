@@ -44,6 +44,7 @@ import coil.compose.rememberImagePainter
 import com.ssafyb109.bangrang.api.EventSelectListResponseDTO
 import com.ssafyb109.bangrang.view.utill.CardItem
 import com.ssafyb109.bangrang.view.utill.DateToKorean
+import com.ssafyb109.bangrang.view.utill.LocationSelector
 import com.ssafyb109.bangrang.viewmodel.EventViewModel
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
@@ -154,8 +155,8 @@ fun EventItem(event: EventSelectListResponseDTO) {
         ) {
             Text(text = event.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             Text(text = event.address)
-            Text(text = "시작일 : ${DateToKorean(event.startDate)}")
-            Text(text = "종료일 : ${DateToKorean(event.endDate)}")
+            Text(text = "시작일 : ${DateToKorean(event.startDate)}", fontSize = 14.sp)
+            Text(text = "종료일 : ${DateToKorean(event.endDate)}", fontSize = 14.sp)
         }
 
         Box(
