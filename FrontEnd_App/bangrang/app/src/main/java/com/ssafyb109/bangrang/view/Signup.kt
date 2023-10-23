@@ -17,6 +17,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -95,7 +96,7 @@ fun SignUpPage(
     ) {
         // 최상단 에러 스낵바
         if (showErrorSnackBar.value) {
-            androidx.compose.material3.Snackbar(
+            Snackbar(
                 modifier = Modifier.padding(top = 8.dp),
                 action = {
                     TextButton(onClick = { showErrorSnackBar.value = false }) {
@@ -142,7 +143,7 @@ fun SignUpPage(
 
             Button(onClick = {
                 if (NicknameValid(nickname.value)) {
-                    userViewModel.registerNickname(nickname.value)
+                    userViewModel.checkNicknameAvailability(nickname.value)
                 } else {
                     showNicknameFailDialog.value = true
                 }

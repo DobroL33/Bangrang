@@ -1,8 +1,7 @@
 package com.ssafyb109.bangrang.repository
 
-import com.ssafyb109.bangrang.api.EventIndexListResponseDTO
-import com.ssafyb109.bangrang.api.EventSelectListResponseDTO
-import com.ssafyb109.bangrang.api.EventService
+import com.ssafyb109.bangrang.api.RankService
+import com.ssafyb109.bangrang.api.RegionDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
@@ -10,23 +9,26 @@ import java.net.ConnectException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class EventRepository @Inject constructor(
-    private val eventService: EventService
+class RankRepository @Inject constructor(
+    private val rankService: RankService
 ) {
     var lastError: String? = null
-    fun selectEvent(): Flow<Response<List<EventSelectListResponseDTO>>> = flow {
+
+    // 전체 랭크 fetch
+    suspend fun fetchAllRank(): Flow<Response<RegionDTO>> = flow {
         try {
-            val response = eventService.selectEvent()
-            emit(response)
+            val response = rankService.fetchAllRank()
+            emit(Response.success(response))
         } catch (e: Exception) {
             lastError = handleNetworkException(e)
         }
     }
 
-    fun findEvent(index: String): Flow<Response<EventIndexListResponseDTO>> = flow {
+    // 친구 랭크 fetch
+    suspend fun fetchFriendRank(): Flow<Response<RegionDTO>> = flow {
         try {
-            val response = eventService.findEvent(index)
-            emit(response)
+            val response = rankService.fetchFriendRank()
+            emit(Response.success(response))
         } catch (e: Exception) {
             lastError = handleNetworkException(e)
         }

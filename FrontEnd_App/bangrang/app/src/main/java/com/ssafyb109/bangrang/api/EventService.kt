@@ -6,10 +6,12 @@ import retrofit2.http.Path
 
 interface EventService {
 
+    // 이벤트 리스트
     @GET("api/event/list")
     suspend fun selectEvent(
     ): Response<List<EventSelectListResponseDTO>>
 
+    // 이벤트 자세히 보기
     @GET("api/event/index/{index}")
     suspend fun findEvent(
         @Path("index") index: String

@@ -12,6 +12,8 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         private const val USER_IDX = "1111111111"
         private const val USER_NICKNAME = "user_nickname"
         private const val USER_TOKEN = "user_token"
+        private const val USER_ALARM = "false"
+        private const val USER_IMAGE = "false"
     }
 
     private val sharedPreferences: SharedPreferences
@@ -68,4 +70,25 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
     fun getUserToken(): String? {
         return sharedPreferences.getString(USER_TOKEN, null)
     }
+
+    // 사용자의 알람 설정 저장
+    fun setUserAlarm(): Boolean? {
+        return sharedPreferences.getBoolean(USER_ALARM, false)
+    }
+
+    // 사용자의 알람 설정 불러오기
+    fun getUserAlarm(): Boolean? {
+        return sharedPreferences.getBoolean(USER_ALARM, false)
+    }
+
+    // 사용자의 알람 설정 불러오기
+    fun setUserImage(): String? {
+        return sharedPreferences.getString(USER_ALARM, "")
+    }
+
+    // 사용자의 알람 설정 불러오기
+    fun getUserImage(): String? {
+        return sharedPreferences.getString(USER_ALARM, "")
+    }
+
 }

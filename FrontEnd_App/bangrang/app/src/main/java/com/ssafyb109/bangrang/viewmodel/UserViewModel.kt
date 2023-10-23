@@ -8,6 +8,7 @@ import com.ssafyb109.bangrang.api.StampDetail
 import com.ssafyb109.bangrang.api.StampResponseDTO
 import com.ssafyb109.bangrang.repository.ResultType
 import com.ssafyb109.bangrang.repository.UserRepository
+import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import com.ssafyb109.bangrang.view.utill.getAddressFromLocation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -15,12 +16,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val repository: UserRepository,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
     // 로그인 응답
@@ -39,9 +42,38 @@ class UserViewModel @Inject constructor(
     private val _stampsResponse = MutableStateFlow(getDefaultStampResponseData())
     val stampsResponse: StateFlow<StampResponseDTO> = _stampsResponse
 
+    // 닉네임 수정 응답
+    private val _modifyNicknameResponse = MutableStateFlow<Boolean?>(null)
+    val modifyNicknameResponse: StateFlow<Boolean?> = _modifyNicknameResponse
+
+    // 회원 탈퇴 응답
+    private val _withdrawResponse = MutableStateFlow<Boolean?>(null)
+    val withdrawResponse: StateFlow<Boolean?> = _withdrawResponse
+
+    // 로그아웃 응답
+    private val _logoutResponse = MutableStateFlow<Boolean?>(null)
+    val logoutResponse: StateFlow<Boolean?> = _logoutResponse
+
+    // 프로필 이미지 수정 응답
+    private val _modifyProfileImageResponse = MutableStateFlow<String?>(null)
+    val modifyProfileImageResponse: StateFlow<String?> = _modifyProfileImageResponse
+
+    // 친구 추가 응답
+    private val _addFriendResponse = MutableStateFlow<Boolean?>(null)
+    val addFriendResponse: StateFlow<Boolean?> = _addFriendResponse
+
+    // 친구 삭제 응답
+    private val _deleteFriendResponse = MutableStateFlow<Boolean?>(null)
+    val deleteFriendResponse: StateFlow<Boolean?> = _deleteFriendResponse
+
+    // 알람 설정 응답
+    private val _alarmSettingResponse = MutableStateFlow(sharedPreferencesUtil.getUserAlarm())
+    val alarmSettingResponse: StateFlow<Boolean?> = _alarmSettingResponse
+
     // 에러
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+    // 에러 메시지 리셋
     fun clearErrorMessage() {
         _errorMessage.value = null
     }
@@ -98,6 +130,66 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    // 유저 알람 설정
+    fun setAlarm(select:Boolean) {
+        viewModelScope.launch {
+            val response = repository.setAlarm(select)
+            if(select){
+                _alarmSettingResponse.value = response
+            }
+            else{
+                _alarmSettingResponse.value = !response
+            }
+            if (!response) {
+                _errorMessage.emit(repository.lastError ?: "알 수 없는 에러")
+            }
+        }
+    }
+
+    // 닉네임 수정
+    fun modifyNickname(nickName: String) {
+        viewModelScope.launch {
+            val response = repository.modifyNickname(nickName)
+            _modifyNicknameResponse.value = response
+            if (!response) {
+                _errorMessage.emit(repository.lastError ?: "알 수 없는 에러")
+            }
+        }
+    }
+
+    // 회원 탈퇴
+    fun withdrawUser() {
+        viewModelScope.launch {
+            val response = repository.withdrawUser()
+            _withdrawResponse.value = response
+            if (!response) {
+                _errorMessage.emit(repository.lastError ?: "알 수 없는 에러")
+            }
+        }
+    }
+
+    // 로그아웃
+    fun logout() {
+        viewModelScope.launch {
+            val response = repository.logoutUser()
+            _logoutResponse.value = response
+            if (!response) {
+                _errorMessage.emit(repository.lastError ?: "알 수 없는 에러")
+            }
+        }
+    }
+
+    // 유저 프로필 이미지 수정
+    fun modifyUserProfileImage(image: MultipartBody.Part) {
+        viewModelScope.launch {
+            val response = repository.modifyUserProfileImage(image)
+            _modifyProfileImageResponse.value = response
+            if (response == null) {
+                _errorMessage.emit(repository.lastError ?: "알 수 없는 에러")
+            }
+        }
+    }
+
 
 
     // 전체 스탬프 가져오기
@@ -114,7 +206,27 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    // 친구 추가
+    fun addFriend(nickName: String) {
+        viewModelScope.launch {
+            val response = repository.addFriend(nickName)
+            _addFriendResponse.value = response
+            if (!response) {
+                _errorMessage.emit(repository.lastError ?: "알 수 없는 에러")
+            }
+        }
+    }
 
+    // 친구 삭제
+    fun deleteFriend(nickName: String) {
+        viewModelScope.launch {
+            val response = repository.deleteFriend(nickName)
+            _deleteFriendResponse.value = response
+            if (!response) {
+                _errorMessage.emit(repository.lastError ?: "알 수 없는 에러")
+            }
+        }
+    }
 
 
 }

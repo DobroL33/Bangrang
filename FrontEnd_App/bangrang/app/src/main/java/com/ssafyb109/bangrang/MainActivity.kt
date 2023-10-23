@@ -32,6 +32,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
+import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import com.ssafyb109.bangrang.view.AlarmPage
 import com.ssafyb109.bangrang.view.BottomBar
 import com.ssafyb109.bangrang.view.CollectionPage
@@ -56,6 +57,7 @@ val customBackgroundColor = Color(245, 245, 245)
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
     private val userViewModel: UserViewModel by viewModels()
+    private val sharedPreferencesUtil by lazy { SharedPreferencesUtil(this) }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +65,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             navController = rememberNavController()
-            AppNavigation(navController)
+            AppNavigation(navController, sharedPreferencesUtil)
         }
     }
 
@@ -89,7 +91,10 @@ class MainActivity : ComponentActivity() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AppNavigation(navController: NavHostController) {
+fun AppNavigation(
+    navController: NavHostController,
+    sharedPreferencesUtil: SharedPreferencesUtil
+) {
     val userViewModel: UserViewModel = hiltViewModel()
     val context = LocalContext.current
 
@@ -137,7 +142,7 @@ fun AppNavigation(navController: NavHostController) {
                     composable("CollectionPage") { CollectionPage(navController, userViewModel) }
                     composable("FavoritePage") { FavoritePage(navController, userViewModel) }
                     composable("RankPage") { RankPage(navController, userViewModel) }
-                    composable("MyPage") { MyPage(navController, userViewModel) }
+                    composable("MyPage") { MyPage(navController, userViewModel,context, sharedPreferencesUtil) }
 
                     composable("FullScreenImagePage/{imageUrl}") { backStackEntry ->
                         val encodedImageUrl = backStackEntry.arguments?.getString("imageUrl")

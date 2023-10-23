@@ -1,13 +1,12 @@
 package com.ssafyb109.bangrang.repository
 
-import android.content.Context
-import android.util.Log
+import com.ssafyb109.bangrang.api.AlarmRequestDTO
 import com.ssafyb109.bangrang.api.LoginRequestDTO
 import com.ssafyb109.bangrang.api.StampResponseDTO
 import com.ssafyb109.bangrang.api.UserService
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MultipartBody
 import retrofit2.Response
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -15,7 +14,6 @@ import javax.inject.Inject
 
 class UserRepository @Inject constructor(
     private val userService: UserService,
-    @ApplicationContext private val context: Context
 ) {
     var lastError: String? = null
 
@@ -46,7 +44,7 @@ class UserRepository @Inject constructor(
     // 닉네임 중복 체크
     suspend fun checkNicknameAvailability(nickName: String): Boolean {
         return try {
-            userService.nickNameCheck(nickName)
+            userService.nicknameCheck(nickName)
             true
         } catch (e: Exception) {
             lastError = handleNetworkException(e)
@@ -57,7 +55,84 @@ class UserRepository @Inject constructor(
     // 닉네임 등록
     suspend fun registerNickname(nickName: String): Boolean {
         return try {
-            userService.userNickName(nickName)
+            userService.resistNickname(nickName)
+            true
+        } catch (e: Exception) {
+            lastError = handleNetworkException(e)
+            false
+        }
+    }
+
+    // 유저 알람 설정
+    suspend fun setAlarm(select: Boolean): Boolean {
+        val request = AlarmRequestDTO(select)
+        return try {
+            userService.setAlarm(request)
+            true
+        } catch (e: Exception) {
+            lastError = handleNetworkException(e)
+            false
+        }
+    }
+
+    // 닉네임 수정
+    suspend fun modifyNickname(nickName: String): Boolean {
+        return try {
+            userService.modifyNickname(nickName)
+            true
+        } catch (e: Exception) {
+            lastError = handleNetworkException(e)
+            false
+        }
+    }
+
+    // 회원 탈퇴
+    suspend fun withdrawUser(): Boolean {
+        return try {
+            userService.userWithdraw()
+            true
+        } catch (e: Exception) {
+            lastError = handleNetworkException(e)
+            false
+        }
+    }
+
+    // 로그아웃
+    suspend fun logoutUser(): Boolean {
+        return try {
+            userService.userLogout()
+            true
+        } catch (e: Exception) {
+            lastError = handleNetworkException(e)
+            false
+        }
+    }
+
+    // 이미지 수정
+    suspend fun modifyUserProfileImage(image: MultipartBody.Part): String? {
+        return try {
+            userService.modifyUserImg(image)
+        } catch (e: Exception) {
+            lastError = handleNetworkException(e)
+            null
+        }
+    }
+
+    // 친구 추가
+    suspend fun addFriend(nickName: String): Boolean {
+        return try {
+            userService.resistFriend(nickName)
+            true
+        } catch (e: Exception) {
+            lastError = handleNetworkException(e)
+            false
+        }
+    }
+
+    // 친구 삭제
+    suspend fun deleteFriend(nickName: String): Boolean {
+        return try {
+            userService.deleteFriend(nickName)
             true
         } catch (e: Exception) {
             lastError = handleNetworkException(e)
