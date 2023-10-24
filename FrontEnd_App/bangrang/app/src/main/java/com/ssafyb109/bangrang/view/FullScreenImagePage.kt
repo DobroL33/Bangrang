@@ -1,5 +1,6 @@
 package com.ssafyb109.bangrang.view
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -8,9 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 
+// 페이지 이동으로 화면 전체 보기
 @Composable
 fun FullScreenImagePage(navController: NavHostController, imageUrl: String) {
     Box(
@@ -28,3 +31,36 @@ fun FullScreenImagePage(navController: NavHostController, imageUrl: String) {
         )
     }
 }
+
+// 현재 이미지 Bitmap으로 다이얼로그 보기
+@Composable
+fun FullScreenImageBitView(bitmap: Bitmap?, onClose: () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        bitmap?.let {
+            Image(
+                bitmap = it.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(onClick = onClose)
+            )
+        }
+    }
+}
+
+// 현재 이미지 Url로 다이얼로그 보기
+@Composable
+fun FullScreenImageUrlView(imageUrl: String?, onClose: () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        imageUrl?.let { url ->
+            Image(
+                painter = rememberAsyncImagePainter(model = url),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(onClick = onClose)
+            )
+        }
+    }
+}
+

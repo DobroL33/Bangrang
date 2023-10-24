@@ -2,6 +2,7 @@ package com.ssafyb109.bangrang.di
 
 import android.content.Context
 import com.ssafyb109.bangrang.api.EventService
+import com.ssafyb109.bangrang.api.InquiryService
 import com.ssafyb109.bangrang.api.RankService
 import com.ssafyb109.bangrang.api.UserService
 import com.ssafyb109.bangrang.sharedpreferences.NullOnEmptyConverterFactory
@@ -62,6 +63,12 @@ object NetworkModule {
     @Singleton
     fun provideRankService(retrofit: Retrofit): RankService {
         return retrofit.create(RankService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideInquiryService(retrofit: Retrofit): InquiryService {
+        return retrofit.create(InquiryService::class.java)
     }
 
     @Module

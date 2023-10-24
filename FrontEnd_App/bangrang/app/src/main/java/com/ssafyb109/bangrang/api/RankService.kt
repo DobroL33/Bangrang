@@ -25,6 +25,7 @@ data class RankList(
 
 data class RegionDTO(
     val myRegionDTO: MyRegionDTO,
+    val rating: Int,
     val seoul: List<RankList>,
     val busan: List<RankList>,
     val incheon: List<RankList>,
@@ -47,24 +48,24 @@ data class RegionDTO(
 )
 
 data class MyRegionDTO(
-    val seoul: Long,
-    val busan: Long,
-    val incheon: Long,
-    val gwangju: Long,
-    val daejeon: Long,
-    val daegu: Long,
-    val ulsan: Long,
-    val sejong: Long,
-    val jeju: Long,
-    val dokdo: Long,
+    val seoul: Pair<Long,Int>,
+    val busan: Pair<Long,Int>,
+    val incheon: Pair<Long,Int>,
+    val gwangju: Pair<Long,Int>,
+    val daejeon: Pair<Long,Int>,
+    val daegu: Pair<Long,Int>,
+    val ulsan: Pair<Long,Int>,
+    val sejong: Pair<Long,Int>,
+    val jeju: Pair<Long,Int>,
+    val dokdo: Pair<Long,Int>,
 
-    val gangwon: Long,
-    val gyeonggi: Long,
-    val gyeongnam: Long,
-    val gyeongbuk: Long,
-    val jeollanam: Long,
-    val jeollabuk: Long,
-    val chungnam: Long,
-    val chungbuk: Long,
+    val gangwon: Pair<Long,Int>,
+    val gyeonggi: Pair<Long,Int>,
+    val gyeongnam: Pair<Long,Int>,
+    val gyeongbuk: Pair<Long,Int>,
+    val jeollanam: Pair<Long,Int>,
+    val jeollabuk: Pair<Long,Int>,
+    val chungnam: Pair<Long,Int>,
+    val chungbuk: Pair<Long,Int>,
 )
 

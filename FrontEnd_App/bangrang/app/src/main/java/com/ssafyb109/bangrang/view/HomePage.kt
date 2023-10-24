@@ -91,7 +91,7 @@ fun HomePage(
             }
 
             item {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
 
             item {
@@ -107,7 +107,6 @@ fun HomePage(
             }
 
             item {
-                // LazyRow 카드들
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
                     items(filteredEvents) { event ->
                         CardItem(event = event, navController)
@@ -116,31 +115,11 @@ fun HomePage(
             }
 
             item {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-
-            item {
-                Text("내 주위 갈만한 곳", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            }
-
-            item {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
             item {
-                LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(selectedEvent) { event ->
-                        CardItem(event = event, navController)
-                    }
-                }
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-
-            item {
-                Text("내가 가보지 않은 곳", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text("내 주의 가볼만한 곳", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
 
             item {

@@ -2,26 +2,40 @@ package com.ssafyb109.bangrang.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -29,7 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ssafyb109.bangrang.R
+import com.ssafyb109.bangrang.ui.theme.graphRed
 import com.ssafyb109.bangrang.ui.theme.heavySkyBlue
+import com.ssafyb109.bangrang.view.utill.HalfPieGraph
 import com.ssafyb109.bangrang.view.utill.LocationSelector
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
@@ -201,6 +217,8 @@ fun UserCard(image: Painter, percentage: Int, userId: String, modifier: Modifier
                 .size(30.dp))
         }
 
+        Spacer(modifier = Modifier.height(8.dp))
+
         Text(
             text = "$percentage%\n$userId",
             fontWeight = FontWeight.Bold,
@@ -228,6 +246,8 @@ fun MyRankPage() {
     )
     val scrollState = rememberScrollState()
 
+    val sample = 0.842
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -235,16 +255,19 @@ fun MyRankPage() {
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(text = "전국 정복도", fontSize = 28.sp, fontWeight = FontWeight.Bold)
-        Box(modifier = Modifier.height(150.dp)) {
-            // TODO: 그래프를 여기에 추가
-            Text(text = "제작중", fontSize = 28.sp)
+        Text(text = "전국 정복도", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+        ) {
+            HalfPieGraph(sample,12000,23)
         }
 
-        Text(text = "지역별 정복도", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        Text(text = "지역별 정복도", fontSize = 24.sp, fontWeight = FontWeight.Bold)
         Box(modifier = Modifier.height(200.dp)) {
             BarGraph(cityRanks)
-            Text(text = "제작중", fontSize = 28.sp)
         }
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -275,16 +298,22 @@ fun RankItem(cityName: String, rank: Int, percentage: Int) {
                 text = rank.toString(),
                 color = heavySkyBlue,
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                modifier = Modifier.padding(start = 4.dp)
             )
         }
-        Text(text = "$cityName", fontSize = 20.sp)
-        Text(text = "$percentage%", fontSize = 20.sp)
+        Text(text = cityName, fontSize = 20.sp)
+        Text(text = "$percentage%", fontSize = 20.sp, color = heavySkyBlue, fontWeight = FontWeight.Bold)
     }
 }
 
 @Composable
 fun BarGraph(cityRanks: List<Pair<String, Pair<Int, Int>>>) {
+
+    // 최대 백분율 값 찾기
+    val maxPercentage = cityRanks.maxOfOrNull { it.second.second } ?: 100
+    val adjustRatio = 0.8f / maxPercentage  // 조절비율, 최고 값의 80%가 기준치
+
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(horizontal = 8.dp),
@@ -292,21 +321,22 @@ fun BarGraph(cityRanks: List<Pair<String, Pair<Int, Int>>>) {
     ) {
         items(cityRanks) { (city, rankInfo) ->
             val percentage = rankInfo.second
+            val adjustedHeight = 150.dp * percentage * adjustRatio  // 조절된 높이
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.width(50.dp)  // 막대 넓이 지정
+                modifier = Modifier.width(50.dp)  // 막대 넓이
             ) {
                 // 상단 빈 공간
-                Spacer(modifier = Modifier.weight(1f - percentage.toFloat() / 100f))
+                Spacer(modifier = Modifier.weight(1f - (percentage * adjustRatio)))
 
                 // 막대 그래프
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height((150.dp * percentage / 100).coerceAtMost(150.dp))
-                        .background(Color.Blue)
-                        .weight(percentage.toFloat() / 100f)
+                        .height(adjustedHeight)
+                        .background(graphRed)
+                        .clip(RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)) // 막대 상단 둥글게
                 )
 
                 // 도시 이름 레이블
@@ -318,6 +348,3 @@ fun BarGraph(cityRanks: List<Pair<String, Pair<Int, Int>>>) {
         }
     }
 }
-
-
-

@@ -13,7 +13,7 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         private const val USER_NICKNAME = "user_nickname"
         private const val USER_TOKEN = "user_token"
         private const val USER_ALARM = "false"
-        private const val USER_IMAGE = "false"
+        private const val USER_IMAGE = "https://blog.kakaocdn.net/dn/P4yY0/btsrH678WcJ/HZidnrkBQUrYippmfBLrT0/img.png"
     }
 
     private val sharedPreferences: SharedPreferences
@@ -72,8 +72,11 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
     }
 
     // 사용자의 알람 설정 저장
-    fun setUserAlarm(): Boolean? {
-        return sharedPreferences.getBoolean(USER_ALARM, false)
+    fun setUserAlarm(onOff: Boolean) {
+        with(sharedPreferences.edit()) {
+            putBoolean(USER_ALARM, onOff)
+            apply()
+        }
     }
 
     // 사용자의 알람 설정 불러오기
@@ -81,14 +84,19 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         return sharedPreferences.getBoolean(USER_ALARM, false)
     }
 
-    // 사용자의 알람 설정 불러오기
-    fun setUserImage(): String? {
-        return sharedPreferences.getString(USER_ALARM, "")
+    // 사용자 사진 저장
+    fun setUserImage(imageUrl: String) {
+        with(sharedPreferences.edit()) {
+            putString(USER_IMAGE, imageUrl)
+            apply()
+        }
     }
 
-    // 사용자의 알람 설정 불러오기
+    // 사용자 사진 불러오기
     fun getUserImage(): String? {
-        return sharedPreferences.getString(USER_ALARM, "")
+        return sharedPreferences.getString(USER_IMAGE, USER_IMAGE)
     }
+
+
 
 }

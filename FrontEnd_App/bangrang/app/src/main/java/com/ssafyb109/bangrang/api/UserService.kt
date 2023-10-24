@@ -6,6 +6,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -56,6 +57,7 @@ interface UserService {
     ): Void
 
     // 프로필 이미지 수정
+    @Multipart
     @PATCH("api/user/profileImg")
     suspend fun modifyUserImg(
         @Part image: MultipartBody.Part

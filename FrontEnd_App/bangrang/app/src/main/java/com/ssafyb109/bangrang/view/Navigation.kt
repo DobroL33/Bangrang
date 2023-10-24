@@ -22,12 +22,9 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
@@ -119,7 +116,6 @@ fun BottomBar(navController: NavHostController) {
                 when (selectedLabel) {
                     "마이룸" -> navController.navigate("MyPage")
                     "랭킹" -> navController.navigate("RankPage")
-                    "찜" -> navController.navigate("FavoritePage")
                     "행사" -> navController.navigate("EventPage")
                 }
             }
@@ -184,19 +180,18 @@ fun CentralButton(onClick: () -> Unit) {
 
 @Composable
 fun ExpandingCenterMenu(onItemSelected: (String) -> Unit) {
-    val items = listOf("마이룸", "랭킹", "찜" , "행사" )
+    val items = listOf("마이룸", "랭킹", "행사" )
     val icons = mapOf(
         "마이룸" to Icons.Default.Person,
         "랭킹" to Icons.Default.Star,
-        "찜" to Icons.Default.Favorite,
         "행사" to Icons.Default.ShoppingCart,
     )
 
-    val distance = 100f  // 아이콘 간의 원 넓이
+    val distance = 90f  // 원 중심으로부터 아이콘간의 거리
 
     Box(
         modifier = Modifier
-            .size(300.dp)
+            .size(280.dp)
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
             val topY = 0f
@@ -226,7 +221,7 @@ fun ExpandingCenterMenu(onItemSelected: (String) -> Unit) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .offset(x = (offsetX + 120).dp, y = (-offsetY + 100).dp)
+                    .offset(x = (offsetX + 110).dp, y = (-offsetY + 82).dp)
             ) {
                 IconButton(
                     onClick = { onItemSelected(items[i]) },
