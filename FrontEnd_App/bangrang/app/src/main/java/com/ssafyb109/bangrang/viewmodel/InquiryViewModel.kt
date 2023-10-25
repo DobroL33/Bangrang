@@ -17,7 +17,11 @@ class InquiryViewModel @Inject constructor(
 ) : ViewModel() {
 
     // 문의 리스트
-    private val _inquiryList = MutableStateFlow<List<InquiryListResponseDTO>>(listOf())
+//    private val _inquiryList = MutableStateFlow<List<InquiryListResponseDTO>>(listOf())
+//    val inquiryList: StateFlow<List<InquiryListResponseDTO>> = _inquiryList
+
+    // 테스트용 샘플들어간거
+    private val _inquiryList = MutableStateFlow<List<InquiryListResponseDTO>>(sampleInquiries)
     val inquiryList: StateFlow<List<InquiryListResponseDTO>> = _inquiryList
 
     // 문의 응답
@@ -43,7 +47,8 @@ class InquiryViewModel @Inject constructor(
     }
 
     // 문의 등록하기
-    fun registerInquiry(request: InquiryResistRequestDTO) {
+    fun registerInquiry(eventIdx:Long, type:String, title:String, content:String) {
+        val request = InquiryResistRequestDTO(eventIdx,type ,title, content)
         viewModelScope.launch {
             val isSuccess = inquiryRepository.inquiryResist(request)
             if (isSuccess) {
@@ -55,3 +60,12 @@ class InquiryViewModel @Inject constructor(
         }
     }
 }
+
+val sampleInquiries: List<InquiryListResponseDTO> = listOf(
+    InquiryListResponseDTO(1,"앱", "이벤트1", "문의 제목1", "문의 내용1", "답변1", "2023-10-24"),
+    InquiryListResponseDTO(2,"행사", "이벤트2", "문의 제목2", "문의 내용2", "답변2", "2023-10-23"),
+    InquiryListResponseDTO(3,"기타", "이벤트3", "문의 제목3", "문의 내용3", "답변3", "2023-10-22"),
+    InquiryListResponseDTO(4,"앱", "이벤트4", "문의 제목4", "문의 내용4", "", "2023-10-21"),
+    InquiryListResponseDTO(5,"행사", "이벤트5", "문의 제목5", "문의 내용5", "", "2023-10-20"),
+    InquiryListResponseDTO(6,"기타", "이벤트6", "문의 제목6", "문의 내용6", "답변4", "2023-10-20"),
+)

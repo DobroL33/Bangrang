@@ -13,7 +13,7 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         private const val USER_NICKNAME = "user_nickname"
         private const val USER_TOKEN = "user_token"
         private const val USER_ALARM = "false"
-        private const val USER_IMAGE = "https://blog.kakaocdn.net/dn/P4yY0/btsrH678WcJ/HZidnrkBQUrYippmfBLrT0/img.png"
+        private const val USER_IMAGE = "https://bangrang-bucket.s3.ap-northeast-2.amazonaws.com/image.png"
     }
 
     private val sharedPreferences: SharedPreferences
@@ -94,7 +94,7 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
 
     // 사용자 사진 불러오기
     fun getUserImage(): String? {
-        return sharedPreferences.getString(USER_IMAGE, USER_IMAGE)
+        return sharedPreferences.getString(USER_IMAGE, null)
     }
 
 

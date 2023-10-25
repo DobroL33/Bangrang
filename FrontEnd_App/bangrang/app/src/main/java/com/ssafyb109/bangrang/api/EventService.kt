@@ -25,7 +25,7 @@ data class EventSelectListResponseDTO(
     val eventIdx: Long,
     val image: String, // 이미지 URL
     val title: String,
-    val content: String,
+    val subtitle: String,
     val startDate: String,
     val endDate: String,
     val address: String,

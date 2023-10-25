@@ -39,6 +39,7 @@ import com.ssafyb109.bangrang.view.BottomBar
 import com.ssafyb109.bangrang.view.CollectionPage
 import com.ssafyb109.bangrang.view.EventDetailPage
 import com.ssafyb109.bangrang.view.HomePage
+import com.ssafyb109.bangrang.view.InquiryDetailPage
 import com.ssafyb109.bangrang.view.InquiryPage
 import com.ssafyb109.bangrang.view.InquiryResistPage
 import com.ssafyb109.bangrang.view.LoginPage
@@ -50,10 +51,10 @@ import com.ssafyb109.bangrang.view.SignUpPage
 import com.ssafyb109.bangrang.view.StampPage
 import com.ssafyb109.bangrang.view.TopBar
 import com.ssafyb109.bangrang.view.handleGoogleSignInResult
+import com.ssafyb109.bangrang.viewmodel.EventViewModel
+import com.ssafyb109.bangrang.viewmodel.InquiryViewModel
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
-
-val customBackgroundColor = Color(245, 245, 245)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -98,6 +99,7 @@ fun AppNavigation(
     sharedPreferencesUtil: SharedPreferencesUtil
 ) {
     val userViewModel: UserViewModel = hiltViewModel()
+    val inquiryViewModel: InquiryViewModel = hiltViewModel()
     val context = LocalContext.current
 
     // 권한 확인
@@ -145,10 +147,14 @@ fun AppNavigation(
                     composable("RankPage") { RankPage(navController, userViewModel) }
                     composable("MyPage") { MyPage(navController, userViewModel,context, sharedPreferencesUtil) }
                     composable("ProfileChangePage") { ProfileChangePage(navController, userViewModel,context, sharedPreferencesUtil) }
-                    composable("InquiryPage") { InquiryPage(navController) }
+                    composable("InquiryPage") { InquiryPage(navController, inquiryViewModel) }
                     composable("InquiryResistPage/{index}") { backStackEntry ->
                         val eventIdx = backStackEntry.arguments?.getString("index")
-                        InquiryResistPage(navController,userViewModel, sharedPreferencesUtil, eventIdx!!)
+                        InquiryResistPage(navController, eventIdx!!)
+                    }
+                    composable("InquiryDetailPage/{index}") { backStackEntry ->
+                        val eventIdx = backStackEntry.arguments?.getString("index")
+                        InquiryDetailPage(navController,inquiryViewModel, eventIdx!!)
                     }
 
                     composable("FullScreenImagePage/{imageUrl}") { backStackEntry ->

@@ -22,15 +22,17 @@ interface InquiryService {
 
 data class InquiryListResponseDTO(
     val inquiryIdx: Long,
+    val type: String, // 앱 , 행사 , 기타 3종류
     val eventName: String,
     val title: String,
     val content: String,
-    val answer: String, // 질문에 응답했는지
+    val answer: String,
     val resistDate: String,
 )
 
 data class InquiryResistRequestDTO(
-    val eventIdx : Long,
+    val eventIdx : Long, // 앱이면 -1로감
+    val type : String, // 앱 , 행사 , 기타 3종류
     val title: String,
     val content: String,
 )

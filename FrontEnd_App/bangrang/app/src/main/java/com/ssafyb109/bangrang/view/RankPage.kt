@@ -1,5 +1,6 @@
 package com.ssafyb109.bangrang.view
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,13 +37,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.ui.theme.graphRed
 import com.ssafyb109.bangrang.ui.theme.heavySkyBlue
@@ -50,10 +58,7 @@ import com.ssafyb109.bangrang.view.utill.LocationSelector
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
 // 임시
-data class User(val image: Painter, val percentage: Int, val userId: String)
-
-//
-
+data class User(val image: String, val percentage: Int, val userId: String)
 
 @Composable
 fun RankPage(
@@ -62,6 +67,7 @@ fun RankPage(
 ) {
     var tabSelection by remember { mutableStateOf("전체") }
     val tabs = listOf("전체", "친구", "나")
+    var animationLaunch = 0
 
     Column(modifier = Modifier.fillMaxSize()) {
         TabRow(
@@ -81,7 +87,16 @@ fun RankPage(
 
         when (tabSelection) {
             "전체" -> TotalRanking()
-            "나" -> MyRankPage()
+            "나" -> {
+                // 탭이 "나"로 변경될 때 애니메이션 진행
+                LaunchedEffect(key1 = tabSelection) {
+                    animationLaunch = animationLaunch++
+                }
+                MyRankPage(animationLaunch)
+            }
+            "친구" -> {
+                FriendRank()
+            }
         }
     }
 }
@@ -150,9 +165,9 @@ fun TotalRanking() {
 @Composable
 fun PodiumLayout() {
     // 임시 사용자 데이터
-    val user1 = User(painterResource(R.drawable.emptyperson), 98, "샘플유저1")
-    val user2 = User(painterResource(R.drawable.emptyperson), 95, "샘플유저2")
-    val user3 = User(painterResource(R.drawable.emptyperson), 92, "샘플유저3")
+    val user1 = User("https://bangrang-bucket.s3.ap-northeast-2.amazonaws.com/image.png", 98, "샘플유저1")
+    val user2 = User("https://bangrang-bucket.s3.ap-northeast-2.amazonaws.com/image.png", 95, "샘플유저2")
+    val user3 = User("https://bangrang-bucket.s3.ap-northeast-2.amazonaws.com/image.png", 92, "샘플유저3")
 
     Box(modifier = Modifier.fillMaxWidth()) {
         // 2등
@@ -194,7 +209,7 @@ fun RankRow(rank: Int, nickname:String, percent: Int) {
 }
 
 @Composable
-fun UserCard(image: Painter, percentage: Int, userId: String, modifier: Modifier = Modifier, rank: Int) {
+fun UserCard(image: String?, percentage: Int, userId: String, modifier: Modifier = Modifier, rank: Int) {
     val medal = when(rank) {
         1 -> painterResource(id = R.drawable.first)
         2 -> painterResource(id = R.drawable.second)
@@ -207,9 +222,38 @@ fun UserCard(image: Painter, percentage: Int, userId: String, modifier: Modifier
         modifier = modifier.size(120.dp)
     ) {
 
-        Image(painter = image, contentDescription = null, modifier = Modifier
-            .fillMaxSize()
-            .clip(CircleShape))
+        // 전체적으로 50% 어둡게
+        val darknessFilter = ColorFilter.colorMatrix(
+            ColorMatrix(
+                floatArrayOf(
+                    0.5f, 0f, 0f, 0f, 0f,  // red
+                    0f, 0.5f, 0f, 0f, 0f,  // green
+                    0f, 0f, 0.5f, 0f, 0f,  // blue
+                    0f, 0f, 0f, 1f, 0f     // alpha
+                )
+            )
+        )
+        if(image==null){
+            Image(
+                painter = painterResource(id = R.drawable.emptyperson),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape),
+                colorFilter = darknessFilter
+            )
+        } else{
+            Image(
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(LocalContext.current).data(data = image).build()
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape),
+                colorFilter = darknessFilter
+            )
+        }
 
         medal?.let {
             Image(painter = it, contentDescription = "Medal for rank $rank", modifier = Modifier
@@ -231,7 +275,7 @@ fun UserCard(image: Painter, percentage: Int, userId: String, modifier: Modifier
 }
 
 @Composable
-fun MyRankPage() {
+fun MyRankPage(animationLaunch : Int) {
     val cityRanks = listOf(
         Pair("서울", 1 to 28),
         Pair("부산", 2 to 17),
@@ -262,10 +306,11 @@ fun MyRankPage() {
                 .fillMaxWidth()
                 .height(200.dp)
         ) {
-            HalfPieGraph(sample,12000,23)
+            HalfPieGraph(sample,12000,23,animationLaunch)
         }
 
         Text(text = "지역별 정복도", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+
         Box(modifier = Modifier.height(200.dp)) {
             BarGraph(cityRanks)
         }
@@ -347,4 +392,9 @@ fun BarGraph(cityRanks: List<Pair<String, Pair<Int, Int>>>) {
             }
         }
     }
+}
+
+@Composable
+fun FriendRank(){
+
 }
