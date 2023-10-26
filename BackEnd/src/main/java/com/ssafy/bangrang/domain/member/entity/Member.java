@@ -11,7 +11,7 @@ public abstract class Member {
     @Id
     @GeneratedValue
     @Column(name = "member_idx")
-    private Long idx;
+    Long idx;
 
     @Column(name = "member_access_token")
     private String accessToken;

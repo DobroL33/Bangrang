@@ -6,9 +6,12 @@ import com.ssafy.bangrang.domain.map.entity.MemberMarker;
 import com.ssafy.bangrang.domain.member.model.vo.SocialProvider;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,5 +50,12 @@ public class AppMember extends Member{
 
 //    @OneToMany(mappedBy = "appMember")
 //    private List<MemberMapArea> memberMapAreas = new ArrayList<>();
-
+    @Builder
+    public AppMember(Long idx, String email, String nickname,  String imgUrl, SocialProvider socialProvider) {
+        this.idx = idx;
+        this.email = email;
+        this.nickname = nickname;
+        this.imgUrl = imgUrl;
+        this.socialProvider = socialProvider;
+    }
 }
