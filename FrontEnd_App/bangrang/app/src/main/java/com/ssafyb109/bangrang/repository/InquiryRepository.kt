@@ -12,13 +12,16 @@ import javax.inject.Inject
 
 class InquiryRepository @Inject constructor(
     private val inquiryService: InquiryService
-) {
-    var lastError: String? = null
+) : BaseRepository() {
 
     fun inquiryList(): Flow<Response<List<InquiryListResponseDTO>>> = flow {
         try {
             val response = inquiryService.inquiryList()
-            emit(response)
+            if (response.isSuccessful) {
+                emit(response)
+            } else {
+                lastError = handleNetworkException(response = response)
+            }
         } catch (e: Exception) {
             lastError = handleNetworkException(e)
         }
@@ -27,17 +30,15 @@ class InquiryRepository @Inject constructor(
     suspend fun inquiryResist(request: InquiryResistRequestDTO): Boolean {
         return try {
             val response = inquiryService.inquiryResist(request)
-            true
+            if (response.isSuccessful) {
+                true
+            } else {
+                lastError = handleNetworkException(response = response)
+                false
+            }
         } catch (e: Exception) {
             lastError = handleNetworkException(e)
             false
-        }
-    }
-
-    private fun handleNetworkException(e: Exception): String {
-        return when (e) {
-            is ConnectException, is UnknownHostException -> "인터넷 연결 실패"
-            else -> e.localizedMessage ?: "알 수 없는 에러"
         }
     }
 }

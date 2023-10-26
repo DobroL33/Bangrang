@@ -99,7 +99,14 @@ fun InquiryDetailPage(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // 답변 (Answer)
+                Text(
+                    "답변",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // 답변
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -112,12 +119,6 @@ fun InquiryDetailPage(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.Start
                     ) {
-                        Text(
-                            "답변",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             inquiryContent.answer,
                             fontSize = 14.sp

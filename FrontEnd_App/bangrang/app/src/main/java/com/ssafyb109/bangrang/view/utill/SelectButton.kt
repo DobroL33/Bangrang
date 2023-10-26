@@ -29,6 +29,6 @@ fun SelectButton(
             contentColor = contentColor,
         )
     ) {
-        Text(text = text, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }
 }

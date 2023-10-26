@@ -11,33 +11,34 @@ import javax.inject.Inject
 
 class RankRepository @Inject constructor(
     private val rankService: RankService
-) {
-    var lastError: String? = null
+) : BaseRepository() {
 
-    // 전체 랭크 fetch
+    // 전체 랭킹 불러오기
     suspend fun fetchAllRank(): Flow<Response<RegionDTO>> = flow {
         try {
             val response = rankService.fetchAllRank()
-            emit(Response.success(response))
+            if (response.isSuccessful) {
+                emit(response)
+            } else {
+                lastError = handleNetworkException(response = response)
+            }
         } catch (e: Exception) {
             lastError = handleNetworkException(e)
         }
     }
 
-    // 친구 랭크 fetch
+    // 친구 랭킹 불러오기
     suspend fun fetchFriendRank(): Flow<Response<RegionDTO>> = flow {
         try {
             val response = rankService.fetchFriendRank()
-            emit(Response.success(response))
+            if (response.isSuccessful) {
+                emit(response)
+            } else {
+                lastError = handleNetworkException(response = response)
+            }
         } catch (e: Exception) {
             lastError = handleNetworkException(e)
         }
     }
 
-    private fun handleNetworkException(e: Exception): String {
-        return when (e) {
-            is ConnectException, is UnknownHostException -> "인터넷 연결 실패"
-            else -> e.localizedMessage ?: "알 수 없는 에러"
-        }
-    }
 }

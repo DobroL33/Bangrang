@@ -29,6 +29,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,14 +48,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.ssafyb109.bangrang.R
+import com.ssafyb109.bangrang.api.RegionDTO
 import com.ssafyb109.bangrang.ui.theme.graphRed
 import com.ssafyb109.bangrang.ui.theme.heavySkyBlue
+import com.ssafyb109.bangrang.ui.theme.lightSkyBlue
 import com.ssafyb109.bangrang.view.utill.HalfPieGraph
 import com.ssafyb109.bangrang.view.utill.LocationSelector
+import com.ssafyb109.bangrang.view.utill.RankProfile
+import com.ssafyb109.bangrang.viewmodel.EventViewModel
+import com.ssafyb109.bangrang.viewmodel.RankViewModel
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
 // 임시
@@ -64,7 +71,20 @@ data class User(val image: String, val percentage: Int, val userId: String)
 fun RankPage(
     navController: NavHostController,
     userViewModel: UserViewModel,
+    rankViewModel: RankViewModel
 ) {
+
+    val allRankResponse by rankViewModel.allRankResponse.collectAsState()
+    val friendRankResponse by rankViewModel.friendRankResponse.collectAsState()
+
+    LaunchedEffect(Unit){
+        if(allRankResponse == null){
+            rankViewModel.fetchAllRank()
+            rankViewModel.fetchFriendRank()
+        }
+    }
+
+
     var tabSelection by remember { mutableStateOf("전체") }
     val tabs = listOf("전체", "친구", "나")
     var animationLaunch = 0
@@ -86,23 +106,25 @@ fun RankPage(
         }
 
         when (tabSelection) {
-            "전체" -> TotalRanking()
+            "전체" -> TotalRanking(allRankResponse)
             "나" -> {
                 // 탭이 "나"로 변경될 때 애니메이션 진행
                 LaunchedEffect(key1 = tabSelection) {
                     animationLaunch = animationLaunch++
                 }
-                MyRankPage(animationLaunch)
+                RankMyPage(animationLaunch,allRankResponse)
             }
             "친구" -> {
-                FriendRank()
+                RankFriendPage(friendRankResponse)
             }
         }
     }
 }
 
 @Composable
-fun TotalRanking() {
+fun TotalRanking(
+    allRankResponse : RegionDTO?
+) {
     val activeLocation = remember { mutableStateOf("전국") }
 
     LazyColumn(
@@ -171,16 +193,16 @@ fun PodiumLayout() {
 
     Box(modifier = Modifier.fillMaxWidth()) {
         // 2등
-        UserCard(user2.image, user2.percentage, user2.userId, Modifier.align(Alignment.CenterStart), rank = 2)
+        RankProfile(user2.image, user2.percentage, user2.userId, Modifier.align(Alignment.CenterStart), rank = 2)
 
         // 1등
-        UserCard(user1.image, user1.percentage, user1.userId,
+        RankProfile(user1.image, user1.percentage, user1.userId,
             Modifier
                 .align(Alignment.TopCenter)
                 .offset(y = (-60).dp), rank = 1)
 
         // 3등
-        UserCard(user3.image, user3.percentage, user3.userId, Modifier.align(Alignment.CenterEnd), rank = 3)
+        RankProfile(user3.image, user3.percentage, user3.userId, Modifier.align(Alignment.CenterEnd), rank = 3)
     }
 }
 
@@ -190,7 +212,8 @@ fun RankRow(rank: Int, nickname:String, percent: Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+            .padding(start = 8.dp, end = 8.dp, top = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
@@ -204,197 +227,10 @@ fun RankRow(rank: Int, nickname:String, percent: Int) {
         Text(text = "$nickname 님", fontSize = 20.sp)
 
         // 정복도 표시
-        Text(text = "$percent%", fontSize = 20.sp)
+        Text(text = "$percent%", fontSize = 20.sp, color = heavySkyBlue)
     }
-}
-
-@Composable
-fun UserCard(image: String?, percentage: Int, userId: String, modifier: Modifier = Modifier, rank: Int) {
-    val medal = when(rank) {
-        1 -> painterResource(id = R.drawable.first)
-        2 -> painterResource(id = R.drawable.second)
-        3 -> painterResource(id = R.drawable.third)
-        else -> null
-    }
-
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier.size(120.dp)
-    ) {
-
-        // 전체적으로 50% 어둡게
-        val darknessFilter = ColorFilter.colorMatrix(
-            ColorMatrix(
-                floatArrayOf(
-                    0.5f, 0f, 0f, 0f, 0f,  // red
-                    0f, 0.5f, 0f, 0f, 0f,  // green
-                    0f, 0f, 0.5f, 0f, 0f,  // blue
-                    0f, 0f, 0f, 1f, 0f     // alpha
-                )
-            )
-        )
-        if(image==null){
-            Image(
-                painter = painterResource(id = R.drawable.emptyperson),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape),
-                colorFilter = darknessFilter
-            )
-        } else{
-            Image(
-                painter = rememberAsyncImagePainter(
-                    ImageRequest.Builder(LocalContext.current).data(data = image).build()
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape),
-                colorFilter = darknessFilter
-            )
-        }
-
-        medal?.let {
-            Image(painter = it, contentDescription = "Medal for rank $rank", modifier = Modifier
-                .align(Alignment.TopCenter)
-                .size(30.dp))
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "$percentage%\n$userId",
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            fontSize = 18.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
-}
-
-@Composable
-fun MyRankPage(animationLaunch : Int) {
-    val cityRanks = listOf(
-        Pair("서울", 1 to 28),
-        Pair("부산", 2 to 17),
-        Pair("인천", 3 to 11),
-        Pair("대전", 4 to 9),
-        Pair("대구", 5 to 7),
-        Pair("광주", 6 to 5),
-        Pair("울산", 7 to 5),
-        Pair("세종", 8 to 4),
-        Pair("제주", 9 to 4),
-        Pair("경주", 10 to 2)
+    Divider(modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 8.dp, end = 8.dp)
     )
-    val scrollState = rememberScrollState()
-
-    val sample = 0.842
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text(text = "전국 정복도", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-        ) {
-            HalfPieGraph(sample,12000,23,animationLaunch)
-        }
-
-        Text(text = "지역별 정복도", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-
-        Box(modifier = Modifier.height(200.dp)) {
-            BarGraph(cityRanks)
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-
-        cityRanks.forEach { (city, rankInfo) ->
-            RankItem(cityName = city, rank = rankInfo.first, percentage = rankInfo.second)
-            Divider()
-        }
-        Spacer(modifier = Modifier.height(40.dp))
-    }
-}
-
-@Composable
-fun RankItem(cityName: String, rank: Int, percentage: Int) {
-    val medal = when(rank) {
-        1 -> painterResource(id = R.drawable.first)
-        2 -> painterResource(id = R.drawable.second)
-        3 -> painterResource(id = R.drawable.third)
-        else -> null
-    }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        if (medal != null) {
-            Image(painter = medal, contentDescription = "$rank 등 메달", modifier = Modifier.size(30.dp))
-        } else {
-            Text(
-                text = rank.toString(),
-                color = heavySkyBlue,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(start = 4.dp)
-            )
-        }
-        Text(text = cityName, fontSize = 20.sp)
-        Text(text = "$percentage%", fontSize = 20.sp, color = heavySkyBlue, fontWeight = FontWeight.Bold)
-    }
-}
-
-@Composable
-fun BarGraph(cityRanks: List<Pair<String, Pair<Int, Int>>>) {
-
-    // 최대 백분율 값 찾기
-    val maxPercentage = cityRanks.maxOfOrNull { it.second.second } ?: 100
-    val adjustRatio = 0.8f / maxPercentage  // 조절비율, 최고 값의 80%가 기준치
-
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp),
-        modifier = Modifier.height(200.dp)
-    ) {
-        items(cityRanks) { (city, rankInfo) ->
-            val percentage = rankInfo.second
-            val adjustedHeight = 150.dp * percentage * adjustRatio  // 조절된 높이
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.width(50.dp)  // 막대 넓이
-            ) {
-                // 상단 빈 공간
-                Spacer(modifier = Modifier.weight(1f - (percentage * adjustRatio)))
-
-                // 막대 그래프
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(adjustedHeight)
-                        .background(graphRed)
-                        .clip(RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)) // 막대 상단 둥글게
-                )
-
-                // 도시 이름 레이블
-                Text(text = city, fontSize = 16.sp, textAlign = TextAlign.Center)
-
-                // 퍼센트 레이블
-                Text(text = "$percentage%", fontSize = 16.sp, textAlign = TextAlign.Center)
-            }
-        }
-    }
-}
-
-@Composable
-fun FriendRank(){
-
 }

@@ -4,6 +4,9 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ssafyb109.bangrang.api.AlarmList
+import com.ssafyb109.bangrang.api.AlarmListResponseDTO
+import com.ssafyb109.bangrang.api.AlarmStatusRequesetDTO
 import com.ssafyb109.bangrang.api.StampDetail
 import com.ssafyb109.bangrang.api.StampResponseDTO
 import com.ssafyb109.bangrang.repository.ResultType
@@ -38,9 +41,21 @@ class UserViewModel @Inject constructor(
     private val _nicknameRegistrationResponse = MutableStateFlow<Boolean?>(null)
     val nicknameRegistrationResponse: StateFlow<Boolean?> = _nicknameRegistrationResponse
 
-    // 스탬프 응답 (전체 스탬프)
-    private val _stampsResponse = MutableStateFlow(getDefaultStampResponseData())
-    val stampsResponse: StateFlow<StampResponseDTO> = _stampsResponse
+    // 알람 설정 응답
+    private val _alarmSettingResponse = MutableStateFlow(sharedPreferencesUtil.getUserAlarm())
+    val alarmSettingResponse: StateFlow<Boolean?> = _alarmSettingResponse
+
+//    // 알람 리스트 응답
+//    private val _alarmListResponse = MutableStateFlow<AlarmListResponseDTO?>(null)
+//    val alarmListResponse: StateFlow<AlarmListResponseDTO?> = _alarmListResponse
+
+    // 알람 리스트 응답 샘플용
+    private val _alarmListResponse = MutableStateFlow<AlarmListResponseDTO?>(sampleData)
+    val alarmListResponse: StateFlow<AlarmListResponseDTO?> = _alarmListResponse
+
+    // 알람 상태 변경 응답
+    private val _alarmStatusUpdateResponse = MutableStateFlow<Boolean?>(null)
+    val alarmStatusUpdateResponse: StateFlow<Boolean?> = _alarmStatusUpdateResponse
 
     // 닉네임 수정 응답
     private val _modifyNicknameResponse = MutableStateFlow<Boolean?>(null)
@@ -58,6 +73,10 @@ class UserViewModel @Inject constructor(
     private val _modifyProfileImageResponse = MutableStateFlow<String?>(null)
     val modifyProfileImageResponse: StateFlow<String?> = _modifyProfileImageResponse
 
+    // 스탬프 응답 (전체 스탬프)
+    private val _stampsResponse = MutableStateFlow(getDefaultStampResponseData())
+    val stampsResponse: StateFlow<StampResponseDTO> = _stampsResponse
+
     // 친구 추가 응답
     private val _addFriendResponse = MutableStateFlow<Boolean?>(null)
     val addFriendResponse: StateFlow<Boolean?> = _addFriendResponse
@@ -66,9 +85,7 @@ class UserViewModel @Inject constructor(
     private val _deleteFriendResponse = MutableStateFlow<Boolean?>(null)
     val deleteFriendResponse: StateFlow<Boolean?> = _deleteFriendResponse
 
-    // 알람 설정 응답
-    private val _alarmSettingResponse = MutableStateFlow(sharedPreferencesUtil.getUserAlarm())
-    val alarmSettingResponse: StateFlow<Boolean?> = _alarmSettingResponse
+
 
     // 에러
     private val _errorMessage = MutableStateFlow<String?>(null)
@@ -133,7 +150,7 @@ class UserViewModel @Inject constructor(
     // 유저 알람 설정
     fun setAlarm(select:Boolean) {
         viewModelScope.launch {
-            val response = repository.setAlarm(select)
+            val response = repository.setAlarmSetting(select)
             if(select){
                 _alarmSettingResponse.value = response
             }
@@ -145,6 +162,33 @@ class UserViewModel @Inject constructor(
             }
         }
     }
+
+    // 유저 알람 리스트
+    fun fetchAlarmList() {
+        viewModelScope.launch {
+            repository.getAlarmList().collect { response ->
+                if (response.isSuccessful) {
+                    _alarmListResponse.emit(response.body()!!)
+                } else {
+                    val error = response.errorBody()?.string() ?: "알수없는 에러"
+                    _errorMessage.emit(error)
+                }
+            }
+        }
+    }
+
+    // 유저 알람 상태 변경
+    fun updateAlarmStatus(alarmIdx: List<Long>, alarmStatus: List<Int>) {
+        val request = AlarmStatusRequesetDTO(alarmIdx, alarmStatus)
+        viewModelScope.launch {
+            val response = repository.setAlarmStatus(request)
+            _alarmStatusUpdateResponse.value = response
+            if (!response) {
+                _errorMessage.emit(repository.lastError ?: "알람 상태 변경 실패")
+            }
+        }
+    }
+
 
     // 닉네임 수정
     fun modifyNickname(nickName: String) {
@@ -189,8 +233,6 @@ class UserViewModel @Inject constructor(
             }
         }
     }
-
-
 
     // 전체 스탬프 가져오기
     fun fetchUserStamps() {
@@ -259,3 +301,17 @@ private fun getSampleStampResponseData(): StampResponseDTO {
         )
     )
 }
+
+// 알람 샘플 데이터
+private val sampleData = AlarmListResponseDTO(
+    items = List(20) {
+        AlarmList(
+            alarmIdx = it.toLong(),
+            alarmType = listOf("공지", "알림", "랭킹", "행사").random(),
+            content = "알람 내용 ${it + 1}",
+            eventIdx = 1,
+            alarmCreatedDate = "2023-10-${(26..30).random()}",
+            alarmStatus = (0..1).random()
+        )
+    }
+)

@@ -1,5 +1,6 @@
 package com.ssafyb109.bangrang.api
 
+import retrofit2.Response
 import retrofit2.http.GET
 
 interface RankService {
@@ -7,12 +8,12 @@ interface RankService {
     // 전체 랭킹
     @GET("api/rank")
     suspend fun fetchAllRank(
-    ): RegionDTO
+    ): Response<RegionDTO>
 
     // 유저의 전체 랭킹
     @GET("api/rank/friendRank")
     suspend fun fetchFriendRank(
-    ): RegionDTO
+    ): Response<RegionDTO>
 
 }
 
@@ -26,6 +27,7 @@ data class RankList(
 data class RegionDTO(
     val myRegionDTO: MyRegionDTO,
     val rating: Int,
+    val korea: List<RankList>,
     val seoul: List<RankList>,
     val busan: List<RankList>,
     val incheon: List<RankList>,
@@ -48,6 +50,7 @@ data class RegionDTO(
 )
 
 data class MyRegionDTO(
+    val korea: Pair<Long,Int>,
     val seoul: Pair<Long,Int>,
     val busan: Pair<Long,Int>,
     val incheon: Pair<Long,Int>,

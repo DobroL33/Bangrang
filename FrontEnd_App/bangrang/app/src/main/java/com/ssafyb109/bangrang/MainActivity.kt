@@ -53,6 +53,7 @@ import com.ssafyb109.bangrang.view.TopBar
 import com.ssafyb109.bangrang.view.handleGoogleSignInResult
 import com.ssafyb109.bangrang.viewmodel.EventViewModel
 import com.ssafyb109.bangrang.viewmodel.InquiryViewModel
+import com.ssafyb109.bangrang.viewmodel.RankViewModel
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -100,6 +101,7 @@ fun AppNavigation(
 ) {
     val userViewModel: UserViewModel = hiltViewModel()
     val inquiryViewModel: InquiryViewModel = hiltViewModel()
+    val rankViewModel: RankViewModel = hiltViewModel()
     val context = LocalContext.current
 
     // 권한 확인
@@ -144,8 +146,8 @@ fun AppNavigation(
                     }
                     composable("StampPage") { StampPage(navController, userViewModel) }
                     composable("CollectionPage") { CollectionPage(navController, userViewModel) }
-                    composable("RankPage") { RankPage(navController, userViewModel) }
-                    composable("MyPage") { MyPage(navController, userViewModel,context, sharedPreferencesUtil) }
+                    composable("RankPage") { RankPage(navController, userViewModel, rankViewModel) }
+                    composable("MyPage") { MyPage(navController, userViewModel,context, sharedPreferencesUtil, rankViewModel) }
                     composable("ProfileChangePage") { ProfileChangePage(navController, userViewModel,context, sharedPreferencesUtil) }
                     composable("InquiryPage") { InquiryPage(navController, inquiryViewModel) }
                     composable("InquiryResistPage/{index}") { backStackEntry ->

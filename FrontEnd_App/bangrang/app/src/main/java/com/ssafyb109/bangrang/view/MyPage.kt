@@ -1,8 +1,6 @@
 package com.ssafyb109.bangrang.view
 
-import com.ssafyb109.bangrang.view.utill.StampSet
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -39,14 +36,15 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import com.ssafyb109.bangrang.ui.theme.profileGray
 import com.ssafyb109.bangrang.ui.theme.textGray
 import com.ssafyb109.bangrang.view.utill.SelectButton
+import com.ssafyb109.bangrang.view.utill.StampSet
 import com.ssafyb109.bangrang.view.utill.TextModal
+import com.ssafyb109.bangrang.viewmodel.RankViewModel
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 import kotlinx.coroutines.delay
 
@@ -56,8 +54,13 @@ fun MyPage(
     navController: NavHostController,
     userViewModel: UserViewModel,
     context: Context,
-    sharedPreferencesUtil: SharedPreferencesUtil
+    sharedPreferencesUtil: SharedPreferencesUtil,
+    rankViewModel: RankViewModel
 ) {
+
+    val allRankResponse by rankViewModel.allRankResponse.collectAsState()
+    val bangrangPercent = allRankResponse?.korea?.get(0)?.percent
+
     // 지금 유저 사진 url
     val userImg = sharedPreferencesUtil.getUserImage()
     var userNickName = sharedPreferencesUtil.getUserNickname()
@@ -101,6 +104,12 @@ fun MyPage(
     LaunchedEffect(withdrawResponse){
         if(withdrawResponse == true){
             showWithdrawResultDialog = true
+        }
+    }
+
+    LaunchedEffect(Unit){
+        if(allRankResponse == null){
+            rankViewModel.fetchAllRank()
         }
     }
 
@@ -192,7 +201,7 @@ fun MyPage(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        StampSet(navController)
+        StampSet(navController,bangrangPercent)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -280,7 +289,9 @@ fun MyPage(
                             if (isNicknameChecked && !isNicknameDuplicated) {
                                 Text("사용 가능한 닉네임입니다.", color = Color.Black, fontWeight = FontWeight.Bold)
                             } else if (isNicknameChecked && isNicknameDuplicated) {
-                                Text("이미 사용 중인 닉네임입니다.", color = Color.Red)
+                                Text("사용 불가한 닉네임입니다.", color = Color.Red)
+                            } else if(errorMessage != null) {
+                                Text(errorMessage!!, color = Color.Red)
                             }
                             SelectButton(
                                 onClick = {

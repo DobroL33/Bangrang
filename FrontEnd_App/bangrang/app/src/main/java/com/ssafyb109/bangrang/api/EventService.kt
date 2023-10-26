@@ -31,6 +31,7 @@ data class EventSelectListResponseDTO(
     val address: String,
     val latitude: Double,
     val longitude: Double,
+    val likeCount: Long, // 좋아요 수
 )
 
 // 이벤트 인덱스 선택 요청 DTO = Path 형식
@@ -47,4 +48,5 @@ data class EventIndexListResponseDTO(
     val address: String,
     val latitude: Double,
     val longitude: Double,
+    val likeCount: Long, // 좋아요 수
 )

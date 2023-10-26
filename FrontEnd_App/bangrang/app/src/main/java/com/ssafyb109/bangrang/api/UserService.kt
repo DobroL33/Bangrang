@@ -16,70 +16,81 @@ import retrofit2.http.Path
 interface UserService {
 
     // 로그인
-    @POST("api/user/login")
+    @POST("api/member/login")
     suspend fun userLogin(
         @Body request: LoginRequestDTO
     ): Response<LoginResponseDTO>
 
     // 닉네임 중복확인
-    @GET("api/user/nicknameCheck/{nickname}")
+    @GET("api/member/nicknameCheck/{nickname}")
     suspend fun nicknameCheck(
         @Path("nickname") nickname : String
-    ): Void
+    ): Response<Void>
 
     // 닉네임 등록하기
-    @POST("api/user/{nickname}")
+    @POST("api/member/{nickname}")
     suspend fun resistNickname(
         @Path("nickname") nickname : String
-    ): Void
+    ): Response<Void>
 
     // 유저 알람 설정
-    @POST("api/user/alarm")
-    suspend fun setAlarm(
-        @Body request: AlarmRequestDTO
-    ): Void
+    @POST("api/member/alarm")
+    suspend fun setAlarmSetting(
+        @Body request: AlarmSettingRequestDTO
+    ): Response<Void>
+
+    // 유저 알람 리스트
+    @GET("api/member/alarm")
+    suspend fun getAlarmList(
+    ): Response<AlarmListResponseDTO>
+
+    // 유저 알람 상태 변경
+    @PATCH("api/member/alarm/status")
+    suspend fun setAlarmStatus(
+        @Body request: AlarmStatusRequesetDTO
+    ): Response<Void>
 
 
     // 닉네임 수정하기
-    @PUT("api/user/{nickname}")
+    @PUT("api/member/{nickname}")
     suspend fun modifyNickname(
         @Path("nickname") nickname : String
-    ): Void
+    ): Response<Void>
 
     // 회원 탈퇴
-    @DELETE("api/user/withdraw")
+    @DELETE("api/member/withdraw")
     suspend fun userWithdraw(
-    ): Void
+    ): Response<Void>
 
     // 로그아웃
-    @DELETE("api/user/logout")
+    @DELETE("api/member/logout")
     suspend fun userLogout(
-    ): Void
+    ): Response<Void>
 
     // 프로필 이미지 수정
     @Multipart
-    @PATCH("api/user/profileImg")
+    @PATCH("api/member/profileImg")
     suspend fun modifyUserImg(
         @Part image: MultipartBody.Part
-    ): String
+    ): Response<String>
 
 
     // 내 스탬프 불러오기(전체)
-    @GET("api/user/stamp")
+    @GET("api/member/stamp")
     suspend fun userStamp(
     ): Response<StampResponseDTO>
 
     // 친구 추가
-    @POST("api/user/friend/{nickname}")
+    @POST("api/member/friend/{nickname}")
     suspend fun resistFriend(
         @Path("nickname") nickname : String
-    ): Void
+    ): Response<Void>
 
     // 친구 삭제
-    @DELETE("api/user/friend/{nickname}")
+    @DELETE("api/member/friend/{nickname}")
     suspend fun deleteFriend(
         @Path("nickname") nickName : String
-    ): Void
+    ): Response<Void>
 
 }
 
@@ -115,6 +126,30 @@ data class StampResponseDTO(
 
 // 알람설정 요청 DTO
 // 알람설정 응답 DTO = Void
-data class AlarmRequestDTO(
+data class AlarmSettingRequestDTO(
     val alarmSet : Boolean
 )
+
+// 알람 목록 요청 DTO = Path형식
+// 알람 목록 응답 DTO
+
+data class AlarmListResponseDTO(
+    val items: List<AlarmList>
+)
+
+data class AlarmList(
+    val alarmIdx: Long,
+    val alarmType: String, // 알람 타입("공지","알림","랭킹","행사")
+    val content: String,
+    val eventIdx: Long,
+    val alarmCreatedDate: String,
+    val alarmStatus: Int, // 알람 상태(0 = 안읽음 1 = 읽음 나중을 위해서 일단 int)
+)
+
+// 알람 상태변경 요청 DTO
+// 알람 상태변경 응답 DTO
+data class AlarmStatusRequesetDTO(
+    val alarmIdx: List<Long>,
+    val alarmStatus: List<Int>, // 알람 상태(0 = 삭제 1 = 읽음 나중을 위해 일단 int)
+)
+

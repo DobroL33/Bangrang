@@ -39,23 +39,23 @@ class InquiryViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     _inquiryList.emit(response.body()!!)
                 } else {
-                    val error = response.errorBody()?.string() ?: "알수없는 에러"
-                    _errorMessage.emit(error)
+                    _errorMessage.emit(inquiryRepository.lastError ?: "알 수 없는 에러")
                 }
             }
         }
     }
 
+
     // 문의 등록하기
     fun registerInquiry(eventIdx:Long, type:String, title:String, content:String) {
         val request = InquiryResistRequestDTO(eventIdx,type ,title, content)
         viewModelScope.launch {
-            val isSuccess = inquiryRepository.inquiryResist(request)
-            if (isSuccess) {
+            val response = inquiryRepository.inquiryResist(request)
+            if (response) {
                 _resistInquiry.value = true
                 fetchInquiries()  // 문의가 성공적으로 등록되면 목록을 새로 고침
             } else {
-                _errorMessage.emit("문의 등록 실패")
+                _errorMessage.emit(inquiryRepository.lastError ?: "문의 등록 실패")
             }
         }
     }

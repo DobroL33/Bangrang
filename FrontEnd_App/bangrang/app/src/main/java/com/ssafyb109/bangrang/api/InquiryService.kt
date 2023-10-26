@@ -16,7 +16,7 @@ interface InquiryService {
     @POST("api/inquiry/resist")
     suspend fun inquiryResist(
         @Body request: InquiryResistRequestDTO
-    ): Void
+    ): Response<Void>
 
 }
 

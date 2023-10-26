@@ -33,22 +33,20 @@ class EventViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     _selectEvents.emit(response.body()!!)
                 } else {
-                    val error = response.errorBody()?.string() ?: "알수없는 에러"
-                    _errorMessage.emit(error)
+                    _errorMessage.emit(eventRepository.lastError ?: "알 수 없는 에러")
                     _selectEvents.emit(getSampleData())  // 샘플 데이터 적용
                 }
             }
         }
     }
-    // 이벤트 자세히 보기
+
     fun getEventDetail(index: String) {
         viewModelScope.launch {
             eventRepository.findEvent(index).collect { response ->
                 if (response.isSuccessful) {
                     _eventDetail.emit(response.body()!!)
                 } else {
-                    val error = response.errorBody()?.string() ?: "알수없는 에러"
-                    _errorMessage.emit(error)
+                    _errorMessage.emit(eventRepository.lastError ?: "알 수 없는 에러")
                     _eventDetail.emit(getSampleEventData())  // 샘플 데이터 적용
                 }
             }
@@ -72,6 +70,7 @@ private fun getSampleData(): List<EventSelectListResponseDTO> {
         address = "부산광역시 수영구 광안해변로 219",
         latitude = 35.15373,
         longitude = 129.1192,
+        likeCount = 5,
     )
 
     val event2 = EventSelectListResponseDTO(
@@ -84,6 +83,7 @@ private fun getSampleData(): List<EventSelectListResponseDTO> {
         address = "대전 중구 계룡로904번길 30",
         latitude = 36.32139,
         longitude = 127.4118,
+        likeCount = 5,
     )
 
     return listOf(event1, event2)
@@ -101,6 +101,7 @@ private fun getSampleEventData(): EventIndexListResponseDTO {
         address = "부산광역시 수영구 광안해변로 219",
         latitude = 12.1,
         longitude = 12.1,
+        likeCount = 5,
     )
 }
 
@@ -118,6 +119,7 @@ private fun getDefaultSelectEventData(): List<EventSelectListResponseDTO> {
             address = "응답 없음",
             latitude = 0.0,
             longitude = 0.0,
+            likeCount = 5,
         )
     )
 }
@@ -134,5 +136,6 @@ private fun getDefaultEventDetailData(): EventIndexListResponseDTO {
         address = "응답 없음",
         latitude = 0.0,
         longitude = 0.0,
+        likeCount = 5,
     )
 }
