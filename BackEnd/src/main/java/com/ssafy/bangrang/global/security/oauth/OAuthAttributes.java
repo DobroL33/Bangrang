@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Map;
-import java.util.UUID;
 
 /*
  * 각 소셜 별로 제공하는 데이터가 다름.
@@ -27,46 +26,53 @@ public class OAuthAttributes {
     // OAuth2 로그인 진행 시 Key가 되는 필드 값, PK와 같은 의미
     private String nameAttributeKey;
 
-    // 소셜 타입 별 로그인 유저 정보 (닉네임, 이메일, 프로필 사진 등)
+    // 소셜 타입 별 로그인 유저 정보 (닉네임, 프로필 사진 등)
     private OAuth2UserInfo oAuth2UserInfo;
 
+    // 소셜 종류 KAKAO, GOOGLE, NAVER
+    private String registrationId;
+
     @Builder
-    public OAuthAttributes(String nameAttributeKey, OAuth2UserInfo oAuth2UserInfo) {
+    public OAuthAttributes(String nameAttributeKey, OAuth2UserInfo oAuth2UserInfo,String registrationId) {
         this.nameAttributeKey = nameAttributeKey;
         this.oAuth2UserInfo = oAuth2UserInfo;
+        this.registrationId = registrationId;
     }
 
     /*
      * SocialType에 맞는 메서드 호출 => OAuthAttributes 객체 반환
      * */
-    public static OAuthAttributes of(SocialProvider socialProvider, String userNameAttributeName,
+    public static OAuthAttributes of(String registrationId, String userNameAttributeName,
                                      Map<String, Object> attributes) {
-        if(socialProvider == SocialProvider.NAVER)
-            return ofNaver(userNameAttributeName, attributes);
-        else if(socialProvider == SocialProvider.KAKAO)
-            return ofKakao(userNameAttributeName, attributes);
-        else if(socialProvider == SocialProvider.GOOGLE)
-            return ofGoogle(userNameAttributeName, attributes);
+        if(registrationId == "NAVER")
+            return ofNaver(registrationId, userNameAttributeName, attributes);
+        else if(registrationId == "KAKAO")
+            return ofKakao(registrationId,userNameAttributeName, attributes);
+        else if(registrationId == "GOOGLE")
+            return ofGoogle(registrationId, userNameAttributeName, attributes);
         else
             return null;
     }
 
-    private static OAuthAttributes ofNaver(String userNameAttributeName, Map<String, Object> attributes) {
+    private static OAuthAttributes ofNaver(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
         return OAuthAttributes.builder()
+                .registrationId(registrationId)
                 .nameAttributeKey(userNameAttributeName)
                 .oAuth2UserInfo(new NaverOAuth2UserInfo(attributes))
                 .build();
     }
 
-    private static OAuthAttributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
+    private static OAuthAttributes ofKakao(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
         return OAuthAttributes.builder()
+                .registrationId(registrationId)
                 .nameAttributeKey(userNameAttributeName)
                 .oAuth2UserInfo(new KakaoOAuth2UserInfo(attributes))
                 .build();
     }
 
-    private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
+    private static OAuthAttributes ofGoogle(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
         return OAuthAttributes.builder()
+                .registrationId(registrationId)
                 .nameAttributeKey(userNameAttributeName)
                 .oAuth2UserInfo(new GoogleOAuth2UserInfo(attributes))
                 .build();
@@ -75,10 +81,9 @@ public class OAuthAttributes {
     /*
      * User 엔티티 객체 생성
      * */
-    public AppMember toEntity(SocialProvider socialProvider, OAuth2UserInfo oAuth2UserInfo) {
+    public AppMember toEntity(String registrationId, OAuth2UserInfo oAuth2UserInfo) {
         return AppMember.builder()
-                .socialProvider(socialProvider)
-                .email(socialProvider + "_" + oAuth2UserInfo.getId()) // Kakao_1231221
+                .email(registrationId + "@" + oAuth2UserInfo.getId()) // KAKAO@1231221
                 .imgUrl(oAuth2UserInfo.getProfileImg()) // 소셜 이미지 불러와서 넣어주기
                 .build();
     }

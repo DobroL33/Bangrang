@@ -7,8 +7,8 @@ import com.ssafy.bangrang.global.security.oauth.CustomOAuth2User;
 import com.ssafy.bangrang.global.security.redis.RedisRefreshTokenService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -38,6 +38,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private String access = "";
     private String refresh = "";
+    private String nickname = "";
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
@@ -69,6 +70,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         access = accessToken;
         refresh = refreshToken;
 
+        Optional<AppMember> findUser = appMemberRepository.findByEmail(oAuth2User.getEmail());
+        nickname=findUser.get().getNickname();
+
         Cookie emailCookie = new Cookie("new_social_user_email", oAuth2User.getEmail());
         emailCookie.setMaxAge(600);
         emailCookie.setPath("/");
@@ -90,33 +94,13 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         refreshTokenCookie.setSecure(true);
         httpServletResponse.addCookie(refreshTokenCookie);
 
-        if(oAuth2User.getNickname() == null) {
 
-            Optional<AppMember> findUser = appMemberRepository.findByEmail(oAuth2User.getEmail());
-
-            // Redis에 저장
-            if(findUser.isPresent())
-                redisRefreshTokenService.setRedisRefreshToken(refreshToken, oAuth2User.getEmail());
-            else
-                throw new NullPointerException("해당 유저가 존재하지 않습니다.");
-
-            access = accessToken;
-            refresh = refreshToken;
-
-            return UriComponentsBuilder.fromUriString("https://j9b305.p.ssafy.io/sociallogin")
-                    .queryParam("Authorization", accessToken)
-                    .queryParam("Authorization-Refresh", refreshToken)
-                    .queryParam("user_role", "guest")
-                    .build()
-                    .toUriString();
-        }
-        else {
-            return UriComponentsBuilder.fromUriString("https://j9b305.p.ssafy.io/sociallogin")
-                    .queryParam("Authorization", accessToken)
-                    .queryParam("Authorization-Refresh", refreshToken)
-                    .build()
-                    .toUriString();
-        }
+        return UriComponentsBuilder.fromUriString("https://j9b305.p.ssafy.io/sociallogin")
+                .queryParam("Authorization", accessToken)
+                .queryParam("Authorization-Refresh", refreshToken)
+                .queryParam("user_nickname", findUser.get().getNickname())
+                .build()
+                .toUriString();
     }
 
     public Map<String, String> socialLoginSuccessAndSendTokenToFront() {
@@ -124,7 +108,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         map.put("Authorization", access);
         map.put("Authorization-Refresh", refresh);
-
+        map.put("user_nickname", nickname);
         return map;
     }
 }

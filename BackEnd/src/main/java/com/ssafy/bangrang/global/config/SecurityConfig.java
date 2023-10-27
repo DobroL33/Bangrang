@@ -18,13 +18,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -33,7 +33,6 @@ import com.ssafy.bangrang.global.security.oauth.handler.OAuth2LoginSuccessHandle
 import com.ssafy.bangrang.global.security.oauth.handler.OAuth2LoginFailureHandler;
 
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -55,8 +54,24 @@ public class SecurityConfig {
 
     private final RedisRefreshTokenService redisRefreshTokenService;
     private static final String[] WHITE_LIST = {
-            "/users/**",
-            "/**"
+            /* swagger v2 */
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            /* swagger v3 */
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/ws/**",
+
+            "/",
+            "/api/**",
+            "/api/user/signup",
+            "/api/login",
+            "/api/user/nicknameCheck/**"
     };
 
     @Bean
@@ -67,12 +82,10 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable) // httpBasic 사용 X
                 .cors(c -> c.configurationSource(corsConfigurationSource())) // cors 허용 설정
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 X -> 토큰 사용
-
                 // url 별 권한 설정
-                .authorizeHttpRequests(a->a
+                .authorizeRequests(a->a
                         .requestMatchers(WHITE_LIST).permitAll()
-                        .anyRequest().authenticated())
-
+                        .anyRequest().authenticated()) // 그 외 경로는 모두 인증된 사용자만 접근 가능
                 // 소셜 로그인 설정
                 .oauth2Login(o->o
                         .successHandler(oAuth2LoginSuccessHandler)

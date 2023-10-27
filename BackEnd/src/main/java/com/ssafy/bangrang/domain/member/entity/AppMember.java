@@ -3,6 +3,7 @@ package com.ssafy.bangrang.domain.member.entity;
 import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
 import com.ssafy.bangrang.domain.map.entity.MemberMapArea;
 import com.ssafy.bangrang.domain.map.entity.MemberMarker;
+import com.ssafy.bangrang.domain.member.api.request.AppMemberNicknamePlusRequestDto;
 import com.ssafy.bangrang.domain.member.model.vo.SocialProvider;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -21,7 +22,6 @@ import java.util.List;
 @DiscriminatorValue("app")
 public class AppMember extends Member{
 
-
     @Column(name = "app_member_email", unique = true)
     protected String email;
 
@@ -33,10 +33,6 @@ public class AppMember extends Member{
 
     @Column(name = "app_member_firebase_token")
     private String firebaseToken;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "app_member_social_provider")
-    private SocialProvider socialProvider;
 
 
 //    @OneToMany(mappedBy = "appMember")
@@ -51,11 +47,43 @@ public class AppMember extends Member{
 //    @OneToMany(mappedBy = "appMember")
 //    private List<MemberMapArea> memberMapAreas = new ArrayList<>();
     @Builder
-    public AppMember(Long idx, String email, String nickname,  String imgUrl, SocialProvider socialProvider) {
+    public AppMember(Long idx, String email, String nickname,  String imgUrl) {
         this.idx = idx;
         this.email = email;
         this.nickname = nickname;
         this.imgUrl = imgUrl;
-        this.socialProvider = socialProvider;
     }
+
+
+    public Long updateProfileImage(String profileImg) {
+        this.imgUrl = profileImg;
+
+        return this.idx;
+    }
+
+    /**
+     * 닉네임 변경
+     */
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    /**
+     * 소셜 회원탈퇴 등록
+     */
+//    public void updateSocialDelete() {
+//        this.socialProvider = null;
+//        this.deletedDate = LocalDateTime.now();
+//    }
+
+    /**
+     * 회원탈퇴 날짜 등록
+     */
+//    public void updateDeletedDate() {
+//        this.deletedDate = LocalDateTime.now();
+//    }
+    public void updateAppMemberNicknamePlus(AppMemberNicknamePlusRequestDto appMemberNicknamePlusRequestDto) {
+        this.nickname = appMemberNicknamePlusRequestDto.getNickname();
+    }
+
 }

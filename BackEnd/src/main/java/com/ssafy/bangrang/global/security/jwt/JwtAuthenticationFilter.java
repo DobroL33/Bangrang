@@ -1,12 +1,5 @@
 package com.ssafy.bangrang.global.security.jwt;
 
-import com.ssafy.bangrang.domain.member.entity.AppMember;
-import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
-import com.ssafy.bangrang.global.security.redis.RedisRefreshTokenService;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,8 +9,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
+
+
+import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
+import com.ssafy.bangrang.domain.member.entity.AppMember;
+import com.ssafy.bangrang.global.security.redis.RedisRefreshTokenService;
 
 /**
  * JWT 인증 필터
@@ -31,8 +33,9 @@ import java.util.Optional;
  * 3. RefreshToken O => 인증 실패 처리, Redis의 RefreshToken과 비교하여 일치 하면 AccessToken / RefreshToken 재발급 (RTR 방식)
  */
 @RequiredArgsConstructor
-public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    // 제외해야하는 api 요청 (일반 로그인_웹)
     private static final String NO_CHECK_URL = "/api/login";
 
     private final JwtService jwtService;
@@ -42,17 +45,18 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private final RedisRefreshTokenService redisRefreshTokenService;
 
     private GrantedAuthoritiesMapper grantedAuthoritiesMapper = new NullAuthoritiesMapper();
-
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
-        // /login 요청일 때
+        // 웹 일반 로그인 요청일 때
         if(httpServletRequest.getRequestURI().equals(NO_CHECK_URL)) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
 
             // 더 이상 필터를 진행하지 않고 return!
             return;
         }
+
+        // 일반 로그인 아니면 계속해서 진행
 
         // 요청 헤더에서 RefreshToken 추출 - 없거나 유효하지 않으면 null 반환
         String refreshToken = jwtService.extractRefreshToken(httpServletRequest)
@@ -70,9 +74,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             // AccessToken이 유효하다면 => 인증 객체가 담긴 상태로 인증 성공
             checkAccessTokenAndAuthentication(httpServletRequest, httpServletResponse, filterChain);
     }
-
     /**
-     * AccessToken / RefreshToken 재발급 메서드
+     * AccessToken / RefreshToken 생성 및 재발급 메서드
      */
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse httpServletResponse, String refreshToken) {
         // 추후 access token으로 유효한지 판단해보기
@@ -94,7 +97,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         else
             throw new NullPointerException("Redis에 해당 RefreshToken이 존재하지 않습니다.");
     }
-
     /**
      * RefreshToken 재발급 메서드
      */
@@ -131,15 +133,21 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         // 필터에서의 처리를 마치고 다음 필터 또는 서블릿으로 요청을 전달하는 역할, 필터 체인의 다음 단계에서 추가적인 처리가 가능
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
-
     /**
      * 인증 허가 메서드
      * Parameter의 User : 우리가 만든 User 객체
      * Builder의 User : UserDetails의 User 객체
      */
     public void saveAuthentication(AppMember myUser) {
+//        String password = myUser.getPassword();
+//
+//        // 소셜 회원이라면
+//        if(password == null)
+//            password = PasswordUtil.generateRandomPassword();
+
         UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
                 .username(myUser.getEmail())
+//                .password(password)
 //                .roles(myUser.getRole().name())
                 .build();
 
