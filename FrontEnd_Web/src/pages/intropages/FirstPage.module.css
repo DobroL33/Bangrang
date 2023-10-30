@@ -1,0 +1,25 @@
+.Page {
+  width: 100%;
+  height: 800px;
+  background-image: url("../../../public//assets/FirstPage.png");
+  background-size: cover; /* 배경 이미지를 컨테이너에 맞게 크기 조절 */
+  background-repeat: no-repeat; /* 배경 이미지 반복 없음 */
+}
+.btnContainer {
+  position: absolute;
+  bottom: 0px;
+  left: 5%;
+  display: flex;
+  flex-direction: column;
+}
+.down {
+  width: 150px;
+  margin-top: 15px;
+  margin-left: 20px;
+  background-color: #1daeff;
+  padding: 5px 35px;
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  border-radius: 5px;
+}

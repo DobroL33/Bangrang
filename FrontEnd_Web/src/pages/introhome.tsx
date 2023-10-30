@@ -1,10 +1,14 @@
 import React from "react";
+import FirstPage from "./intropages/FirstPage";
+import SecondPage from "./intropages/SecondPage";
 
 const IntroHome: React.FC = () => {
   return (
     <div>
-        <h1>앱 소개 및 정보 홈</h1>
+      <FirstPage></FirstPage>
+      <SecondPage></SecondPage>
     </div>
   );
 };
+
 export default IntroHome;
