@@ -1,15 +1,14 @@
 package com.ssafyb109.bangrang.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafyb109.bangrang.api.AlarmList
 import com.ssafyb109.bangrang.api.AlarmListResponseDTO
 import com.ssafyb109.bangrang.api.AlarmStatusRequesetDTO
+import com.ssafyb109.bangrang.api.LoginRequestDTO
 import com.ssafyb109.bangrang.api.StampDetail
 import com.ssafyb109.bangrang.api.StampResponseDTO
-import com.ssafyb109.bangrang.repository.ResultType
 import com.ssafyb109.bangrang.repository.UserRepository
 import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import com.ssafyb109.bangrang.view.utill.getAddressFromLocation
@@ -30,8 +29,8 @@ class UserViewModel @Inject constructor(
 ) : ViewModel() {
 
     // 로그인 응답
-    private val _loginResponse = MutableStateFlow<ResultType?>(null)
-    val loginResponse: StateFlow<ResultType?> = _loginResponse
+    private val _loginResponse = MutableStateFlow<String?>(null)
+    val loginResponse: StateFlow<String?> = _loginResponse
 
     // 닉네임 검증 응답
     private val _nicknameAvailability = MutableStateFlow<Boolean?>(null)
@@ -116,12 +115,72 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    // 구글 로그인
-    fun sendTokenToServer(token: String) {
+
+    // 카카오 로그인
+    fun sendKaKaoTokenToServer(kakaoIdx: Long, token: String) {
+        val request = LoginRequestDTO(kakaoIdx, token)
+
         viewModelScope.launch {
-            _loginResponse.value = ResultType.LOADING
-            val result = repository.verifyGoogleToken(token)
-            _loginResponse.value = result
+            repository.userKakaoLogin(request).collect { response ->
+                val body = response.body()
+                if (response.isSuccessful) {
+                    if(body != null){
+                        sharedPreferencesUtil.setUserIdx(body.userIdx)
+                        if(body.userImage != ""){
+                            sharedPreferencesUtil.setUserImage(body.userImage)
+                        }
+                        sharedPreferencesUtil.setUserAlarm(body.userAlarm)
+                        sharedPreferencesUtil.setUserToken(body.accessToken)
+                        sharedPreferencesUtil.setUserRefreshToken(body.refreshToken)
+                        sharedPreferencesUtil.setLoggedInStatus("kakao")
+                        if(body.userNickname != ""){
+                            sharedPreferencesUtil.setUserNickname(body.userNickname)
+                            _loginResponse.value = "기존회원"
+                        } else{
+                            _loginResponse.value = "신규회원"
+                        }
+                    }
+
+                } else {
+                    val error = response.errorBody()?.string() ?: "알수없는 에러"
+                    _loginResponse.value = ""
+                    _errorMessage.emit(error)
+                }
+            }
+        }
+    }
+
+    // 구글 로그인
+    fun sendTokenToServer(kakaoIdx: Long, token: String) {
+        val request = LoginRequestDTO(kakaoIdx, token)
+
+        viewModelScope.launch {
+            repository.userKakaoLogin(request).collect { response ->
+                val body = response.body()
+                if (response.isSuccessful) {
+                    if(body != null){
+                        sharedPreferencesUtil.setUserIdx(body.userIdx)
+                        if(body.userImage != ""){
+                            sharedPreferencesUtil.setUserImage(body.userImage)
+                        }
+                        sharedPreferencesUtil.setUserAlarm(body.userAlarm)
+                        sharedPreferencesUtil.setUserToken(body.accessToken)
+                        sharedPreferencesUtil.setUserRefreshToken(body.refreshToken)
+                        sharedPreferencesUtil.setLoggedInStatus("kakao")
+                        if(body.userNickname != ""){
+                            sharedPreferencesUtil.setUserNickname(body.userNickname)
+                            _loginResponse.value = "기존회원"
+                        } else{
+                            _loginResponse.value = "신규회원"
+                        }
+                    }
+
+                } else {
+                    val error = response.errorBody()?.string() ?: "알수없는 에러"
+                    _loginResponse.value = ""
+                    _errorMessage.emit(error)
+                }
+            }
         }
     }
 

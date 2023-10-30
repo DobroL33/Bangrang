@@ -4,6 +4,7 @@ import com.ssafyb109.bangrang.api.AlarmListResponseDTO
 import com.ssafyb109.bangrang.api.AlarmSettingRequestDTO
 import com.ssafyb109.bangrang.api.AlarmStatusRequesetDTO
 import com.ssafyb109.bangrang.api.LoginRequestDTO
+import com.ssafyb109.bangrang.api.LoginResponseDTO
 import com.ssafyb109.bangrang.api.StampResponseDTO
 import com.ssafyb109.bangrang.api.UserService
 import kotlinx.coroutines.flow.Flow
@@ -16,18 +17,17 @@ class UserRepository @Inject constructor(
     private val userService: UserService,
 ) : BaseRepository() {
 
-    suspend fun verifyGoogleToken(token: String): ResultType {
-        return try {
-            val requestDTO = LoginRequestDTO(token)
-            val response = userService.userLogin(requestDTO)
-
+    // 카카오로그인
+    suspend fun userKakaoLogin(request: LoginRequestDTO): Flow<Response<LoginResponseDTO>> = flow {
+        try {
+            val response = userService.userKakaoLogin(request)
             if (response.isSuccessful) {
-                ResultType.SUCCESS
+                emit(response)
             } else {
-                ResultType.FAILURE
+                lastError = handleNetworkException(response = response)
             }
         } catch (e: Exception) {
-            ResultType.ERROR
+            lastError = handleNetworkException(e)
         }
     }
 
@@ -220,8 +220,4 @@ class UserRepository @Inject constructor(
             false
         }
     }
-}
-
-enum class ResultType {
-    SUCCESS, FAILURE, ERROR, LOADING
 }

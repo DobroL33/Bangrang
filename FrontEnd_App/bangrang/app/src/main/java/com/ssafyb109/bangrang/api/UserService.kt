@@ -15,11 +15,23 @@ import retrofit2.http.Path
 
 interface UserService {
 
-    // 로그인
-    @POST("api/member/login")
-    suspend fun userLogin(
+    // 카카오 로그인
+    @POST("api/member/login/kakao")
+    suspend fun userKakaoLogin(
         @Body request: LoginRequestDTO
     ): Response<LoginResponseDTO>
+
+    // 구글 로그인
+    @POST("api/member/login/google")
+    suspend fun userGoogleLogin(
+        @Body request: LoginRequestDTO
+    ): Response<LoginResponseDTO>
+
+    // 토큰 재발급
+    @POST("api/member/refresh")
+    suspend fun refreshAccessToken(
+        @Body refreshTokenRequest: RefreshTokenRequestDTO
+    ): Response<RefreshTokenResponseDTO>
 
     // 닉네임 중복확인
     @GET("api/member/nicknameCheck/{nickname}")
@@ -94,18 +106,33 @@ interface UserService {
 
 }
 
-// 로그인 요청 DTO
+// 카카오 로그인 요청 DTO
 data class LoginRequestDTO(
+    val kakaoIdx: Long,
     val token: String
 )
 
-// 로그인 응답 DTO
+// 카카오 로그인 응답 DTO
 data class LoginResponseDTO(
     val userIdx: Long,
     val userNickname: String,
+    val userImage: String,
+    val userAlarm: Boolean,
     val accessToken: String,
     val refreshToken: String,
 )
+
+// 토큰 재발급 요청 DTO
+data class RefreshTokenRequestDTO(
+    val refreshToken: String?
+)
+// 토큰 재발급 응답 DTO
+data class RefreshTokenResponseDTO(
+    val accessToken: String
+)
+
+
+
 
 // 닉네임 중복확인 요청 응답 DTO = Path, Void
 

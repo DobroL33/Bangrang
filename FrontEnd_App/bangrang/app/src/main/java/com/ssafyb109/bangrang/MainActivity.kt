@@ -16,11 +16,15 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -38,6 +42,7 @@ import com.ssafyb109.bangrang.view.AlarmPage
 import com.ssafyb109.bangrang.view.BottomBar
 import com.ssafyb109.bangrang.view.CollectionPage
 import com.ssafyb109.bangrang.view.EventDetailPage
+import com.ssafyb109.bangrang.view.FloatingActionButtonDemo
 import com.ssafyb109.bangrang.view.HomePage
 import com.ssafyb109.bangrang.view.InquiryDetailPage
 import com.ssafyb109.bangrang.view.InquiryPage
@@ -120,7 +125,7 @@ fun AppNavigation(
         "Permission"
     }
 
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.fillMaxSize(), color = Color.Transparent) {
         Column {
             val currentDestination =
                 navController.currentBackStackEntryAsState().value?.destination?.route
@@ -133,7 +138,7 @@ fun AppNavigation(
             Box(modifier = Modifier.weight(1f)) {
                 NavHost(navController, startDestination = startDestination) {
                     composable("Permission") { PermissionPage(navController) }
-                    composable("Login") { LoginPage(navController, userViewModel) }
+                    composable("Login") { LoginPage(navController, userViewModel, sharedPreferencesUtil) }
                     composable("SignUp") { SignUpPage(navController, userViewModel) }
 
                     composable("Home") { HomePage(navController, userViewModel) }
@@ -166,7 +171,6 @@ fun AppNavigation(
                             FullScreenImagePage(navController, decodedImageUrl)
                         }
                     }
-
                 }
             }
 

@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.ui.theme.logocolor
@@ -107,7 +108,8 @@ fun BottomBar(navController: NavHostController) {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Transparent)
-            .offset(y = (+150).dp),
+            .offset(y = (+150).dp)
+            .zIndex(1f),
         contentAlignment = Alignment.Center
     ) {
         if (isMenuExpanded.value) {
@@ -127,13 +129,14 @@ fun BottomBar(navController: NavHostController) {
             .fillMaxWidth()
             .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .height(72.dp)
+            .zIndex(2f),
     ) {
         // 그림자 추가를 위한 Box
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(0.4.dp)
-                .shadow(elevation = 0.4.dp, shape = RectangleShape)
+                .height(1.dp)
+                .shadow(elevation = 1.dp, shape = RectangleShape)
         )
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -192,6 +195,7 @@ fun ExpandingCenterMenu(onItemSelected: (String) -> Unit) {
     Box(
         modifier = Modifier
             .size(280.dp)
+            .background(Color.Transparent)
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
             val topY = 0f

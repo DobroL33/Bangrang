@@ -1,5 +1,6 @@
 package com.ssafyb109.bangrang.view
 
+import android.gesture.GestureOverlayView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraPosition
+import com.naver.maps.map.MapFragment
+import com.naver.maps.map.NaverMap
 import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
@@ -27,36 +31,17 @@ import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.PolygonOverlay
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.compose.rememberFusedLocationSource
+import com.naver.maps.map.overlay.GroundOverlay
+import com.naver.maps.map.overlay.Overlay
+import com.naver.maps.map.overlay.OverlayImage
+import com.naver.maps.map.style.sources.Tileset
+import com.ssafyb109.bangrang.R
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun NaverMap(height: Dp = Dp.Unspecified, blackWall: Boolean) {
-
     val seoul = LatLng(37.532600, 127.024612)
-
     val center = LatLng(36.3555, 127.2986)
-
-
-    val delta = 0.001
-
-    val polygonCoords = List(36) { index ->
-        val angle = 2.0 * Math.PI / 36.0 * index
-        val latOffset = delta * Math.sin(angle)
-        // 보정을 위해 cos(latitude)를 사용
-        val lngOffset = delta * Math.cos(angle) / Math.cos(Math.toRadians(center.latitude))
-        LatLng(center.latitude + latOffset, center.longitude + lngOffset)
-    }
-
-    val largerDelta = 2
-    val outerPolygonCoords = listOf(
-        LatLng(center.latitude - largerDelta, center.longitude - largerDelta), // 왼쪽 아래
-        LatLng(center.latitude - largerDelta, center.longitude + largerDelta), // 오른쪽 아래
-        LatLng(center.latitude + largerDelta, center.longitude + largerDelta), // 오른쪽 위
-        LatLng(center.latitude + largerDelta, center.longitude - largerDelta), // 왼쪽 위
-        LatLng(center.latitude - largerDelta, center.longitude - largerDelta)  // 다시 왼쪽 아래로 돌아와 폐쇄된 다각형을 만듭니다.
-    )
-
-
 
     var mapProperties by remember {
         mutableStateOf(
@@ -70,21 +55,28 @@ fun NaverMap(height: Dp = Dp.Unspecified, blackWall: Boolean) {
     }
 
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
-        // 카메라 초기 위치를 설정합니다.
         position = CameraPosition(center, 17.0)
     }
+
+    val groundOverlay = GroundOverlay()
+    groundOverlay.bounds = LatLngBounds(
+        LatLng(37.566351, 126.977234), LatLng(37.568528, 126.979980))
+    groundOverlay.image = OverlayImage.fromResource(R.drawable.black256)
+    groundOverlay.map = null
+
 
     Box(
         Modifier
             .fillMaxWidth()
-            .height(height)) {
+            .height(height)
+    ) {
         NaverMap(
             cameraPositionState = cameraPositionState,
             properties = mapProperties,
             uiSettings = mapUiSettings,
             locationSource = rememberFusedLocationSource()
         ) {
-            // 지도 위에 표시할 마커나 다른 오버레이를 여기에 추가합니다.
+
             Marker(
                 state = MarkerState(position = seoul),
                 captionText = "Marker in Seoul"
@@ -93,22 +85,27 @@ fun NaverMap(height: Dp = Dp.Unspecified, blackWall: Boolean) {
                 state = MarkerState(position = LatLng(37.390791, 127.096306)),
                 captionText = "Marker in Pangyo"
             )
-            if (blackWall) {
-                PolygonOverlay(
-                    coords = outerPolygonCoords,
-                    holes = listOf(polygonCoords), // 구멍 없음
-                    color = Color.DarkGray, // 다각형의 색
-                    outlineWidth = 2.dp, // 외곽선의 두께
-                    outlineColor = Color.Black, // 외곽선의 색
-                    tag = null,
-                    visible = true,
-                    minZoom = 0.0,
-                    minZoomInclusive = true,
-                    maxZoom = 22.0,
-                    maxZoomInclusive = true,
-                    zIndex = 0,
-                    globalZIndex = 0,
-                )
+        }
+    }
+}
+
+fun addBlackOverlaysToMap(naverMap: NaverMap) {
+    val southwest = LatLng(33.0, 124.0) // 대략적인 한국의 남서쪽 좌표
+    val northeast = LatLng(39.0, 132.0) // 대략적인 한국의 북동쪽 좌표
+    val divisions = 10
+    val latDelta = (northeast.latitude - southwest.latitude) / divisions
+    val lngDelta = (northeast.longitude - southwest.longitude) / divisions
+
+    for (i in 0 until divisions) {
+        for (j in 0 until divisions) {
+            val sw = LatLng(southwest.latitude + (i * latDelta),
+                southwest.longitude + (j * lngDelta))
+            val ne = LatLng(sw.latitude + latDelta, sw.longitude + lngDelta)
+
+            val groundOverlay = GroundOverlay().apply {
+                bounds = LatLngBounds(sw, ne)
+                setImage(OverlayImage.fromResource(R.drawable.black256))
+                map = naverMap
             }
         }
     }

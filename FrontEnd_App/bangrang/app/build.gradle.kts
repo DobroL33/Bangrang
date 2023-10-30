@@ -24,7 +24,7 @@ android {
 
         // 카카오 키 저장
         buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${properties.getProperty("KAKAO_NATIVE_APP_KEY")}\"")
-        manifestPlaceholders["kakaoScheme"] = "kakao${properties.getProperty("KAKAO_NATIVE_APP_KEY")}"
+        manifestPlaceholders["kakaoKey"] = "kakao${properties.getProperty("KAKAO_NATIVE_APP_KEY")}"
 
         //네이버 지도 ID 저장
 
