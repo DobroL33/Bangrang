@@ -1,5 +1,6 @@
 package com.ssafy.bangrang.domain.member.entity;
 
+import com.ssafy.bangrang.domain.event.entity.Likes;
 import com.ssafy.bangrang.domain.event.entity.Stamp;
 import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
 import com.ssafy.bangrang.domain.map.entity.MemberMapArea;
@@ -72,6 +73,9 @@ public class AppMember extends Member{
 
     @OneToMany(mappedBy = "appMember")
     private List<Stamp> stamps = new ArrayList<>();
+
+    @OneToMany(mappedBy = "appMember")
+    private List<Likes> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "appMember")
     private List<MemberMarker> memberMarkers = new ArrayList<>();

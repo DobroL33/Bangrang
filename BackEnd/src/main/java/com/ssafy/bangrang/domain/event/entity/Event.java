@@ -30,14 +30,23 @@ public class Event extends CommonEntity {
     @Column(name = "event_content")
     private String content;
 
+    @Column(name = "event_image")
+    private String eventImage;
+
     @Column(name = "event_start_date")
     private LocalDateTime startDate;
 
     @Column(name = "event_end_date")
     private LocalDateTime endDate;
 
-    @Column(name = "evnet_address")
+    @Column(name = "event_address")
     private String address;
+
+    @Column(name = "event_latitude")
+    private Double latitude;
+
+    @Column(name = "event_longitude")
+    private Double longitude;
 
     @Column(name = "event_url")
     private String eventUrl;
@@ -50,6 +59,10 @@ public class Event extends CommonEntity {
     // 행사에 대한 문의사항
     @OneToMany(mappedBy = "event")
     private List<Inquiry> inquiries = new ArrayList<>();
+
+    // 좋아요 수
+    @OneToMany(mappedBy = "event")
+    private List<Likes> likes = new ArrayList<>();
 
     @Builder
     public Event(String title, String subTitle, String content, LocalDateTime startDate, LocalDateTime endDate, String address, String eventUrl, WebMember webMember){
