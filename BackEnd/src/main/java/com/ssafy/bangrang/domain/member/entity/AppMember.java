@@ -6,7 +6,6 @@ import com.ssafy.bangrang.domain.map.entity.MemberMapArea;
 import com.ssafy.bangrang.domain.map.entity.MemberMarker;
 import com.ssafy.bangrang.domain.member.model.vo.AlarmReceivedStatus;
 import com.ssafy.bangrang.domain.member.model.vo.AppMemberStatus;
-import com.ssafy.bangrang.domain.member.model.vo.SocialProvider;
 import com.ssafy.bangrang.global.fcm.entity.Alarm;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,10 +23,6 @@ import java.util.List;
 @DiscriminatorValue("app")
 public class AppMember extends Member{
 
-
-    @Column(name = "app_member_email", unique = true)
-    protected String email;
-
     @Column(name = "app_member_nickname", unique = true)
     protected String nickname;
 
@@ -36,10 +31,6 @@ public class AppMember extends Member{
 
     @Column(name = "app_member_firebase_token")
     private String firebaseToken;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "app_member_social_provider")
-    private SocialProvider socialProvider;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "app_member_all_alarm_status")
@@ -83,18 +74,16 @@ public class AppMember extends Member{
     private List<Alarm> alarms = new ArrayList<>();
 
     @Builder
-    public AppMember(String email, String nickname, String imgUrl, String firebaseToken, SocialProvider socialProvider, String accessToken, String refreshToken){
-        this.email = email;
+    public AppMember(Long idx, String id, String nickname, String password, String imgUrl, String firebaseToken, AppMemberStatus appMemberStatus){
+        this.idx = idx;
+        this.id = id;
         this.nickname = nickname;
+        this.password = password;
         this.imgUrl = imgUrl;
         this.firebaseToken = firebaseToken;
-        this.socialProvider = socialProvider;
-
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
 
         this.changeAllAlarmStatus(AlarmReceivedStatus.Y);
-        this.appMemberStatus = AppMemberStatus.ACTIVE;
+        this.appMemberStatus = appMemberStatus;
     }
 
     public void changeAllAlarmStatus(AlarmReceivedStatus status) {
