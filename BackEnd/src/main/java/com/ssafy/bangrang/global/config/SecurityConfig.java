@@ -127,7 +127,6 @@ public class SecurityConfig {
         return new ProviderManager(daoAuthenticationProvider);
     }
 
-
     /*
      * 로그인 성공 시 호출
      * */
@@ -135,13 +134,8 @@ public class SecurityConfig {
     public WebLoginSuccessHandler webLoginSuccessHandler() {
         return new WebLoginSuccessHandler(jwtService, webMemberRepository, redisRefreshTokenService);
     }
-    @Bean
     public AppLoginSuccessHandler appLoginSuccessHandler() {
         return new AppLoginSuccessHandler(jwtService, appMemberRepository, redisRefreshTokenService);
-    }
-
-    /*
-     * 로그인 실패 시 호출
      * */
     @Bean
     public WebLoginFailureHandler webLoginFailureHandler() {
