@@ -7,6 +7,7 @@ import com.ssafy.bangrang.global.security.redis.RedisRefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,35 +45,26 @@ public class AppLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
         httpServletResponse.setContentType("application/json");
         httpServletResponse.setCharacterEncoding("UTF-8");
 
-        // response header에 AccessToken, RefreshToken 실어서 보내기
-//        jwtService.sendAccessAndRefreshToken(httpServletResponse, accessToken, refreshToken);
-
         AppMember user = appMemberRepository.findById(id)
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
 
         if(user != null) {
-
-            // 데이터를 JSON 형식으로 만듭니다.
-            String json = "{\"userIdx\": \"" + user.getIdx() + "\", \"userNickname\": \"" + user.getNickname() + "\", \"userImage\": \"" + user.getImgUrl() + "\"," +
-                    "\"userAlarm\": \"" + user.getAlarms() + "\"}";
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("userIdx", user.getIdx());
+            jsonObject.put("userNickname", user.getNickname());
+            jsonObject.put("userImage", user.getImgUrl());
+            jsonObject.put("userAlarm", user.getAlarms());
 
             // Get the PrintWriter
             PrintWriter out = httpServletResponse.getWriter();
             // Write data to the response body
-            out.println(json);
+            out.println(jsonObject);
             // Close the PrintWriter
             out.close();
 
             // Redis에 RefreshToken 저장
             redisRefreshTokenService.setRedisRefreshToken(refreshToken, id);
 
-//            if(user.getRole() == Role.FIRST) {
-//                // 첫 로그인 이라는 역할 함께 넣어줌
-//                httpServletResponse.addHeader("user_role", "first");
-//
-//                user.updateFirstRole();
-//                webMemberRepository.save(user);
-//            }
         }
         else
             throw new NullPointerException("해당 유저가 존재하지 않습니다.");

@@ -32,7 +32,6 @@ dependencies {
     implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
 
     implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
-
     // Swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'

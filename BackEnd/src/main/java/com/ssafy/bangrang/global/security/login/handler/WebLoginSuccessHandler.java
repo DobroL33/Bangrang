@@ -1,6 +1,7 @@
 package com.ssafy.bangrang.global.security.login.handler;
 
 import com.ssafy.bangrang.domain.member.entity.WebMember;
+import com.ssafy.bangrang.domain.member.model.vo.WebMemberStatus;
 import com.ssafy.bangrang.domain.member.repository.WebMemberRepository;
 import com.ssafy.bangrang.global.security.jwt.JwtService;
 import com.ssafy.bangrang.global.security.redis.RedisRefreshTokenService;
@@ -8,12 +9,14 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * JWT를 활용한 일반 로그인 성공 처리
@@ -40,30 +43,34 @@ public class WebLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
 
         httpServletResponse.addHeader(jwtService.getAccessHeader(), accessToken);
         httpServletResponse.addHeader(jwtService.getRefreshHeader(), refreshToken);
-        httpServletResponse.addHeader("new_basic_user_id", id);
 
-        Cookie idCookie = new Cookie("new_basic_user_id", id);
-        idCookie.setMaxAge(600);
-        idCookie.setPath("/");
-        httpServletResponse.addCookie(idCookie);
-
-        // response header에 AccessToken, RefreshToken 실어서 보내기
-//        jwtService.sendAccessAndRefreshToken(httpServletResponse, accessToken, refreshToken);
+        httpServletResponse.setContentType("application/json");
+        httpServletResponse.setCharacterEncoding("UTF-8");
 
         WebMember user = webMemberRepository.findById(id)
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
 
+        if (user.getWebMemberStatus().equals(WebMemberStatus.WATING)){
+            throw new IllegalStateException("해당 계정은 인증대기 중 입니다.");
+        } else if (user.getWebMemberStatus().equals(WebMemberStatus.DECLINED)) {
+            throw new IllegalStateException("해당 계정은 인증이 거절되었습니다.");
+        }
+
         if(user != null) {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("OrganizationIdx", user.getIdx());
+            jsonObject.put("OrganizationName", user.getOrganizationName());
+
+            // Get the PrintWriter
+            PrintWriter out = httpServletResponse.getWriter();
+            // Write data to the response body
+            out.println(jsonObject);
+            // Close the PrintWriter
+            out.close();
+
             // Redis에 RefreshToken 저장
             redisRefreshTokenService.setRedisRefreshToken(refreshToken, id);
-
-//            if(user.getRole() == Role.FIRST) {
-//                // 첫 로그인 이라는 역할 함께 넣어줌
-//                httpServletResponse.addHeader("user_role", "first");
-//
-//                user.updateFirstRole();
-//                webMemberRepository.save(user);
-//            }
         }
         else
             throw new NullPointerException("해당 유저가 존재하지 않습니다.");
