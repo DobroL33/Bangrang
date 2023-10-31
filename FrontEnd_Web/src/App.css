@@ -1,8 +1,8 @@
 /* 전역변수 관리 css */
 .App {
   text-align: center;
-  width: 100vw;
-  background-color: #FAFAFA;
+  width: 100%;
+  background-color: #fafafa;
 }
 
 .App-link {
@@ -14,7 +14,7 @@
   justify-content: space-between;
   align-items: center;
   width: 80%;
-  padding:0 10%;
-  background-color:white;
-  margin:0
+  padding: 0 10%;
+  background-color: white;
+  margin: 0;
 }
