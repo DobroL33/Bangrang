@@ -77,4 +77,5 @@ public class AppMember extends Member{
         this.appMemberStatus = appMemberStatus;
     }
 
+
 }

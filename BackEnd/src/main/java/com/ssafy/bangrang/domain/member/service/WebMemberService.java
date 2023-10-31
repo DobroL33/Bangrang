@@ -30,8 +30,8 @@ public class WebMemberService {
         if(webMemberRepository.findById(webMemberSignUpRequest.getId()).isPresent())
             throw new Exception("이미 존재하는 아이디입니다.");
 
-        // 아이디 유효성 검사    match 수정필요함 현재는 이메일 형식
-        if (!Pattern.matches("[0-9a-zA-Z]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$", webMemberSignUpRequest.getId())) {
+        // 아이디 유효성 검사 (영문, 숫자만 사용가능)
+        if (!Pattern.matches("[a-zA-Z0-9]+", webMemberSignUpRequest.getId())) {
             throw new IllegalStateException("이메일 형식을 다시 맞춰주세요.");
         }
 

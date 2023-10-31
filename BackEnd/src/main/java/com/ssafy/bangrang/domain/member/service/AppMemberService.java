@@ -19,39 +19,16 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 
-@Service
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
-public class AppMemberService {
-
-    private final AppMemberRepository appMemberRepository;
-
-    private final PasswordEncoder passwordEncoder;
-
-    /**
-     * 소셜 로그인 & 회원 가입
-     */
-    @Transactional
-    public Long kakaologin(String id, String ImgUrl) throws Exception {
-
-        AppMember appMember = AppMember.builder()
-                .id(id)
-                .imgUrl(ImgUrl)
-                .password("social")
-                .build();
-
-        appMember.passwordEncode(passwordEncoder);
-        AppMember saveUser = appMemberRepository.save(appMember);
-        
-
-        // 생성한 계정의 Idx 번호 리턴
-        return saveUser.getIdx();
-    }
+public interface AppMemberService {
 
     Long findIdxByNickname(String nickname);
 
-    Optional<AppMember> findAppMemberByAccessToken(String accessToken);
+//    Optional<AppMember> findAppMemberByAccessToken(String accessToken);
+
+    Long kakaologin(String id, String ImgUrl) throws Exception;
+
 }
