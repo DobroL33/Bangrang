@@ -3,35 +3,28 @@ package com.ssafy.bangrang.global.security.login;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
+import com.ssafy.bangrang.domain.member.service.AppMemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 
 public class AppLoginAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     private static final String CONTENT_TYPE = "application/json";
 
     @Value("${kakao.client-id}")
@@ -41,8 +34,11 @@ public class AppLoginAuthenticationFilter extends AbstractAuthenticationProcessi
     private String kakao_client_secret;
 
     @Value("${kakao.redirect-uri}")
-
     private String kakao_redirect;
+
+    @Autowired
+    private AppMemberService appMemberService;
+
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -95,23 +91,46 @@ public class AppLoginAuthenticationFilter extends AbstractAuthenticationProcessi
                     .orElse(null);
 
             if (user == null) {
-                AppMember appMember = AppMember.builder()
-                        .id("kakao@"+data.get("id"))
-                        .imgUrl(thumbnailImageUrl)
-                        .password("social")
-                        .build();
-
-                appMember.passwordEncode(passwordEncoder);
-                appMemberRepository.save(appMember);
+                try {
+                    appMemberService.kakaologin("kakao@"+num, thumbnailImageUrl);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-
-            //principal, credentials 전달
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken("kakao@"+num, social);
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken("kakao@"+num, "social");
 
             return this.getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
         } else if (social.equals("google")) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-type", "application/x-www-form-urlencoded; charset=utf-8");
+            headers.add("Authorization", "Bearer "+ code);
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            ResponseEntity<String> response =
+                    restTemplate.exchange("https://kapi.kakao.com/v2/user/me",
+                            HttpMethod.GET,
+                            new HttpEntity<>(null, headers),
+                            String.class);
 
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(code, social);
+            String body = response.getBody();
+
+            Map<String, ?> data = objectMapper.readValue(body, Map.class);
+            String num = String.valueOf(data.get("id"));
+            Map<String, Object> kakaoAccount = (Map<String, Object>) data.get("kakao_account");
+            String thumbnailImageUrl = (String) ((Map<String, Object>) kakaoAccount.get("profile")).get("thumbnail_image_url");
+
+            AppMember user = appMemberRepository.findById("kakao@"+num)
+                    .orElse(null);
+
+            if (user == null) {
+                try {
+                    appMemberService.kakaologin("kakao@"+num, thumbnailImageUrl);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken("kakao@"+num, "social");
+
             return this.getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
 
         } else {

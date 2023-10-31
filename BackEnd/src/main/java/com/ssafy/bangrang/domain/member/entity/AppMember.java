@@ -4,9 +4,7 @@ import com.ssafy.bangrang.domain.event.entity.Stamp;
 import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
 import com.ssafy.bangrang.domain.map.entity.MemberMapArea;
 import com.ssafy.bangrang.domain.map.entity.MemberMarker;
-import com.ssafy.bangrang.domain.member.model.vo.AlarmReceivedStatus;
 import com.ssafy.bangrang.domain.member.model.vo.AppMemberStatus;
-import com.ssafy.bangrang.global.fcm.entity.Alarm;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,27 +31,14 @@ public class AppMember extends Member{
     private String firebaseToken;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "app_member_all_alarm_status")
-    private AlarmReceivedStatus allAlarmStatus;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "app_member_notification_alarm_status")
-    private AlarmReceivedStatus notificationAlarmStatus;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "app_member_ranking_alarm_status")
-    private AlarmReceivedStatus rankingAlarmStatus;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "app_member_event_alarm_status")
-    private AlarmReceivedStatus eventAlarmStatus;
-
-    @Enumerated(EnumType.STRING)
     @Column(name = "app_member_status")
     private AppMemberStatus appMemberStatus;
 
     @Column(name = "app_member_deleted_at")
     private LocalDateTime deletedAt;
+
+    @Column(name = "app_member_alarms")
+    private Boolean alarms;
 
     @OneToMany(mappedBy = "appMember")
     private List<Inquiry> inquiries = new ArrayList<>();
@@ -70,50 +55,19 @@ public class AppMember extends Member{
     @OneToMany(mappedBy = "appMember")
     private List<MemberMapArea> memberMapAreas = new ArrayList<>();
 
-    @OneToMany(mappedBy = "appMember")
-    private List<Alarm> alarms = new ArrayList<>();
-
     @Builder
-    public AppMember(Long idx, String id, String nickname, String password, String imgUrl, String firebaseToken, AppMemberStatus appMemberStatus){
+    public AppMember(Long idx, String id, String nickname, String password, String imgUrl,
+                     String firebaseToken, AppMemberStatus appMemberStatus){
         this.idx = idx;
         this.id = id;
         this.nickname = nickname;
         this.password = password;
         this.imgUrl = imgUrl;
         this.firebaseToken = firebaseToken;
-
-        this.changeAllAlarmStatus(AlarmReceivedStatus.Y);
-        this.appMemberStatus = appMemberStatus;
+        this.alarms = true;
+        this.appMemberStatus = appMemberStatus.ACTIVE;
     }
 
-    public void changeAllAlarmStatus(AlarmReceivedStatus status) {
-        this.allAlarmStatus = status;
-        this.notificationAlarmStatus = status;
-        this.rankingAlarmStatus = status;
-        this.eventAlarmStatus = status;
-    }
-
-    public void changeNotificationAlarmStatus(AlarmReceivedStatus status){
-        checkAllAlarm(status);
-        this.notificationAlarmStatus = status;
-    }
-
-    public void changeRankingAlarmStatus(AlarmReceivedStatus status){
-        checkAllAlarm(status);
-        this.rankingAlarmStatus = status;
-    }
-
-    public void changeEventAlarmStatus(AlarmReceivedStatus status){
-        checkAllAlarm(status);
-        this.eventAlarmStatus = status;
-    }
-
-    public void checkAllAlarm(AlarmReceivedStatus status){
-        // 전체 알림이 켜져 있고 그 중 특정 알림을 받고 싶지 않을 때
-        if(status == AlarmReceivedStatus.N && allAlarmStatus == AlarmReceivedStatus.Y){
-            allAlarmStatus = AlarmReceivedStatus.N;
-        }
-    }
 
     public void changeAppMemberStatus(AppMemberStatus appMemberStatus){
         if(appMemberStatus == AppMemberStatus.UNACTIVE){

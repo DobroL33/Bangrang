@@ -1,4 +1,7 @@
 package com.ssafy.bangrang.domain.member.service;
+import com.ssafy.bangrang.domain.member.api.request.WebMemberSignUpRequest;
+import com.ssafy.bangrang.domain.member.entity.AppMember;
+import com.ssafy.bangrang.domain.member.entity.WebMember;
 import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -31,39 +35,18 @@ public class AppMemberService {
      * 소셜 로그인 & 회원 가입
      */
     @Transactional
-    public String kakaologin(String authorizationCode) throws Exception {
-        if(authorizationCode==null)
-            throw new Exception("인가코드가 존재하지 않습니다.");
+    public Long kakaologin(String id, String ImgUrl) throws Exception {
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", kakao_client_id);
-        params.add("client_secret", kakao_client_secret);
-        params.add("code", authorizationCode);
-        params.add("redirect_uri", kakao_redirect);
+        AppMember appMember = AppMember.builder()
+                .id(id)
+                .imgUrl(ImgUrl)
+                .password("social")
+                .build();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        appMember.passwordEncode(passwordEncoder);
+        AppMember saveUser = appMemberRepository.save(appMember);
 
-        // header 와 body로 Request 생성
-        HttpEntity<?> entity = new HttpEntity<>(params, headers);
-
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            // 응답 데이터(json)를 Map 으로 받을 수 있도록 메시지 컨버터 추가
-            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-
-            // Post 방식으로 Http 요청
-            // 응답 데이터 형식은 Hashmap 으로 지정
-            ResponseEntity<HashMap> result = restTemplate.postForEntity("https://kauth.kakao.com/oauth/token", entity, HashMap.class);
-            Map<String, String> resMap = result.getBody();
-
-            // 응답 데이터 확인
-            System.out.println(resMap);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         // 생성한 계정의 Idx 번호 리턴
-        return "Asdfsf";
+        return saveUser.getIdx();
     }
 }

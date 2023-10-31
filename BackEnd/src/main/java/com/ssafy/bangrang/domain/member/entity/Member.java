@@ -1,11 +1,8 @@
 package com.ssafy.bangrang.domain.member.entity;
 
-import com.ssafy.bangrang.domain.member.model.vo.AlarmReceivedStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

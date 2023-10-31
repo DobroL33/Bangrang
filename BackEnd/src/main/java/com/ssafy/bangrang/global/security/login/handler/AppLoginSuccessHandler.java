@@ -1,12 +1,9 @@
 package com.ssafy.bangrang.global.security.login.handler;
 
 import com.ssafy.bangrang.domain.member.entity.AppMember;
-import com.ssafy.bangrang.domain.member.entity.WebMember;
 import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
-import com.ssafy.bangrang.domain.member.repository.WebMemberRepository;
 import com.ssafy.bangrang.global.security.jwt.JwtService;
 import com.ssafy.bangrang.global.security.redis.RedisRefreshTokenService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * JWT를 활용한 일반 로그인 성공 처리
@@ -42,12 +40,9 @@ public class AppLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
 
         httpServletResponse.addHeader(jwtService.getAccessHeader(), accessToken);
         httpServletResponse.addHeader(jwtService.getRefreshHeader(), refreshToken);
-        httpServletResponse.addHeader("new_basic_user_id", id);
 
-        Cookie idCookie = new Cookie("new_basic_user_id", id);
-        idCookie.setMaxAge(600);
-        idCookie.setPath("/");
-        httpServletResponse.addCookie(idCookie);
+        httpServletResponse.setContentType("application/json");
+        httpServletResponse.setCharacterEncoding("UTF-8");
 
         // response header에 AccessToken, RefreshToken 실어서 보내기
 //        jwtService.sendAccessAndRefreshToken(httpServletResponse, accessToken, refreshToken);
@@ -56,6 +51,18 @@ public class AppLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
 
         if(user != null) {
+
+            // 데이터를 JSON 형식으로 만듭니다.
+            String json = "{\"userIdx\": \"" + user.getIdx() + "\", \"userNickname\": \"" + user.getNickname() + "\", \"userImage\": \"" + user.getImgUrl() + "\"," +
+                    "\"userAlarm\": \"" + user.getAlarms() + "\"}";
+
+            // Get the PrintWriter
+            PrintWriter out = httpServletResponse.getWriter();
+            // Write data to the response body
+            out.println(json);
+            // Close the PrintWriter
+            out.close();
+
             // Redis에 RefreshToken 저장
             redisRefreshTokenService.setRedisRefreshToken(refreshToken, id);
 

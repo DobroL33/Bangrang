@@ -136,7 +136,8 @@ public class SecurityConfig {
     }
     public AppLoginSuccessHandler appLoginSuccessHandler() {
         return new AppLoginSuccessHandler(jwtService, appMemberRepository, redisRefreshTokenService);
-     * */
+    }
+
     @Bean
     public WebLoginFailureHandler webLoginFailureHandler() {
         return new WebLoginFailureHandler();
@@ -145,6 +146,7 @@ public class SecurityConfig {
     public AppLoginFailureHandler appLoginFailureHandler() {
         return new AppLoginFailureHandler();
     }
+
     @Bean
     public WebLoginAuthenticationFilter webLoginAuthenticationFilter() {
         WebLoginAuthenticationFilter webLoginAuthenticationFilter
