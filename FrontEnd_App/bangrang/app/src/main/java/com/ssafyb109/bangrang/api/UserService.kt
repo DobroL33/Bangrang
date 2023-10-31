@@ -108,18 +108,16 @@ interface UserService {
 
 // 카카오 로그인 요청 DTO
 data class LoginRequestDTO(
-    val kakaoIdx: Long,
+    val social: String,
     val token: String
 )
 
 // 카카오 로그인 응답 DTO
 data class LoginResponseDTO(
     val userIdx: Long,
-    val userNickname: String,
-    val userImage: String,
+    val userNickname: String?,
+    val userImage: String?,
     val userAlarm: Boolean,
-    val accessToken: String,
-    val refreshToken: String,
 )
 
 // 토큰 재발급 요청 DTO

@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
@@ -42,8 +43,10 @@ import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import com.ssafyb109.bangrang.MainActivity
 import com.ssafyb109.bangrang.R
-import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
+import com.ssafyb109.bangrang.repository.ResultType
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginPage(
@@ -145,34 +148,19 @@ fun LoginPage(
 }
 
 
-fun performKakaoLogin(
-    context: Context,
-    navController: NavHostController,
-    viewModel: UserViewModel,
-    sharedPreferencesUtil: SharedPreferencesUtil
-) {
+fun performKakaoLogin(context: Context, navController: NavHostController, viewModel: UserViewModel) {
+
     val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
             Log.e("KAKAO_LOGIN", "카카오계정으로 로그인 실패1", error)
         } else if (token != null) {
-            Log.i("KAKAO_LOGIN", "카카오계정으로 로그인 성공1 ${token.accessToken}")
+            viewModel.sendTokenToServer("kakao",token.accessToken)
+            Log.i("KAKAO_LOGIN", "카카오계정으로 로그인 성공2 ${token.accessToken}")
 
-            // 개인정보
-            UserApiClient.instance.me { user, error ->
-                if (error != null) {
-                    Log.e(TAG, "사용자 정보 요청 실패", error)
-                }
-                else if (user != null) {
-                    user.id?.let { viewModel.sendKaKaoTokenToServer(it,token.accessToken) }
-                    sharedPreferencesUtil.setLoggedInStatus("KaKao")
-                    // 백엔드 완성후 삭제
-                    navController.navigate("Home")
-                }
-            }
         }
     }
 
-    // 카카오톡이 설치되어있는경우
+
     if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
         UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
             if (error != null) {
@@ -182,22 +170,28 @@ fun performKakaoLogin(
                 }
                 UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
             } else if (token != null) {
-                // 개인정보
-                UserApiClient.instance.me { user, error ->
-                    if (error != null) {
-                        Log.e(TAG, "사용자 정보 요청 실패", error)
-                    }
-                    else if (user != null) {
-                        user.id?.let { viewModel.sendKaKaoTokenToServer(it,token.accessToken) }
-                        sharedPreferencesUtil.setLoggedInStatus("KaKao")
-                        // 백엔드 완성후 삭제
-                        navController.navigate("Home")
-                    }
-                }
+                viewModel.sendTokenToServer("kakao",token.accessToken)
+                Log.i("KAKAO_LOGIN", "카카오톡으로 로그인 성공1 ${token.accessToken}")
             }
         }
     } else {
         UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
+    }
+
+    // 이동
+    viewModel.viewModelScope.launch {
+        viewModel.loginResponse.collectLatest { response ->
+            when (response) {
+                ResultType.NICKNAME -> {
+                    navController.navigate("SignUp")
+                }
+                ResultType.SUCCESS -> {
+                    navController.navigate("Home")
+                }
+                // 다른 ResultType에 대한 처리
+                else -> {}
+            }
+        }
     }
 }
 
@@ -206,7 +200,7 @@ fun handleGoogleSignInResult(task: Task<GoogleSignInAccount>, navController: Nav
     try {
         val account: GoogleSignInAccount? = task.getResult(ApiException::class.java)
         if (account != null) {
-            viewModel.sendTokenToServer(1,account.idToken ?: "")
+            viewModel.sendTokenToServer("kakao",account.idToken ?: "")
             navController.navigate("Home")
         }
     } catch (e: ApiException) {

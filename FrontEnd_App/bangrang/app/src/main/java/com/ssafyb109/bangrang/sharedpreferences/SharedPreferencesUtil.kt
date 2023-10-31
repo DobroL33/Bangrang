@@ -72,7 +72,7 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         return sharedPreferences.getString(USER_TOKEN, null)
     }
 
-    // 사용자 토큰을 저장하는 메서드
+    // 사용자 리프레시 토큰을 저장하는 메서드
     fun setUserRefreshToken(token: String) {
         with(sharedPreferences.edit()) {
             putString(USER_REFRESH_TOKEN, token)
@@ -80,7 +80,7 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         }
     }
 
-    // 저장된 사용자 토큰을 가져오는 메서드
+    // 저장된 사용자 리프레시 토큰을 가져오는 메서드
     fun getUserRefreshToken(): String? {
         return sharedPreferences.getString(USER_REFRESH_TOKEN, null)
     }

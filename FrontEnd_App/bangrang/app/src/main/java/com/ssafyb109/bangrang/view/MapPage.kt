@@ -10,5 +10,5 @@ fun MapPage(
     navController: NavHostController,
     userViewModel: UserViewModel,
 ) {
-    NaverMap(blackWall = true)
+    GoogleMapPage()
 }

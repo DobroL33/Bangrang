@@ -26,6 +26,10 @@ android {
         buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${properties.getProperty("KAKAO_NATIVE_APP_KEY")}\"")
         manifestPlaceholders["kakaoKey"] = "kakao${properties.getProperty("KAKAO_NATIVE_APP_KEY")}"
 
+        // 구글 지도
+        buildConfigField("String", "GOOGLE_MAP_APP_KEY", "\"${properties.getProperty("GOOGLE_MAP_APP_KEY")}\"")
+        manifestPlaceholders["googleMapScheme"] = properties.getProperty("GOOGLE_MAP_APP_KEY")
+
         //네이버 지도 ID 저장
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -76,6 +80,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
     implementation("androidx.fragment:fragment-ktx:1.6.1")
+    // 권한
+    implementation("com.google.accompanist:accompanist-permissions:0.30.1")
     // Hilt 의존성
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
@@ -100,6 +106,11 @@ dependencies {
     // 네이버 지도
     implementation("com.naver.maps:map-sdk:3.17.0")
     implementation ("io.github.fornewid:naver-map-compose:1.4.0")
+    // 구글 지도
+    implementation ("com.google.android.gms:play-services-maps:18.2.0")
+    implementation ("com.google.maps.android:maps-compose:4.1.1")
+    implementation ("com.google.maps.android:maps-compose-utils:4.1.1")
+    implementation ("com.google.maps.android:maps-compose-widgets:4.1.1")
     // coil
     implementation("io.coil-kt:coil-compose:2.4.0")
 

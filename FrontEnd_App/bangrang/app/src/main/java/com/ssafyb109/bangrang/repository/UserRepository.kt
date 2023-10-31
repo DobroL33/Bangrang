@@ -1,5 +1,6 @@
 package com.ssafyb109.bangrang.repository
 
+import android.util.Log
 import com.ssafyb109.bangrang.api.AlarmListResponseDTO
 import com.ssafyb109.bangrang.api.AlarmSettingRequestDTO
 import com.ssafyb109.bangrang.api.AlarmStatusRequesetDTO
@@ -7,6 +8,7 @@ import com.ssafyb109.bangrang.api.LoginRequestDTO
 import com.ssafyb109.bangrang.api.LoginResponseDTO
 import com.ssafyb109.bangrang.api.StampResponseDTO
 import com.ssafyb109.bangrang.api.UserService
+import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
@@ -15,19 +17,42 @@ import javax.inject.Inject
 
 class UserRepository @Inject constructor(
     private val userService: UserService,
+    private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : BaseRepository() {
 
-    // 카카오로그인
-    suspend fun userKakaoLogin(request: LoginRequestDTO): Flow<Response<LoginResponseDTO>> = flow {
-        try {
-            val response = userService.userKakaoLogin(request)
+    suspend fun verifyGoogleToken(social: String, token:String): ResultType {
+        return try {
+            val requestDTO = LoginRequestDTO(social,token)
+            val response = userService.userLogin(requestDTO)
+            val data = response.body()
+
             if (response.isSuccessful) {
-                emit(response)
+                val serverToken = response.headers()["Authorization"]
+                val refreshAuthToken = response.headers()["Authorization-Refresh"]
+
+                if(serverToken != null) {
+                    sharedPreferencesUtil.setUserToken(serverToken)
+                }
+                if(refreshAuthToken != null) {
+                    sharedPreferencesUtil.setUserRefreshToken(refreshAuthToken)
+                }
+                if (data != null) {
+                    sharedPreferencesUtil.setUserAlarm(data.userAlarm)
+                    data.userNickname?.let { sharedPreferencesUtil.setUserNickname(it) }
+                    data.userImage?.let { sharedPreferencesUtil.setUserImage(it) }
+                    Log.d("@@@@@@@@@@@@@@@@@@@@@@@","${data.userAlarm}")
+                    sharedPreferencesUtil.setUserIdx(data.userIdx)
+
+                    if(data.userNickname == "null"){
+                        return ResultType.NICKNAME
+                    }
+                }
+                return ResultType.SUCCESS
             } else {
-                lastError = handleNetworkException(response = response)
+                return ResultType.FAILURE
             }
         } catch (e: Exception) {
-            lastError = handleNetworkException(e)
+            return ResultType.ERROR
         }
     }
 
@@ -220,4 +245,8 @@ class UserRepository @Inject constructor(
             false
         }
     }
+}
+
+enum class ResultType {
+    SUCCESS, FAILURE, ERROR, LOADING, NICKNAME
 }

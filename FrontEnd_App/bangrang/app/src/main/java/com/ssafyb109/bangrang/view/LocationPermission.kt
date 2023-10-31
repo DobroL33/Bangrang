@@ -3,7 +3,10 @@ package com.ssafyb109.bangrang.view
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -43,131 +47,82 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavHostController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PermissionPage(navController: NavHostController) {
+fun LocationPermissionPage(navController: NavHostController) {
     val context = LocalContext.current
-    val activity = context as Activity
+    var showDialog by remember { mutableStateOf(false) }
 
-    var locationPermissionsGranted by remember { mutableStateOf(areLocationPermissionsAlreadyGranted(context)) }
-    var shouldShowPermissionRationale by remember {
-        mutableStateOf(
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                activity,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+    val multiplePermissionState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION
         )
-    }
-    var currentPermissionsStatus by remember {
-        mutableStateOf(decideCurrentPermissionStatus(locationPermissionsGranted, shouldShowPermissionRationale))
-    }
-
-    val locationPermissions = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_BACKGROUND_LOCATION
     )
 
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions(),
-        onResult = { permissions ->
-            locationPermissionsGranted = permissions.values.reduce { acc, isPermissionGranted ->
-                acc && isPermissionGranted
-            }
+    LaunchedEffect(Unit) {
+        multiplePermissionState.launchMultiplePermissionRequest()
 
-            shouldShowPermissionRationale = !locationPermissionsGranted  // 항상 권한 요청 대화 상자를 표시
-            currentPermissionsStatus = decideCurrentPermissionStatus(locationPermissionsGranted, shouldShowPermissionRationale)
-            if (locationPermissionsGranted) {
+        when {
+            multiplePermissionState.allPermissionsGranted -> {
                 navController.navigate("Login")
             }
-        })
-
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(key1 = lifecycleOwner, effect = {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_START &&
-                !locationPermissionsGranted &&
-                !shouldShowPermissionRationale) {
-                locationPermissionLauncher.launch(locationPermissions)
+            multiplePermissionState.revokedPermissions.isNotEmpty() -> {
+                // "다시 묻지 않기" 옵션을 선택했는지 확인
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                        context as Activity,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                ) {
+                    // 사용자가 "다시 묻지 않기" 옵션을 선택한 경우
+                    showDialog = true
+                } else {
+                    // 사용자가 권한을 거부만 한 경우
+                    showDialog = true
+                }
             }
         }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    })
+    }
 
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Scaffold(snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        }) { contentPadding ->
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(contentPadding)
-                        .fillMaxWidth(),
-                    text = "권한 요청",
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Button(onClick = { navController.navigate("Login")  }) {
-                    Text(text = "임시")
-                }
-
-                if (!locationPermissionsGranted) {
-                    LaunchedEffect(Unit) {
-                        scope.launch {
-                            val userAction = snackbarHostState.showSnackbar(
-                                message = "이 앱은 위치 권한이 필요합니다.",
-                                actionLabel = "승인",
-                                duration = SnackbarDuration.Indefinite,
-                                withDismissAction = true,
-                            )
-                            when (userAction) {
-                                SnackbarResult.ActionPerformed -> {
-                                    locationPermissionLauncher.launch(locationPermissions)
-                                }
-                                SnackbarResult.Dismissed -> {
-                                    // 필요한 경우 추가 조치
-                                }
-                            }
-                        }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                (context as Activity).finish()  // 앱 종료
+            },
+            title = {
+                Text(text = "권한 요청")
+            },
+            text = {
+                Text("이 앱은 위치 권한이 필요합니다. 설정에서 권한을 허용해 주세요.")
+            },
+            confirmButton = {
+                Button(onClick = {
+                    // 사용자를 앱 설정 화면으로 이동시키는 인텐트
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.fromParts("package", context.packageName, null)
                     }
+                    context.startActivity(intent)
+                }) {
+                    Text("설정으로 가기")
+                }
+            },
+            dismissButton = {
+                Button(onClick = {
+                    (context as Activity).finish()  // 앱 종료
+                }) {
+                    Text("취소")
                 }
             }
-        }
+        )
     }
 }
 
-private fun areLocationPermissionsAlreadyGranted(context: Context): Boolean {
-    return ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.ACCESS_FINE_LOCATION
-    ) == PackageManager.PERMISSION_GRANTED
-}
 
-private fun decideCurrentPermissionStatus(
-    locationPermissionsGranted: Boolean,
-    shouldShowPermissionRationale: Boolean
-): String {
-    return when {
-        locationPermissionsGranted -> "Granted"
-        shouldShowPermissionRationale -> "Rejected"
-        else -> "Denied"
-    }
-}
+
 
 

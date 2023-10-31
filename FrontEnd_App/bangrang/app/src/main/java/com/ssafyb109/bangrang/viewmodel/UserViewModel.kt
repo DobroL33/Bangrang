@@ -14,7 +14,9 @@ import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import com.ssafyb109.bangrang.view.utill.getAddressFromLocation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -29,8 +31,8 @@ class UserViewModel @Inject constructor(
 ) : ViewModel() {
 
     // 로그인 응답
-    private val _loginResponse = MutableStateFlow<String?>(null)
-    val loginResponse: StateFlow<String?> = _loginResponse
+    private val _loginResponse = MutableSharedFlow<ResultType?>()
+    val loginResponse: SharedFlow<ResultType?> = _loginResponse
 
     // 닉네임 검증 응답
     private val _nicknameAvailability = MutableStateFlow<Boolean?>(null)
@@ -115,72 +117,12 @@ class UserViewModel @Inject constructor(
         }
     }
 
-
-    // 카카오 로그인
-    fun sendKaKaoTokenToServer(kakaoIdx: Long, token: String) {
-        val request = LoginRequestDTO(kakaoIdx, token)
-
-        viewModelScope.launch {
-            repository.userKakaoLogin(request).collect { response ->
-                val body = response.body()
-                if (response.isSuccessful) {
-                    if(body != null){
-                        sharedPreferencesUtil.setUserIdx(body.userIdx)
-                        if(body.userImage != ""){
-                            sharedPreferencesUtil.setUserImage(body.userImage)
-                        }
-                        sharedPreferencesUtil.setUserAlarm(body.userAlarm)
-                        sharedPreferencesUtil.setUserToken(body.accessToken)
-                        sharedPreferencesUtil.setUserRefreshToken(body.refreshToken)
-                        sharedPreferencesUtil.setLoggedInStatus("kakao")
-                        if(body.userNickname != ""){
-                            sharedPreferencesUtil.setUserNickname(body.userNickname)
-                            _loginResponse.value = "기존회원"
-                        } else{
-                            _loginResponse.value = "신규회원"
-                        }
-                    }
-
-                } else {
-                    val error = response.errorBody()?.string() ?: "알수없는 에러"
-                    _loginResponse.value = ""
-                    _errorMessage.emit(error)
-                }
-            }
-        }
-    }
-
     // 구글 로그인
-    fun sendTokenToServer(kakaoIdx: Long, token: String) {
-        val request = LoginRequestDTO(kakaoIdx, token)
-
+    fun sendTokenToServer(social: String, token: String) {
         viewModelScope.launch {
-            repository.userKakaoLogin(request).collect { response ->
-                val body = response.body()
-                if (response.isSuccessful) {
-                    if(body != null){
-                        sharedPreferencesUtil.setUserIdx(body.userIdx)
-                        if(body.userImage != ""){
-                            sharedPreferencesUtil.setUserImage(body.userImage)
-                        }
-                        sharedPreferencesUtil.setUserAlarm(body.userAlarm)
-                        sharedPreferencesUtil.setUserToken(body.accessToken)
-                        sharedPreferencesUtil.setUserRefreshToken(body.refreshToken)
-                        sharedPreferencesUtil.setLoggedInStatus("kakao")
-                        if(body.userNickname != ""){
-                            sharedPreferencesUtil.setUserNickname(body.userNickname)
-                            _loginResponse.value = "기존회원"
-                        } else{
-                            _loginResponse.value = "신규회원"
-                        }
-                    }
-
-                } else {
-                    val error = response.errorBody()?.string() ?: "알수없는 에러"
-                    _loginResponse.value = ""
-                    _errorMessage.emit(error)
-                }
-            }
+            _loginResponse.emit(ResultType.LOADING)
+            val result = repository.verifyGoogleToken(social, token)
+            _loginResponse.emit(result)
         }
     }
 
