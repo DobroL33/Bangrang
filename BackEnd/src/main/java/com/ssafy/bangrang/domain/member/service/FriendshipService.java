@@ -1,6 +1,6 @@
 package com.ssafy.bangrang.domain.member.service;
 
-import com.ssafy.bangrang.domain.member.api.request.AddFriendshipResponseDto;
+import com.ssafy.bangrang.domain.member.api.response.AddFriendshipResponseDto;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.domain.member.entity.Friendship;
 

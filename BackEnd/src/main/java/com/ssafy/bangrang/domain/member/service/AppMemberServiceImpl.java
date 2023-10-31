@@ -8,7 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,11 +44,5 @@ public class AppMemberServiceImpl implements AppMemberService {
     public Long findIdxByNickname(String nickname){
         return appMemberRepository.findIdxByNickname(nickname);
     }
-
-//    @Override
-//    public Optional<AppMember> findAppMemberByAccessToken(String accessToken) {
-//        return appMemberRepository.findAppMemberByAccessToken(accessToken);
-//    }
-
 
 }

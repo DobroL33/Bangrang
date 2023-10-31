@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("app")
+@ToString(of = {"nickname"})
 public class AppMember extends Member{
 
     @Column(name = "app_member_nickname", unique = true)
