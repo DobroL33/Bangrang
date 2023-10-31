@@ -1,5 +1,6 @@
 package com.ssafy.bangrang.domain.member.service;
 
+import com.ssafy.bangrang.domain.inquiry.api.response.GetInquiryAllResponseDto;
 import com.ssafy.bangrang.domain.member.api.response.StampDetailDto;
 import com.ssafy.bangrang.domain.member.api.response.StampResponseDto;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
@@ -87,5 +88,28 @@ public class AppMemberServiceImpl implements AppMemberService {
                 .build();
 
         return stampResponse;
+    }
+
+    @Override
+    public List<GetInquiryAllResponseDto> findInquiryById(String id){
+        // id로 member를 찾음
+        AppMember appMember = appMemberRepository.findById(id).orElseThrow();
+
+        // member의 inquiry를 불러옴
+        List<GetInquiryAllResponseDto> inquiryList = appMember.getInquiries()
+                .stream()
+                .map(inquiry -> GetInquiryAllResponseDto
+                        .builder()
+                        .inquiryIdx(inquiry.getIdx())
+                        .type(inquiry.getType())
+                        .eventName(inquiry.getEvent().getTitle())
+                        .title(inquiry.getTitle())
+                        .content(inquiry.getContent())
+                        .answer(inquiry.getComment().getContent())
+                        .resisteDate(inquiry.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
+
+        return inquiryList;
     }
 }
