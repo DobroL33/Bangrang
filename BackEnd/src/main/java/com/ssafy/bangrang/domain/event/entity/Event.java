@@ -1,6 +1,7 @@
 package com.ssafy.bangrang.domain.event.entity;
 
 import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
+import com.ssafy.bangrang.domain.member.entity.Stamp;
 import com.ssafy.bangrang.domain.member.entity.WebMember;
 import com.ssafy.bangrang.global.common.entity.CommonEntity;
 import jakarta.persistence.*;
@@ -68,6 +69,9 @@ public class Event extends CommonEntity {
     @OneToMany(mappedBy = "event")
     private List<Likes> likes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "event")
+    private List<Stamp> stamps = new ArrayList<>();
+
     @Builder
     public Event(String title, String subTitle, String content, String image, String subImage, LocalDateTime startDate, LocalDateTime endDate, String address, Double latitude, Double longitude, String eventUrl, WebMember webMember){
         this.title = title;
@@ -88,6 +92,4 @@ public class Event extends CommonEntity {
         this.webMember = webMember;
         webMember.getEvents().add(this);
     }
-
-
 }

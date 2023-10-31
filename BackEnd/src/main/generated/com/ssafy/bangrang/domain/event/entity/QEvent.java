@@ -47,6 +47,8 @@ public class QEvent extends EntityPathBase<Event> {
 
     public final NumberPath<Double> longitude = createNumber("longitude", Double.class);
 
+    public final ListPath<com.ssafy.bangrang.domain.member.entity.Stamp, com.ssafy.bangrang.domain.member.entity.QStamp> stamps = this.<com.ssafy.bangrang.domain.member.entity.Stamp, com.ssafy.bangrang.domain.member.entity.QStamp>createList("stamps", com.ssafy.bangrang.domain.member.entity.Stamp.class, com.ssafy.bangrang.domain.member.entity.QStamp.class, PathInits.DIRECT2);
+
     public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 
     public final StringPath subImage = createString("subImage");

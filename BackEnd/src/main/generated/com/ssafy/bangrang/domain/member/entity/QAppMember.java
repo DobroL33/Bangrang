@@ -24,6 +24,8 @@ public class QAppMember extends EntityPathBase<AppMember> {
 
     public final BooleanPath alarms = createBoolean("alarms");
 
+    public final ListPath<AppMemberStamp, QAppMemberStamp> appMemberStamps = this.<AppMemberStamp, QAppMemberStamp>createList("appMemberStamps", AppMemberStamp.class, QAppMemberStamp.class, PathInits.DIRECT2);
+
     public final EnumPath<com.ssafy.bangrang.domain.member.model.vo.AppMemberStatus> appMemberStatus = createEnum("appMemberStatus", com.ssafy.bangrang.domain.member.model.vo.AppMemberStatus.class);
 
     public final DateTimePath<java.time.LocalDateTime> deletedAt = createDateTime("deletedAt", java.time.LocalDateTime.class);
@@ -52,8 +54,6 @@ public class QAppMember extends EntityPathBase<AppMember> {
 
     //inherited
     public final StringPath password = _super.password;
-
-    public final ListPath<Stamp, QStamp> stamps = this.<Stamp, QStamp>createList("stamps", Stamp.class, QStamp.class, PathInits.DIRECT2);
 
     public QAppMember(String variable) {
         super(AppMember.class, forVariable(variable));

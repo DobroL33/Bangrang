@@ -1,5 +1,7 @@
 package com.ssafy.bangrang.domain.member.service;
 
+import com.ssafy.bangrang.domain.member.api.response.StampDetailDto;
+import com.ssafy.bangrang.domain.member.api.response.StampResponseDto;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -45,4 +51,35 @@ public class AppMemberServiceImpl implements AppMemberService {
         return appMemberRepository.findIdxByNickname(nickname);
     }
 
+    @Override
+    public StampResponseDto findStampsById(String id){
+        
+        // id로 member를 찾음
+        AppMember appMember = appMemberRepository.findById(id).orElseThrow();
+        
+        // member의 stamp를 불러옴
+        List<StampDetailDto> stampDetailDtos = appMember.getAppMemberStamps()
+                .stream()
+                .map(appMemberStamp -> StampDetailDto
+                        .builder()
+                        .stampName(appMemberStamp.getStamp().getName())
+                        .stampEvent(appMemberStamp.getStamp().getEvent().getIdx())
+                        .stampLocation(appMemberStamp.getStamp().getEvent().getAddress())
+                        .stampTime(appMemberStamp.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
+
+        // distinct 행사를 불러옴
+        Set<Long> distinctEvent = stampDetailDtos.stream()
+                .map(appMemberStamp -> appMemberStamp.getStampEvent())
+                .collect(Collectors.toSet());
+
+        StampResponseDto stampResponse = StampResponseDto.builder()
+                .totalNum((long) stampDetailDtos.size())
+                .totalType((long) distinctEvent.size())
+                .stamps(stampDetailDtos)
+                .build();
+
+        return stampResponse;
+    }
 }

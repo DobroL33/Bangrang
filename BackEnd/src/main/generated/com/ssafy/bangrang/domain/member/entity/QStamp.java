@@ -22,19 +22,11 @@ public class QStamp extends EntityPathBase<Stamp> {
 
     public static final QStamp stamp = new QStamp("stamp");
 
-    public final com.ssafy.bangrang.global.common.entity.QCommonEntity _super = new com.ssafy.bangrang.global.common.entity.QCommonEntity(this);
-
-    public final QAppMember appMember;
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
-
     public final com.ssafy.bangrang.domain.event.entity.QEvent event;
 
     public final NumberPath<Long> idx = createNumber("idx", Long.class);
 
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+    public final StringPath name = createString("name");
 
     public QStamp(String variable) {
         this(Stamp.class, forVariable(variable), INITS);
@@ -54,7 +46,6 @@ public class QStamp extends EntityPathBase<Stamp> {
 
     public QStamp(Class<? extends Stamp> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.appMember = inits.isInitialized("appMember") ? new QAppMember(forProperty("appMember")) : null;
         this.event = inits.isInitialized("event") ? new com.ssafy.bangrang.domain.event.entity.QEvent(forProperty("event"), inits.get("event")) : null;
     }
 

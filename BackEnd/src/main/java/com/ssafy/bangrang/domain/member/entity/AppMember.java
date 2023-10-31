@@ -45,7 +45,7 @@ public class AppMember extends Member{
     private List<Friendship> friendships = new ArrayList<>();
 
     @OneToMany(mappedBy = "appMember")
-    private List<Stamp> stamps = new ArrayList<>();
+    private List<AppMemberStamp> appMemberStamps = new ArrayList<>();
 
     @OneToMany(mappedBy = "appMember")
     private List<Likes> likes = new ArrayList<>();

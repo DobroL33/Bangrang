@@ -11,17 +11,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "stamp",
-    uniqueConstraints = {
-        @UniqueConstraint(
-                name="stamp_unique",
-                columnNames = {
-                        "event_idx",
-                        "member_idx"
-                }
-        )
-    })
-public class Stamp extends CommonEntity {
+@Table(name = "stamp")
+public class Stamp{
 
     @Id
     @GeneratedValue
@@ -32,18 +23,17 @@ public class Stamp extends CommonEntity {
     @JoinColumn(name = "event_idx", nullable = false)
     private Event event;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_idx", nullable = false)
-    private AppMember appMember;
+    @JoinColumn(name = "stamp_name")
+    private String name;
 
     @Builder
-    public Stamp(Event event, AppMember appMember){
-        this.event = event;
-        this.changeAppMember(appMember);
+    public Stamp(Event event, String name){
+        this.changeEvent(event);
+        this.name = name;
     }
 
-    public void changeAppMember(AppMember appMember){
-        this.appMember = appMember;
-        appMember.getStamps().add(this);
+    private void changeEvent(Event event) {
+        this.event = event;
+        event.getStamps().add(this);
     }
 }
