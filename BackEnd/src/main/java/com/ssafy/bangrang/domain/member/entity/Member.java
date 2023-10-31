@@ -1,9 +1,9 @@
 package com.ssafy.bangrang.domain.member.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "DTYPE")
 @Table(name = "member")
-@ToString(of = {"idx"})
+@ToString(of = {"idx", "id"})
 public abstract class Member {
 
     @Id

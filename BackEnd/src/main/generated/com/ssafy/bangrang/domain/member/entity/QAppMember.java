@@ -22,24 +22,18 @@ public class QAppMember extends EntityPathBase<AppMember> {
 
     public final QMember _super = new QMember(this);
 
-    //inherited
-    public final StringPath accessToken = _super.accessToken;
-
-    public final ListPath<com.ssafy.bangrang.global.fcm.entity.Alarm, com.ssafy.bangrang.global.fcm.entity.QAlarm> alarms = this.<com.ssafy.bangrang.global.fcm.entity.Alarm, com.ssafy.bangrang.global.fcm.entity.QAlarm>createList("alarms", com.ssafy.bangrang.global.fcm.entity.Alarm.class, com.ssafy.bangrang.global.fcm.entity.QAlarm.class, PathInits.DIRECT2);
-
-    public final EnumPath<com.ssafy.bangrang.domain.member.model.vo.AlarmReceivedStatus> allAlarmStatus = createEnum("allAlarmStatus", com.ssafy.bangrang.domain.member.model.vo.AlarmReceivedStatus.class);
+    public final BooleanPath alarms = createBoolean("alarms");
 
     public final EnumPath<com.ssafy.bangrang.domain.member.model.vo.AppMemberStatus> appMemberStatus = createEnum("appMemberStatus", com.ssafy.bangrang.domain.member.model.vo.AppMemberStatus.class);
 
     public final DateTimePath<java.time.LocalDateTime> deletedAt = createDateTime("deletedAt", java.time.LocalDateTime.class);
 
-    public final StringPath email = createString("email");
-
-    public final EnumPath<com.ssafy.bangrang.domain.member.model.vo.AlarmReceivedStatus> eventAlarmStatus = createEnum("eventAlarmStatus", com.ssafy.bangrang.domain.member.model.vo.AlarmReceivedStatus.class);
-
     public final StringPath firebaseToken = createString("firebaseToken");
 
     public final ListPath<Friendship, QFriendship> friendships = this.<Friendship, QFriendship>createList("friendships", Friendship.class, QFriendship.class, PathInits.DIRECT2);
+
+    //inherited
+    public final StringPath id = _super.id;
 
     //inherited
     public final NumberPath<Long> idx = _super.idx;
@@ -56,14 +50,8 @@ public class QAppMember extends EntityPathBase<AppMember> {
 
     public final StringPath nickname = createString("nickname");
 
-    public final EnumPath<com.ssafy.bangrang.domain.member.model.vo.AlarmReceivedStatus> notificationAlarmStatus = createEnum("notificationAlarmStatus", com.ssafy.bangrang.domain.member.model.vo.AlarmReceivedStatus.class);
-
-    public final EnumPath<com.ssafy.bangrang.domain.member.model.vo.AlarmReceivedStatus> rankingAlarmStatus = createEnum("rankingAlarmStatus", com.ssafy.bangrang.domain.member.model.vo.AlarmReceivedStatus.class);
-
     //inherited
-    public final StringPath refreshToken = _super.refreshToken;
-
-    public final EnumPath<com.ssafy.bangrang.domain.member.model.vo.SocialProvider> socialProvider = createEnum("socialProvider", com.ssafy.bangrang.domain.member.model.vo.SocialProvider.class);
+    public final StringPath password = _super.password;
 
     public final ListPath<Stamp, QStamp> stamps = this.<Stamp, QStamp>createList("stamps", Stamp.class, QStamp.class, PathInits.DIRECT2);
 

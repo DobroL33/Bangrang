@@ -15,6 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("web")
+@ToString(of = {"organizationName"})
 public class WebMember extends Member{
 
     @Column(name = "web_member_organization_name")

@@ -6,9 +6,8 @@ import java.util.Optional;
 
 public interface AppMemberService {
 
-    Long kakaologin(String id, String ImgUrl) throws Exception;
-
     Long findIdxByNickname(String nickname);
 
-//    Optional<AppMember> findAppMemberByAccessToken(String accessToken);
+    Long kakaologin(String id, String ImgUrl) throws Exception;
+
 }

@@ -22,26 +22,22 @@ public class QWebMember extends EntityPathBase<WebMember> {
 
     public final QMember _super = new QMember(this);
 
-    //inherited
-    public final StringPath accessToken = _super.accessToken;
-
     public final StringPath authFile = createString("authFile");
 
     public final ListPath<com.ssafy.bangrang.domain.inquiry.entity.Comment, com.ssafy.bangrang.domain.inquiry.entity.QComment> comments = this.<com.ssafy.bangrang.domain.inquiry.entity.Comment, com.ssafy.bangrang.domain.inquiry.entity.QComment>createList("comments", com.ssafy.bangrang.domain.inquiry.entity.Comment.class, com.ssafy.bangrang.domain.inquiry.entity.QComment.class, PathInits.DIRECT2);
 
     public final ListPath<com.ssafy.bangrang.domain.event.entity.Event, com.ssafy.bangrang.domain.event.entity.QEvent> events = this.<com.ssafy.bangrang.domain.event.entity.Event, com.ssafy.bangrang.domain.event.entity.QEvent>createList("events", com.ssafy.bangrang.domain.event.entity.Event.class, com.ssafy.bangrang.domain.event.entity.QEvent.class, PathInits.DIRECT2);
 
-    public final StringPath id = createString("id");
+    //inherited
+    public final StringPath id = _super.id;
 
     //inherited
     public final NumberPath<Long> idx = _super.idx;
 
     public final StringPath organizationName = createString("organizationName");
 
-    public final StringPath password = createString("password");
-
     //inherited
-    public final StringPath refreshToken = _super.refreshToken;
+    public final StringPath password = _super.password;
 
     public final EnumPath<com.ssafy.bangrang.domain.member.model.vo.WebMemberStatus> webMemberStatus = createEnum("webMemberStatus", com.ssafy.bangrang.domain.member.model.vo.WebMemberStatus.class);
 
