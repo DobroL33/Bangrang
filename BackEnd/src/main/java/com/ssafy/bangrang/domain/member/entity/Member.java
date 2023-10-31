@@ -1,9 +1,9 @@
 package com.ssafy.bangrang.domain.member.entity;
 
-import com.ssafy.bangrang.domain.member.model.vo.AlarmReceivedStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -21,12 +21,18 @@ public abstract class Member {
     @Id
     @GeneratedValue
     @Column(name = "member_idx")
-    private Long idx;
+    Long idx;
 
-    @Column(name = "member_access_token")
-    protected String accessToken;
+    @Column(name = "member_id", unique = true)
+    protected String id;
 
-    @Column(name = "member_refresh_token")
-    protected String refreshToken;
+    @Column(name = "member_password")
+    String password;
 
+    /**
+     * 비밀번호 암호화
+     */
+    public void passwordEncode(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
+    }
 }
