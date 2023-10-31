@@ -12,4 +12,6 @@ public interface AppMemberService {
     Long kakaologin(String id, String ImgUrl) throws Exception;
 
     StampResponseDto findStampsById(String id);
+
+    Optional<AppMember> findById(String id);
 }

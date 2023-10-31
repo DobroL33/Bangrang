@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -49,6 +50,11 @@ public class AppMemberServiceImpl implements AppMemberService {
     @Override
     public Long findIdxByNickname(String nickname){
         return appMemberRepository.findIdxByNickname(nickname);
+    }
+
+    @Override
+    public Optional<AppMember> findById(String id){
+        return appMemberRepository.findById(id);
     }
 
     @Override
