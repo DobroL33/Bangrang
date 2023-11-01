@@ -1,6 +1,6 @@
 package com.ssafy.bangrang.domain.member.api;
 
-import com.ssafy.bangrang.domain.member.api.request.WebMemberSignUpRequest;
+import com.ssafy.bangrang.domain.member.api.request.WebMemberSignUpRequestDto;
 import com.ssafy.bangrang.domain.member.service.WebMemberService;
 import com.ssafy.bangrang.global.security.jwt.JwtService;
 import io.swagger.annotations.ApiOperation;
@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,9 +24,9 @@ public class WebMemberApi {
 
     @ApiOperation(value = "일반 회원 가입")
     @PostMapping("/signup")
-    public ResponseEntity signup(@Valid @RequestBody WebMemberSignUpRequest webMemberSignUpRequest) throws Exception{
+    public ResponseEntity signup(@Valid @RequestBody WebMemberSignUpRequestDto webMemberSignUpRequestDto, MultipartFile multipartFile) throws Exception{
         return ResponseEntity.ok()
-                .body(webMemberService.signup(webMemberSignUpRequest));
+                .body(webMemberService.signup(webMemberSignUpRequestDto, multipartFile));
     }
 
     @ApiOperation(value = "웹 로그아웃")

@@ -65,7 +65,7 @@ public class AppMember extends Member{
         this.password = password;
         this.imgUrl = imgUrl;
         this.firebaseToken = firebaseToken;
-        this.alarms = true;
+        this.alarms = false;
         this.appMemberStatus = appMemberStatus.ACTIVE;
     }
 
@@ -84,5 +84,11 @@ public class AppMember extends Member{
         this.nickname = nickname;
     }
 
+    /**
+     * 유저 알람 설정 on/off
+     */
+    public void alarmOnOff(Boolean alarmSet) {
+        this.alarms = !alarmSet;
+    }
 
 }

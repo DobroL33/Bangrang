@@ -27,7 +27,7 @@ public abstract class Member {
     protected String id;
 
     @Column(name = "member_password")
-    String password;
+    protected String password;
 
     /**
      * 비밀번호 암호화

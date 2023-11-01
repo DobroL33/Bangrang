@@ -139,16 +139,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * Builder의 User : UserDetails의 User 객체
      */
     public void saveAuthentication(Member myUser) {
-//        String password = myUser.getPassword();
-//
-//        // 소셜 회원이라면
-//        if(password == null)
-//            password = PasswordUtil.generateRandomPassword();
 
         UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
                 .username(myUser.getId())
-//                .password(password)
-//                .roles(myUser.getRole().name())
+                .password(myUser.getPassword())
                 .build();
 
         // 인증 객체 생성

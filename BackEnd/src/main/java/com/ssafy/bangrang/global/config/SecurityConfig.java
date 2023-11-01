@@ -73,7 +73,7 @@ public class SecurityConfig {
             /* 앱 회원가입, 로그인 */
             "/api/member/login",
             /* 앱 닉네임 중복확인 */
-            "/api/member/nicknameCheck",
+            "/api/member/nicknameCheck/**",
 
             
     };

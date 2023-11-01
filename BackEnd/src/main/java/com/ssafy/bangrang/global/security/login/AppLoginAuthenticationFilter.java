@@ -46,7 +46,7 @@ public class AppLoginAuthenticationFilter extends AbstractAuthenticationProcessi
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException {
-        if(httpServletRequest.getContentType() == null || !httpServletRequest.getContentType().equals(CONTENT_TYPE))
+        if(httpServletRequest.getContentType() == null)
             throw new AuthenticationServiceException("Authentication Content-Type Not Supported : " + httpServletRequest.getContentType());
         // request에서 messageBody를 JSON 형태로 반환
         String messageBody = StreamUtils.copyToString(httpServletRequest.getInputStream(), StandardCharsets.UTF_8);
