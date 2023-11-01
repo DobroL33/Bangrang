@@ -26,19 +26,9 @@ const trans = (r: number, s: number) =>
     r / 10
   }deg) rotateZ(${r}deg) scale(${s})`;
 
-const stamping = (i: number) => {
-  if (i !== 0) {
-    console.log(`"${i}번째 스탬프 쾅"`);
-    console.log(i);
-  } else {
-    console.log(`"${i}번째 스탬프 쾅"`);
-    console.log("흠 다 모았군");
-  }
-};
-
 const flying = window.innerWidth * 0.2;
 
-function Deck() {
+function Deck({ setStack }: { setStack: (i: number) => void }) {
   const [gone] = useState(() => new Set());
   const [props, api] = useSprings(cards.length, (i) => ({
     ...to(i),
@@ -47,20 +37,20 @@ function Deck() {
 
   const bind = useDrag(
     ({ args: [index], down, movement: [mx], direction: [xDir], velocity }) => {
-      const trigger = velocity > 0.2; // If you flick hard enough it should trigger the card to fly out
-      const dir = xDir < 0 ? -1 : 0; // Direction should either point left or right
-      if (!down && trigger) gone.add(index); // If button/finger's up and trigger velocity is reached, we flag the card ready to fly out
+      const trigger = velocity > 0.2;
+      const dir = xDir < 0 ? -1 : 0;
+      if (!down && trigger) gone.add(index);
       api.start((i) => {
-        if (index !== i) return; // We're only interested in changing spring-data for the current spring
+        if (index !== i) return;
         const isGone = gone.has(index);
         const x = isGone
           ? (window.innerWidth - flying * 2) * dir
           : down
           ? mx
-          : 1; // When a card is gone it flys out left or right, otherwise goes back to zero
-        const rot = mx / 100 + (isGone ? dir * 10 * velocity : 0); // How much the card tilts, flicking it harder makes it rotate faster
-        const scale = down ? 1.1 : 1; // Active cards lift up a bit
-        isGone ? stamping(i) : null; // n번째
+          : 1;
+        const rot = mx / 100 + (isGone ? dir * 10 * velocity : 0);
+        const scale = down ? 1.1 : 1;
+        isGone ? setStack(--i) : null;
         return {
           x,
           rot,
@@ -82,7 +72,6 @@ function Deck() {
     <>
       {props.map(({ x, y, rot, scale }, i) => (
         <animated.div className={styles.deck} key={i} style={{ x, y }}>
-          {/* This is the card itself, we're binding our gesture to it (and inject its index so we know which is which) */}
           <animated.div
             {...bind(i)}
             style={{
@@ -97,7 +86,8 @@ function Deck() {
 }
 
 export default function SecondPage() {
-  const [divOpacity, setDivOpacity] = useState(Array(6).fill(1));
+  const [stack, setStack] = useState<number>(-1);
+  console.log({ stack });
 
   return (
     <div className={styles.Page}>
@@ -107,33 +97,39 @@ export default function SecondPage() {
           style={{ position: "absolute", width: "350px", left: "10%" }}
           alt=""
         />
-        <div className={styles.infos}>
-          {/* <div>
-            <h2>야경도 다녀왔구열</h2>
-          </div>
-          <div>
-            <h2>부산도 다녀왔구열</h2>
-          </div>
-          <div>
-            <h2>경주도 다녀왔구열</h2>
-          </div>
-          <div>
-            <h2>서울도 다녀왔구열</h2>
-          </div>
-          <div>
-            <h2>대전도 다녀왔구열</h2>
-          </div>
-          <div>
-            <h2>제주도 다녀왔구열</h2>
-          </div> */}
-        </div>
+        <div className={styles.infos}></div>
       </div>
       <div className={styles.CommentContainer}>
-        <p>하이요</p>
+        <div style={{ opacity: stack < 0 ? "0" : "1", transition: "0.8s" }}>
+          <h1
+            style={{
+              opacity: stack < 5 ? "1" : "0",
+              transition: stack < 5 ? "0.6s" : "0s",
+            }}
+          >
+            안녕하세요
+          </h1>
+          <h1
+            style={{
+              opacity: stack < 3 ? "1" : "0",
+              transition: stack < 3 ? "0.6s" : "0s",
+            }}
+          >
+            멘트 추천받을게요
+          </h1>
+          <h1
+            style={{
+              opacity: stack < 1 ? "1" : "0",
+              transition: stack < 1 ? "0.6s" : "0s",
+            }}
+          >
+            CSS 스타일도 ㅎ
+          </h1>
+        </div>
       </div>
 
       <div className={styles.DeckContainer}>
-        <Deck />
+        <Deck setStack={setStack} />
       </div>
     </div>
   );

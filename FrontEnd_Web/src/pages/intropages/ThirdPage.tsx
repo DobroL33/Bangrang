@@ -28,7 +28,7 @@ const ThirdPage: React.FC = () => {
           className={styles.Percent}
           style={{
             position: "absolute",
-            right: scrollPercent < 100 ? "10%" : "38%",
+            right: scrollPercent < 100 ? "10%" : "35%",
             transition: "0.7s",
             fontSize: scrollPercent < 100 ? "30px" : "50px",
             color: scrollPercent < 100 ? "#FFFFFF" : "#FFFFFF",
@@ -37,14 +37,15 @@ const ThirdPage: React.FC = () => {
           현재 정복률 : {scrollPercent.toFixed(0)}%
         </p>
         <p
+          className={styles.main}
           style={{
             position: "absolute",
             top: "40%",
             left: "40%",
             fontSize: "50px",
             color: "#FFFFFF",
-            transition: "1s",
-            opacity: scrollPercent < 100 ? "0" : "1",
+            transition: "0.75s",
+            opacity: scrollPercent < 99 ? "0" : "1",
           }}
         >
           안녕하세융
