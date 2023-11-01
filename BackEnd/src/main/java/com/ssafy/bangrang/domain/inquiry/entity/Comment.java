@@ -45,4 +45,7 @@ public class Comment extends CommonEntity {
         inquiry.changeComment(this);
     }
 
+    public void update(String content) {
+        this.content =content;
+    }
 }

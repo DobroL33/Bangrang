@@ -1,5 +1,6 @@
 package com.ssafy.bangrang.domain.event.entity;
 
+import com.ssafy.bangrang.domain.event.api.request.EventPutDto;
 import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
 import com.ssafy.bangrang.domain.member.entity.Stamp;
 import com.ssafy.bangrang.domain.member.entity.WebMember;
@@ -91,5 +92,15 @@ public class Event extends CommonEntity {
     public void changeWebMember(WebMember webMember) {
         this.webMember = webMember;
         webMember.getEvents().add(this);
+    }
+
+    public Event update(EventPutDto eventPutDto) {
+        this.title = eventPutDto.getTitle();
+        this.content = eventPutDto.getTitle();
+        this.startDate = eventPutDto.getStartDate();
+        this.endDate = eventPutDto.getEndDate();
+        this.address = eventPutDto.getAddress();
+        this.eventUrl = eventPutDto.getEventUrl();
+        return this;
     }
 }
