@@ -30,13 +30,13 @@ spring:
   # mysql 설정
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    #url: jdbc:mysql://k9b109.p.ssafy.io:6033/bangrang?createDatabaseIfNotExist=true
-    #username: bangrang-b109
-    #password: bangrang_ssafy_b109!
+    url: jdbc:mysql://k9b109.p.ssafy.io:6033/bangrang?createDatabaseIfNotExist=true
+    username: bangrang-b109
+    password: bangrang_ssafy_b109!
 
-    url: jdbc:mysql://localhost:3306/bangrang
-    username: root
-    password: 1234
+#    url: jdbc:mysql://localhost:3306/bangrang
+#    username: root
+#    password: 1234
 
   # redis 설정
   data:
@@ -99,7 +99,8 @@ jwt:
     expiration: 1209600000
     header: Authorization-Refresh
 
-logging.level.org.springframework.data.redis: ERROR
+logging.level:
+  org.springframework.data.redis: ERROR
 
 kakao:
   client-id: e523007588cde7cbef9cd8fe7f9e6577

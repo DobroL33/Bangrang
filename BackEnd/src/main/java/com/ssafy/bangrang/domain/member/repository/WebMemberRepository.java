@@ -10,8 +10,7 @@ public interface WebMemberRepository extends JpaRepository<WebMember, Long> {
 
     @Query("SELECT u FROM WebMember u WHERE u.id = :id")
     Optional<WebMember> findById(String id);
-    @Query("SELECT u FROM WebMember u WHERE u.password = :password")
-    Optional<WebMember> findByPW(String password);
+
     @Override
     <S extends WebMember> S save(S entity);
 }

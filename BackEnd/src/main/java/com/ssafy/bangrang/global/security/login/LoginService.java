@@ -1,15 +1,11 @@
 package com.ssafy.bangrang.global.security.login;
 
 import com.ssafy.bangrang.domain.member.entity.AppMember;
-import com.ssafy.bangrang.domain.member.entity.Member;
 import com.ssafy.bangrang.domain.member.entity.WebMember;
-import com.ssafy.bangrang.domain.member.model.vo.WebMemberStatus;
 import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
-import com.ssafy.bangrang.domain.member.repository.MemberRepository;
+
 import com.ssafy.bangrang.domain.member.repository.WebMemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class LoginService implements UserDetailsService {
 
     private final AppMemberRepository appMemberRepository;
+
     private final WebMemberRepository webMemberRepository;
 
     /**

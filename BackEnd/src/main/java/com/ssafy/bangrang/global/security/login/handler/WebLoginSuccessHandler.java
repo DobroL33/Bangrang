@@ -5,10 +5,11 @@ import com.ssafy.bangrang.domain.member.model.vo.WebMemberStatus;
 import com.ssafy.bangrang.domain.member.repository.WebMemberRepository;
 import com.ssafy.bangrang.global.security.jwt.JwtService;
 import com.ssafy.bangrang.global.security.redis.RedisRefreshTokenService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+
+
 import net.minidev.json.JSONObject;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
