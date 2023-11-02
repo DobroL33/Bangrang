@@ -5,6 +5,7 @@ import com.ssafy.bangrang.domain.member.api.response.StampDetailDto;
 import com.ssafy.bangrang.domain.member.api.response.StampResponseDto;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
+import com.ssafy.bangrang.global.s3service.S3Service;
 import com.ssafy.bangrang.global.security.redis.RedisAccessTokenService;
 import com.ssafy.bangrang.global.security.redis.RedisRefreshTokenService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +36,8 @@ public class AppMemberServiceImpl implements AppMemberService {
     private final RedisRefreshTokenService redisRefreshTokenService;
 
     private final RedisAccessTokenService redisAccessTokenService;
+
+    private final S3Service s3Service;
 
     /**
      * 소셜 로그인 & 회원 가입
@@ -121,6 +125,24 @@ public class AppMemberServiceImpl implements AppMemberService {
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
         user.alarmOnOff(alarmSet);
     }
+
+    @Override
+    public String profileImgUpdate(MultipartFile multipartFile, UserDetails userDetails) throws Exception {
+        AppMember user = appMemberRepository.findById(userDetails.getUsername())
+                .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
+
+        // 저장할 경로, 이름 설정
+        String fileName =  s3Service.generateImgFileName(multipartFile,user.getId());
+
+        byte[] fileBytes = multipartFile.getBytes();
+
+        // S3에 업로드하고 그 url 가져옴
+        String imgPath = s3Service.uploadToS3(fileName, fileBytes, multipartFile.getContentType());
+
+
+        return imgPath;
+    }
+
 
     @Override
     public Long findIdxByNickname(String nickname){

@@ -4,6 +4,7 @@ import com.ssafy.bangrang.domain.inquiry.api.response.GetInquiryAllResponseDto;
 import com.ssafy.bangrang.domain.member.api.response.StampResponseDto;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,8 @@ public interface AppMemberService {
     Long findIdxByNickname(String nickname);
 
     Long kakaologin(String id, String ImgUrl) throws Exception;
+
+    String profileImgUpdate(MultipartFile file, UserDetails userDetails) throws Exception;
 
     void alarmOnOff(Boolean alarmSet, UserDetails userDetails) throws Exception;
 

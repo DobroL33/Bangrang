@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface WebMemberService {
 
-    Long signup(WebMemberSignUpRequestDto webMemberSignUpRequestDto, MultipartFile multipartFile) throws Exception;
+    Long signup(WebMemberSignUpRequestDto webMemberSignUpRequestDto, MultipartFile file) throws Exception;
 
     Long logout(String accessToken, UserDetails userDetails);
 }

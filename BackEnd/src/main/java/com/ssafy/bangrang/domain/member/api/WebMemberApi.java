@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,10 +24,10 @@ public class WebMemberApi {
     private final JwtService jwtService;
 
     @ApiOperation(value = "일반 회원 가입")
-    @PostMapping("/signup")
-    public ResponseEntity signup(@Valid @RequestBody WebMemberSignUpRequestDto webMemberSignUpRequestDto, MultipartFile multipartFile) throws Exception{
+    @PostMapping(value = "/signup")
+    public ResponseEntity signup(@Valid @RequestPart(value = "user") WebMemberSignUpRequestDto webMemberSignUpRequestDto, @RequestPart(value = "authFile") MultipartFile file) throws Exception{
         return ResponseEntity.ok()
-                .body(webMemberService.signup(webMemberSignUpRequestDto, multipartFile));
+                .body(webMemberService.signup(webMemberSignUpRequestDto,file));
     }
 
     @ApiOperation(value = "웹 로그아웃")

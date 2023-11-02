@@ -7,18 +7,19 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import java.time.LocalDate;
 @Getter
+@EnableWebMvc
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WebMemberSignUpRequestDto {
 
     @NotBlank(message = "id는 빈값이 올 수 없습니다")
-    private String id;
+    protected String id;
     @NotBlank(message = "password는 빈값이 올 수 없습니다")
-    private String password;
+    protected String password;
     @NotBlank(message = "organizationName는 빈값이 올 수 없습니다")
-    private String organizationName;
+    protected String organizationName;
 
     public WebMember toEntity(String authFile) {
 

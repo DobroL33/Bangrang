@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -56,6 +57,12 @@ public class AppMemberApi {
                 .orElseThrow(() -> new IllegalArgumentException("비정상적인 access token 입니다.")), userDetails);
 
         return ResponseEntity.ok().body(result);
+    }
+    @ApiOperation(value = "프로필 이미지 변경")
+    @PostMapping("/profileImg")
+    public ResponseEntity<?> profileImgUpdate(@RequestPart("image")MultipartFile file,
+                                              @AuthenticationPrincipal UserDetails userDetails) throws Exception{
+        return ResponseEntity.ok().body(appMemberService.profileImgUpdate(file, userDetails));
     }
 
     @ApiOperation(value = "알람 ON/OFF")
