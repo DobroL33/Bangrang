@@ -23,7 +23,7 @@ class UserRepository @Inject constructor(
     suspend fun verifyGoogleToken(social: String, token:String): ResultType {
         return try {
             val requestDTO = LoginRequestDTO(social,token)
-            val response = userService.userLogin(requestDTO)
+            val response = userService.userKakaoLogin(requestDTO)
             val data = response.body()
 
             if (response.isSuccessful) {
@@ -40,10 +40,9 @@ class UserRepository @Inject constructor(
                     sharedPreferencesUtil.setUserAlarm(data.userAlarm)
                     data.userNickname?.let { sharedPreferencesUtil.setUserNickname(it) }
                     data.userImage?.let { sharedPreferencesUtil.setUserImage(it) }
-                    Log.d("@@@@@@@@@@@@@@@@@@@@@@@","${data.userAlarm}")
                     sharedPreferencesUtil.setUserIdx(data.userIdx)
-
-                    if(data.userNickname == "null"){
+                    
+                    if(data.userNickname == null){
                         return ResultType.NICKNAME
                     }
                 }

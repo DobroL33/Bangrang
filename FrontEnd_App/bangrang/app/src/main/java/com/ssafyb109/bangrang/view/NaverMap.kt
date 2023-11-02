@@ -21,6 +21,7 @@ import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.compose.CameraPositionState
+import com.naver.maps.map.compose.CircleOverlay
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
@@ -36,6 +37,7 @@ import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.style.sources.Tileset
 import com.ssafyb109.bangrang.R
+import com.ssafyb109.bangrang.view.utill.cityLocations
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
@@ -76,36 +78,21 @@ fun NaverMap(height: Dp = Dp.Unspecified, blackWall: Boolean) {
             uiSettings = mapUiSettings,
             locationSource = rememberFusedLocationSource()
         ) {
-
-            Marker(
-                state = MarkerState(position = seoul),
-                captionText = "Marker in Seoul"
-            )
-            Marker(
-                state = MarkerState(position = LatLng(37.390791, 127.096306)),
-                captionText = "Marker in Pangyo"
-            )
-        }
-    }
-}
-
-fun addBlackOverlaysToMap(naverMap: NaverMap) {
-    val southwest = LatLng(33.0, 124.0) // 대략적인 한국의 남서쪽 좌표
-    val northeast = LatLng(39.0, 132.0) // 대략적인 한국의 북동쪽 좌표
-    val divisions = 10
-    val latDelta = (northeast.latitude - southwest.latitude) / divisions
-    val lngDelta = (northeast.longitude - southwest.longitude) / divisions
-
-    for (i in 0 until divisions) {
-        for (j in 0 until divisions) {
-            val sw = LatLng(southwest.latitude + (i * latDelta),
-                southwest.longitude + (j * lngDelta))
-            val ne = LatLng(sw.latitude + latDelta, sw.longitude + lngDelta)
-
-            val groundOverlay = GroundOverlay().apply {
-                bounds = LatLngBounds(sw, ne)
-                setImage(OverlayImage.fromResource(R.drawable.black256))
-                map = naverMap
+            if(blackWall) {
+                for (city in cityLocations) {
+                    // 각 위치마다 반경 500m의 검정색 원을 그립니다.
+                    CircleOverlay(
+                        center = LatLng(city.latitude, city.longitude),
+                        radius = 500.0, // 500 meters
+                        color = Color.Black,
+                        outlineWidth = 0.dp,
+                        outlineColor = Color.Black,
+                        tag = null,
+                        visible = true,
+                        zIndex = 0,
+                        globalZIndex = 0
+                    )
+                }
             }
         }
     }

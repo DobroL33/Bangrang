@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -135,7 +136,7 @@ fun AppNavigation(
             Box(modifier = Modifier.weight(1f)) {
                 NavHost(navController, startDestination = startDestination) {
                     composable("Permission") { LocationPermissionPage(navController) }
-                    composable("Login") { LoginPage(navController, userViewModel) }
+                    composable("Login") { LoginPage(navController, userViewModel, sharedPreferencesUtil) }
                     composable("SignUp") { SignUpPage(navController, userViewModel) }
 
                     composable("Home") { HomePage(navController, userViewModel) }

@@ -1,5 +1,6 @@
 package com.ssafyb109.bangrang.view
 
+import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
@@ -14,11 +15,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.ssafyb109.bangrang.ground.LocationService
 import com.ssafyb109.bangrang.view.utill.CardItem
 import com.ssafyb109.bangrang.view.utill.LocationSelector
 import com.ssafyb109.bangrang.viewmodel.EventViewModel
@@ -44,7 +47,14 @@ fun HomePage(
 //        userViewModel.updateLocation()
 //    }
 
-    LaunchedEffect(Unit) {
+    val context = LocalContext.current
+
+    LaunchedEffect(true) {
+        // 위치서비스 시작
+        val serviceIntent = Intent(context, LocationService::class.java)
+        context.startService(serviceIntent)
+
+        // 이벤트 받아오기
         eventViewModel.selectEvent()
     }
 

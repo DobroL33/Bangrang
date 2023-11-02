@@ -101,18 +101,20 @@ dependencies {
     implementation ("com.kakao.sdk:v2-user:2.17.0")
     // 구글 로그인
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
-//    // GPS
-//    implementation ("com.google.android.gms:play-services-location:21.0.1")
+    // GPS // 네이버 compose 지도가 16.0.0과 호환중
+    implementation ("com.google.android.gms:play-services-location:16.0.0")
     // 네이버 지도
     implementation("com.naver.maps:map-sdk:3.17.0")
     implementation ("io.github.fornewid:naver-map-compose:1.4.0")
-    // 구글 지도
-    implementation ("com.google.android.gms:play-services-maps:18.2.0")
-    implementation ("com.google.maps.android:maps-compose:4.1.1")
-    implementation ("com.google.maps.android:maps-compose-utils:4.1.1")
-    implementation ("com.google.maps.android:maps-compose-widgets:4.1.1")
     // coil
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+
+    // room
+    val room_version = "2.6.0"
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
 
 
 

@@ -16,7 +16,7 @@ import retrofit2.http.Path
 interface UserService {
 
     // 카카오 로그인
-    @POST("api/member/login/kakao")
+    @POST("api/member/login")
     suspend fun userKakaoLogin(
         @Body request: LoginRequestDTO
     ): Response<LoginResponseDTO>

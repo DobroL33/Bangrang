@@ -44,6 +44,7 @@ import com.kakao.sdk.user.UserApiClient
 import com.ssafyb109.bangrang.MainActivity
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.repository.ResultType
+import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -56,16 +57,6 @@ fun LoginPage(
 ) {
     val context = LocalContext.current
     val googleSignInClient = (context as MainActivity).getGoogleLoginAuth()
-    val loginResponse by userViewModel.loginResponse.collectAsState()
-
-    LaunchedEffect(loginResponse){
-        if(loginResponse == "기존회원"){
-            navController.navigate("Home")
-        }
-        if(loginResponse == "신규회원"){
-            navController.navigate("SignUp")
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -92,7 +83,7 @@ fun LoginPage(
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .clickable {
-                    performKakaoLogin(context, navController, userViewModel, sharedPreferencesUtil)
+                    performKakaoLogin(context, navController, userViewModel)
                 }
                 .width(350.dp)
                 .height(80.dp)

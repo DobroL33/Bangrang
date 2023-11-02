@@ -9,6 +9,7 @@ import com.ssafyb109.bangrang.api.AlarmStatusRequesetDTO
 import com.ssafyb109.bangrang.api.LoginRequestDTO
 import com.ssafyb109.bangrang.api.StampDetail
 import com.ssafyb109.bangrang.api.StampResponseDTO
+import com.ssafyb109.bangrang.repository.ResultType
 import com.ssafyb109.bangrang.repository.UserRepository
 import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import com.ssafyb109.bangrang.view.utill.getAddressFromLocation

@@ -6,9 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,41 +53,39 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.launch
 
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LocationPermissionPage(navController: NavHostController) {
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
 
+    val permissionsList = mutableListOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Android 10, API level 29
+        permissionsList.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // Android 12, API level 33
+        permissionsList.add(Manifest.permission.READ_MEDIA_IMAGES)
+    }
+
     val multiplePermissionState = rememberMultiplePermissionsState(
-        permissions = listOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION
-        )
+        permissions = permissionsList
     )
 
     LaunchedEffect(Unit) {
         multiplePermissionState.launchMultiplePermissionRequest()
 
-        when {
-            multiplePermissionState.allPermissionsGranted -> {
-                navController.navigate("Login")
-            }
-            multiplePermissionState.revokedPermissions.isNotEmpty() -> {
-                // "다시 묻지 않기" 옵션을 선택했는지 확인
-                if (!ActivityCompat.shouldShowRequestPermissionRationale(
-                        context as Activity,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    )
-                ) {
-                    // 사용자가 "다시 묻지 않기" 옵션을 선택한 경우
-                    showDialog = true
-                } else {
-                    // 사용자가 권한을 거부만 한 경우
-                    showDialog = true
-                }
-            }
+        if (multiplePermissionState.allPermissionsGranted) {
+            navController.navigate("Login")
+        } else if (multiplePermissionState.revokedPermissions.isNotEmpty()) {
+            showDialog = true
         }
     }
 
@@ -102,7 +102,6 @@ fun LocationPermissionPage(navController: NavHostController) {
             },
             confirmButton = {
                 Button(onClick = {
-                    // 사용자를 앱 설정 화면으로 이동시키는 인텐트
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                         data = Uri.fromParts("package", context.packageName, null)
                     }
