@@ -36,20 +36,17 @@ const ThirdPage: React.FC = () => {
         >
           현재 정복률 : {scrollPercent.toFixed(0)}%
         </p>
-        <p
-          className={styles.main}
+        <img
+          src="assets/Busy.gif"
+          alt=""
           style={{
             position: "absolute",
             top: "40%",
             left: "40%",
-            fontSize: "50px",
-            color: "#FFFFFF",
             transition: "0.75s",
             opacity: scrollPercent < 99 ? "0" : "1",
           }}
-        >
-          안녕하세융
-        </p>
+        />
       </div>
     </div>
   );
