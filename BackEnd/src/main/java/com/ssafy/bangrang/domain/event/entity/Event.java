@@ -1,12 +1,13 @@
 package com.ssafy.bangrang.domain.event.entity;
 
-import com.ssafy.bangrang.domain.event.api.request.EventPutDto;
+import com.ssafy.bangrang.domain.event.api.request.EventUpdateDto;
 import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
 import com.ssafy.bangrang.domain.member.entity.Stamp;
 import com.ssafy.bangrang.domain.member.entity.WebMember;
 import com.ssafy.bangrang.global.common.entity.CommonEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -94,13 +95,16 @@ public class Event extends CommonEntity {
         webMember.getEvents().add(this);
     }
 
-    public Event update(EventPutDto eventPutDto) {
+    public Event update(EventUpdateDto eventPutDto, String eventUrl) {
         this.title = eventPutDto.getTitle();
         this.content = eventPutDto.getTitle();
-        this.startDate = eventPutDto.getStartDate();
-        this.endDate = eventPutDto.getEndDate();
+        this.subTitle = eventPutDto.getSubTitle();
+        this.latitude = eventPutDto.getLatitude();
+        this.longitude = eventPutDto.getLongitude();
+        this.startDate = LocalDateTime.parse(eventPutDto.getStartDate());
+        this.endDate = LocalDateTime.parse(eventPutDto.getEndDate());
         this.address = eventPutDto.getAddress();
-        this.eventUrl = eventPutDto.getEventUrl();
+        this.eventUrl = eventUrl;
         return this;
     }
 }

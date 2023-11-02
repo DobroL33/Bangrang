@@ -1,7 +1,13 @@
 package com.ssafy.bangrang.domain.event.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.bangrang.domain.event.api.request.EventPutDto;
 import com.ssafy.bangrang.domain.event.api.request.EventSignUpDto;
+import com.ssafy.bangrang.domain.event.api.request.EventUpdateDto;
 import com.ssafy.bangrang.domain.event.api.response.EventGetDto;
 import com.ssafy.bangrang.domain.event.api.response.GetEventAllResponseDto;
 import com.ssafy.bangrang.domain.event.entity.Event;
@@ -10,14 +16,26 @@ import com.ssafy.bangrang.domain.inquiry.entity.Comment;
 import com.ssafy.bangrang.domain.member.entity.WebMember;
 import com.ssafy.bangrang.domain.member.repository.WebMemberRepository;
 import com.ssafy.bangrang.domain.member.service.WebMemberService;
+import com.ssafy.bangrang.global.s3service.S3ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -27,45 +45,185 @@ import java.util.stream.Collectors;
 @Slf4j
 public class EventWebService {
 
+
     private final EventRepository eventRepository;
     private final WebMemberRepository webMemberRepository;
+    private final ObjectMapper objectMapper;
+    private final AmazonS3Client amazonS3Client;
+    private final S3ServiceImpl s3Service;
+
+    @Value("${cloud.naver.client_id}")
+    String client_id;
+
+    @Value("${cloud.naver.client_secret}")
+    String client_secret;
+
+
+
+    private String convertDateToString(LocalDateTime nowDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        return nowDate.format(formatter);
+    }
+
 
     @Transactional
-    public void saveEvent(EventSignUpDto eventSignUpDto) {
+    public void saveEvent(EventSignUpDto eventSignUpDto, MultipartFile eventUrl, UserDetails userDetails) throws IOException {
+        log.info("이벤트 저장 시작");
 
-        WebMember webMember = webMemberRepository.findById(eventSignUpDto.getWebMemberIdx())
+        WebMember webMember = webMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(()->new IllegalArgumentException("찾을수 없어요!!"));
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-NCP-APIGW-API-KEY-ID", client_id);
+        headers.add("X-NCP-APIGW-API-KEY", client_secret);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
+        String query = eventSignUpDto.getAddress();
+        String url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query="+query;
+
+        log.info("네이버 Geocoding api요청 시작");
+        ResponseEntity<String> response =
+                restTemplate.exchange(url,
+                        HttpMethod.GET,
+                        new HttpEntity<>(null, headers),
+                        String.class);
+        String body = response.getBody();
+        log.info("네이버 Geocoding api요청 완료");
+
+
+        JsonNode root = objectMapper.readTree(body);
+        JsonNode addresses = root.get("addresses");
 
 
 
-        Event event = Event.builder()
-                .title(eventSignUpDto.getTitle())
-                .address(eventSignUpDto.getAddress())
-                .content(eventSignUpDto.getContent())
-                .eventUrl(eventSignUpDto.getEventUrl())
-//                .longitude(eventSignUpDto.getLongitude())
-//                .latitude(eventSignUpDto.getLatitude())
-                .startDate(LocalDateTime.parse(eventSignUpDto.getStartDate())) // 수정된 부분
-                .endDate(LocalDateTime.parse(eventSignUpDto.getEndDate())) // 수정된 부분
-                .webMember(webMember)
-                .build();
 
-        event = eventRepository.save(event);
+        if (addresses.isArray() && addresses.size() > 0) {
 
+            if (eventUrl!=null) {
+                String fileName =  s3Service.generateAuthFileName(eventUrl, userDetails.getUsername());
+                byte[] fileBytes = eventUrl.getBytes();
+
+                String eventPath = s3Service.uploadToS3(fileName,fileBytes, eventUrl.getContentType());
+
+                JsonNode firstAddress = addresses.get(0);
+                double latitude = Double.parseDouble(firstAddress.get("x").asText());
+                double longitude = Double.parseDouble(firstAddress.get("y").asText());
+
+                Event event = Event.builder()
+                        .title(eventSignUpDto.getTitle())
+                        .subTitle(eventSignUpDto.getSubTitle())
+                        .address(eventSignUpDto.getAddress())
+                        .content(eventSignUpDto.getContent())
+                        .eventUrl(eventPath)
+                        .longitude(longitude)
+                        .latitude(latitude)
+                        .startDate(LocalDateTime.parse(eventSignUpDto.getStartDate())) // 수정된 부분
+                        .endDate(LocalDateTime.parse(eventSignUpDto.getEndDate())) // 수정된 부분
+                        .webMember(webMember)
+                        .build();
+
+                event = eventRepository.save(event);
+            } else  {
+                JsonNode firstAddress = addresses.get(0);
+                double latitude = Double.parseDouble(firstAddress.get("x").asText());
+                double longitude = Double.parseDouble(firstAddress.get("y").asText());
+
+                Event event = Event.builder()
+                        .title(eventSignUpDto.getTitle())
+                        .subTitle(eventSignUpDto.getSubTitle())
+                        .address(eventSignUpDto.getAddress())
+                        .content(eventSignUpDto.getContent())
+                        .longitude(longitude)
+                        .latitude(latitude)
+                        .eventUrl(null)
+                        .startDate(LocalDateTime.parse(eventSignUpDto.getStartDate())) // 수정된 부분
+                        .endDate(LocalDateTime.parse(eventSignUpDto.getEndDate())) // 수정된 부분
+                        .webMember(webMember)
+                        .build();
+
+                event = eventRepository.save(event);
+            }
+        }
     }
 
+    // 이벤트 수정하기
     @Transactional
-    public void updateEvent(Long eventIdx,EventPutDto eventPutDto){
+    public void updateEvent(Long eventIdx, MultipartFile eventUrl, EventUpdateDto eventUpdateDto, UserDetails userDetails) throws IOException {
 
-        Event event = eventRepository.findById(eventIdx)
-                .orElseThrow(()->new IllegalArgumentException("찾을 수 없다"));
+        log.info("수정하기 시작");
+        Event event = eventRepository.findByIdx(eventIdx)
+                .orElseThrow(()->new IllegalArgumentException("이벤트를 찾을 수 없다"));
 
-        event.update(eventPutDto);
+        WebMember webMember = webMemberRepository.findById(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("멤버를 찾을수 없다"));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-NCP-APIGW-API-KEY-ID", client_id);
+        headers.add("X-NCP-APIGW-API-KEY", client_secret);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
+        String query = eventUpdateDto.getAddress();
+        String url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query="+query;
+
+        log.info("네이버 Geocoding api요청 시작");
+        ResponseEntity<String> response =
+                restTemplate.exchange(url,
+                        HttpMethod.GET,
+                        new HttpEntity<>(null, headers),
+                        String.class);
+        String body = response.getBody();
+        log.info("네이버 Geocoding api요청 완료");
+
+
+        JsonNode root = objectMapper.readTree(body);
+        JsonNode addresses = root.get("addresses");
+
+
+
+
+        if (addresses.isArray() && addresses.size() > 0) {
+
+            if (eventUrl != null) {
+                String fileName = s3Service.generateAuthFileName(eventUrl, userDetails.getUsername());
+                byte[] fileBytes = eventUrl.getBytes();
+
+                String eventPath = s3Service.uploadToS3(fileName, fileBytes, eventUrl.getContentType());
+
+                JsonNode firstAddress = addresses.get(0);
+                double latitude = Double.parseDouble(firstAddress.get("x").asText());
+                double longitude = Double.parseDouble(firstAddress.get("y").asText());
+
+
+                event.update(eventUpdateDto,eventPath);
+//                Event updateEvent = Event.builder()
+//                        .title(eventUpdateDto.getTitle())
+//                        .subTitle(eventUpdateDto.getSubTitle())
+//                        .address(eventUpdateDto.getAddress())
+//                        .content(eventUpdateDto.getContent())
+//                        .eventUrl(eventPath)
+//                        .longitude(longitude)
+//                        .latitude(latitude)
+//                        .startDate(LocalDateTime.parse(eventUpdateDto.getStartDate())) // 수정된 부분
+//                        .endDate(LocalDateTime.parse(eventUpdateDto.getEndDate())) // 수정된 부분
+//                        .webMember(webMember)
+//                        .build();
+//
+//                event = eventRepository.save(updateEvent);
+            } else {
+                JsonNode firstAddress = addresses.get(0);
+                double latitude = Double.parseDouble(firstAddress.get("x").asText());
+                double longitude = Double.parseDouble(firstAddress.get("y").asText());
+                String eventPath = null;
+                event.update(eventUpdateDto, eventPath);
+            }
+        }
     }
 
-    public void deleteEvent(Long eventIdx){
-        Optional<Event> event = eventRepository.findById(eventIdx);
+    //이벤트 삭제하기
+    public void deleteEvent(Long eventIdx, UserDetails userDetails){
+        Optional<Event> event = eventRepository.findByIdx(eventIdx);
         if (event.isPresent()) {
             eventRepository.delete(event.get());
         } else {
@@ -73,20 +231,34 @@ public class EventWebService {
         }
     }
 
-    public List<EventGetDto> getAllEvents(Long webMemberIdx) {
-
-        WebMember webMember = webMemberRepository.findById(webMemberIdx)
+    //웹멤버의 모든 이벤트 가져오기
+    public List<Event> getWebMemberAllEvents(Long webMemberIdx, UserDetails userDetails) {
+        log.info("웹멤버 모든 이벤트 가져오기");
+        WebMember webMember = webMemberRepository.findByIdx(webMemberIdx)
                 .orElseThrow(()->new IllegalArgumentException("찾을수없다"));
 
-        List<EventGetDto> eventList = eventRepository.findAllByWebMember(webMember)
+        List<Event> eventList = eventRepository.findAllByWebMember(webMember);
+
+
+        return eventList;
+    }
+
+
+    // 모든 축제 조회하기
+    public List<GetEventAllResponseDto> findAll(){
+        List<GetEventAllResponseDto> eventList = eventRepository.findAll()
                 .stream()
-                .map(e-> EventGetDto.builder()
+                .map(e -> GetEventAllResponseDto.builder()
+                        .eventIdx(e.getIdx())
+                        .image(e.getImage())
                         .title(e.getTitle())
-                        .content(e.getContent())
-                        .address(e.getAddress())
+                        .subtitle(e.getSubTitle())
                         .startDate(e.getStartDate())
                         .endDate(e.getEndDate())
-                        .eventUrl(e.getEventUrl())
+                        .address(e.getAddress())
+                        .latitude(e.getLatitude())
+                        .longitude(e.getLongitude())
+                        .likeCount((long) e.getLikes().size())
                         .build())
                 .collect(Collectors.toList());
 

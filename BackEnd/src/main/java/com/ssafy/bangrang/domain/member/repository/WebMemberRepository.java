@@ -13,4 +13,6 @@ public interface WebMemberRepository extends JpaRepository<WebMember, Long> {
 
     @Override
     <S extends WebMember> S save(S entity);
+
+    Optional<WebMember> findByIdx(Long idx);
 }

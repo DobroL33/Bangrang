@@ -11,18 +11,24 @@ import java.time.LocalDateTime;
 public class EventPutDto {
     private String title;
     private String content;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String startDate;
+    private String endDate;
+    private String subTitle;
+    private Double longitude;
+    private Double latitude;
     private String address;
     private String eventUrl;
 
 
     @Builder
-    public EventPutDto(String title, String content, LocalDateTime startDate, LocalDateTime endDate, String address, String eventUrl, Long eventIdx) {
+    public EventPutDto(String title, String content, String startDate, String endDate, String subTitle, Double longitude, Double latitude, String address, String eventUrl) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.subTitle = subTitle;
+        this.longitude = longitude;
+        this.latitude = latitude;
         this.address = address;
         this.eventUrl = eventUrl;
     }

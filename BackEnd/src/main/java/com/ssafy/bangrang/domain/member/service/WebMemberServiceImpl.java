@@ -63,7 +63,7 @@ public class WebMemberServiceImpl implements WebMemberService {
         }
 
         // 저장할 경로, 이름 설정
-        String fileName =  s3Service.generateAuthFileName(multipartFile,webMemberSignUpRequestDto.getId());
+        String fileName =  s3Service.generateAuthFileName(multipartFile, webMemberSignUpRequestDto.getId());
 
         byte[] fileBytes = multipartFile.getBytes();
 
@@ -72,6 +72,7 @@ public class WebMemberServiceImpl implements WebMemberService {
 
         // 계정 엔티티 생성
         WebMember webMember = webMemberSignUpRequestDto.toEntity(authfilePath);
+
         // 패스워드 암호화
         webMember.passwordEncode(passwordEncoder);
         // 그리고 저장

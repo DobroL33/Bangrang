@@ -1,8 +1,6 @@
 package com.ssafy.bangrang.domain.event.api.response;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,20 +9,27 @@ import java.time.LocalDateTime;
 public class EventGetDto {
 
     private String title;
+    private String subTitle;
     private String content;
     private String startDate;
     private String endDate;
     private String address;
+    private Double longitude;
+    private Double latitude;
     private String eventUrl;
+    private int likeCount;
 
 
-    @Builder
-    public EventGetDto(String title, String content, String startDate, String endDate, String address, String eventUrl) {
+    public EventGetDto(String title, String subTitle, String content, String eventUrl, String address, LocalDateTime startDate, LocalDateTime endDate, Double longitude, Double latitude, int likes) {
         this.title = title;
+        this.subTitle = subTitle;
         this.content = content;
-        this.startDate = startDate.toString();
-        this.endDate = endDate.toString();
+        this.startDate = String.valueOf(startDate);
+        this.endDate = String.valueOf(endDate);
         this.address = address;
+        this.longitude = longitude;
+        this.latitude = latitude;
         this.eventUrl = eventUrl;
+        this.likeCount = likeCount;
     }
 }

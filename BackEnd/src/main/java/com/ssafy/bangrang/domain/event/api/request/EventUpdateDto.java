@@ -1,17 +1,14 @@
 package com.ssafy.bangrang.domain.event.api.request;
 
-import com.ssafy.bangrang.domain.member.entity.WebMember;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.bytebuddy.asm.Advice;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class EventSignUpDto {
+public class EventUpdateDto {
 
     private String title;
     private String content;
@@ -23,8 +20,7 @@ public class EventSignUpDto {
     private Double latitude;
 
     @Builder
-
-    public EventSignUpDto(String title, String content, String startDate, String endDate, String address, MultipartFile eventUrl, String subTitle, Double longitude, Double latitude) {
+    public EventUpdateDto(String title, String content, String startDate, String endDate, String address,MultipartFile eventUrl,String subTitle, Double longitude, Double latitude) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
