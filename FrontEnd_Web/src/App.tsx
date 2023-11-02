@@ -9,6 +9,7 @@ import IntroHome from './pages/introhome';
 import ManageHome from './pages/managehome';
 import Login from './pages/login';
 import NotFound from './pages/notfound';
+import SignUp from './pages/signup';
 
 function App() {
   const location = useLocation();
@@ -19,7 +20,7 @@ function App() {
         <Route path="/" element={<IntroHome />} />
         <Route path="/manage" element={<ManageHome />} />
         <Route path="/login" element={<Login />} />
-
+        <Route path="/signup" element={<SignUp />} />
         {/* 없는 페이지 출력 */}
         <Route path="*" element={<NotFound />} />
       </Routes>

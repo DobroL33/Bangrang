@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 const Login: React.FC = () => {
     const navigate = useNavigate()
     useEffect(()=>{
@@ -12,14 +12,16 @@ const Login: React.FC = () => {
     <div>
         <img src="assets/logo.png" alt="" />
         <h1>관리자 로그인</h1>
-        <form>
+        <form onSubmit={()=>navigate('/manage')}>
             <label>아이디</label>
             <input type="email" name="" id="" />
+            <br />
             <label>비밀번호</label>
             <input type="password" name="" id="" />
+            <br />
             <button type="submit">로그인</button>
         </form>
-        <button type="button" onClick={()=>navigate('/manage')}>일단 관리자 페이지 이동하기</button>
+        <Link to={'/signup'}>가입신청</Link>
     </div>
   );
 };
