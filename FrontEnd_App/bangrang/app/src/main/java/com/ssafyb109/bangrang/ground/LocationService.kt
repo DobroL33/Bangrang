@@ -83,17 +83,12 @@ class LocationService : Service() {
 
     private fun createNotification(): Notification {
         val notificationIntent = Intent(this, MyApplication::class.java)
-        val pendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val pendingIntent: PendingIntent =
             PendingIntent.getActivity(
                 this,
                 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE
             )
-        } else {
-            PendingIntent.getActivity(
-                this,
-                0, notificationIntent, 0
-            )
-        }
+
 
         val notificationBuilder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(this, channelId)

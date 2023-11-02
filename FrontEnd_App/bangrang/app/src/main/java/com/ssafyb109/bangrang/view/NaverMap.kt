@@ -1,11 +1,9 @@
 package com.ssafyb109.bangrang.view
 
-import android.gesture.GestureOverlayView
+import android.util.Log
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,43 +16,60 @@ import androidx.compose.ui.unit.dp
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraPosition
-import com.naver.maps.map.MapFragment
-import com.naver.maps.map.NaverMap
 import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.CircleOverlay
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
 import com.naver.maps.map.compose.MapUiSettings
-import com.naver.maps.map.compose.Marker
-import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
-import com.naver.maps.map.compose.PolygonOverlay
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.overlay.GroundOverlay
-import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
-import com.naver.maps.map.style.sources.Tileset
 import com.ssafyb109.bangrang.R
-import com.ssafyb109.bangrang.view.utill.cityLocations
+import com.ssafyb109.bangrang.view.utill.location.BusanLocation
+import com.ssafyb109.bangrang.view.utill.location.ChungbukLocation
+import com.ssafyb109.bangrang.view.utill.location.ChungnamLocation
+import com.ssafyb109.bangrang.view.utill.location.DaeguLocation
+import com.ssafyb109.bangrang.view.utill.location.DaejeonLocation
+import com.ssafyb109.bangrang.view.utill.location.GangwonLocation
+import com.ssafyb109.bangrang.view.utill.location.GwangjuLocation
+import com.ssafyb109.bangrang.view.utill.location.GyeongbukLocation
+import com.ssafyb109.bangrang.view.utill.location.GyeonggiLocation
+import com.ssafyb109.bangrang.view.utill.location.GyeongnamLocation
+import com.ssafyb109.bangrang.view.utill.location.IncheonLocation
+import com.ssafyb109.bangrang.view.utill.location.JejuLocation
+import com.ssafyb109.bangrang.view.utill.location.JeollabukLocation
+import com.ssafyb109.bangrang.view.utill.location.JeollanamLocation
+import com.ssafyb109.bangrang.view.utill.location.SejongLocation
+import com.ssafyb109.bangrang.view.utill.location.SeoulLocation
+import com.ssafyb109.bangrang.view.utill.location.UlsanLocation
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun NaverMap(height: Dp = Dp.Unspecified, blackWall: Boolean) {
-    val seoul = LatLng(37.532600, 127.024612)
+fun NaverMap(height: Dp = Dp.Unspecified, isCovered: Boolean) {
     val center = LatLng(36.3555, 127.2986)
 
-    var mapProperties by remember {
+
+    val doLocations = ChungbukLocation + ChungnamLocation + GyeongbukLocation +
+            GyeonggiLocation + GyeongnamLocation + JeollabukLocation + JeollanamLocation + GangwonLocation
+
+    val siLocations = SeoulLocation + BusanLocation + DaeguLocation + DaejeonLocation +
+            GwangjuLocation + IncheonLocation + JejuLocation + SejongLocation + UlsanLocation
+
+
+    val mapProperties by remember {
         mutableStateOf(
-            MapProperties(maxZoom = 50.0, minZoom = 1.0, locationTrackingMode = LocationTrackingMode.Follow)
+            MapProperties(maxZoom = 50.0, minZoom = 9.0, locationTrackingMode = LocationTrackingMode.Follow)
         )
     }
-    var mapUiSettings by remember {
+    val mapUiSettings by remember {
         mutableStateOf(
             MapUiSettings(isLocationButtonEnabled = true)
         )
     }
+
 
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
         position = CameraPosition(center, 17.0)
@@ -78,12 +93,24 @@ fun NaverMap(height: Dp = Dp.Unspecified, blackWall: Boolean) {
             uiSettings = mapUiSettings,
             locationSource = rememberFusedLocationSource()
         ) {
-            if(blackWall) {
-                for (city in cityLocations) {
-                    // 각 위치마다 반경 500m의 검정색 원을 그립니다.
+            if(isCovered) {
+                doLocations.forEach { location ->
                     CircleOverlay(
-                        center = LatLng(city.latitude, city.longitude),
-                        radius = 500.0, // 500 meters
+                        center = LatLng(location.first, location.second),
+                        radius = 3000.0, // 2000 meters
+                        color = Color.Black,
+                        outlineWidth = 0.dp,
+                        outlineColor = Color.Black,
+                        tag = null,
+                        visible = true,
+                        zIndex = 0,
+                        globalZIndex = 0
+                    )
+                }
+                siLocations.forEach { location ->
+                    CircleOverlay(
+                        center = LatLng(location.first, location.second),
+                        radius = 1000.0, // 500 meters
                         color = Color.Black,
                         outlineWidth = 0.dp,
                         outlineColor = Color.Black,
