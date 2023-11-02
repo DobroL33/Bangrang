@@ -65,7 +65,7 @@ public class SecurityConfig {
             "/",
             "/favicon.ico",
             "/oauth2/**",
-            "/api/sessions/**",
+
 
             /* 웹 회원가입, 로그인 */
             "/api/web/signup",

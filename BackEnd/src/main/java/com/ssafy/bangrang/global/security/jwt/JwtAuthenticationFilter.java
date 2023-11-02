@@ -48,8 +48,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
   
-        // 로그인 요청일 때
-        if(httpServletRequest.getRequestURI().equals("/api/member/login")) {
+        // token 검증이 필요없는 요청일 때
+        if(httpServletRequest.getRequestURI().equals("/api/member/login") ||
+                httpServletRequest.getRequestURI().equals("/api/web/login") ||
+                httpServletRequest.getRequestURI().equals("/api/web/signup") ||
+                httpServletRequest.getRequestURI().contains("/api/member/nicknameCheck") ) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
 
             // 더 이상 필터를 진행하지 않고 return!

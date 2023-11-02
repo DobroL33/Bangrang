@@ -26,7 +26,7 @@ public class WebMember extends Member{
     private WebMemberStatus webMemberStatus;
 
     @Column(name = "web_member_auth_file")
-    private String authFile;
+    protected String authFile;
 
     @OneToMany(mappedBy = "webMember")
     private List<Comment> comments = new ArrayList<>();

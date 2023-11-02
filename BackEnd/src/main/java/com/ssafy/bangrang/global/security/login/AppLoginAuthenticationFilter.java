@@ -86,6 +86,11 @@ public class AppLoginAuthenticationFilter extends AbstractAuthenticationProcessi
                     throw new RuntimeException(e);
                 }
             }
+            // 로그인 했으니깐 탈퇴중이라면 탈퇴 취소
+            if (user.getDeletedAt() != null) {
+                user.cancelDeletedDate();
+                appMemberRepository.save(user);
+            }
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken("kakao@"+num, "social");
 
             return this.getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);

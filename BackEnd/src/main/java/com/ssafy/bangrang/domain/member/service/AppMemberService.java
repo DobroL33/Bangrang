@@ -17,12 +17,13 @@ public interface AppMemberService {
 
     String profileImgUpdate(MultipartFile file, UserDetails userDetails) throws Exception;
 
-    void alarmOnOff(Boolean alarmSet, UserDetails userDetails) throws Exception;
-
     void nicknameUsefulCheck(String nickname) throws Exception;
 
     void nicknamePlus(String nickname, UserDetails userDetails) throws Exception;
     void nicknameUpdate(String nickname, UserDetails userDetails) throws Exception;
+
+
+    Long withdraw(String accessToken, UserDetails userDetails);
     Long logout(String accessToken, UserDetails userDetails);
 
     StampResponseDto findStampsById(String id);

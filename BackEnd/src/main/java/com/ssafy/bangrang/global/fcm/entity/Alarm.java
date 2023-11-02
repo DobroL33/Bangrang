@@ -1,10 +1,13 @@
 package com.ssafy.bangrang.global.fcm.entity;
 
+import com.ssafy.bangrang.domain.event.entity.Event;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.global.common.entity.CommonEntity;
 import com.ssafy.bangrang.global.fcm.model.vo.AlarmType;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -28,8 +31,32 @@ public class Alarm extends CommonEntity {
     @Column(name = "alarm_status")
     private int status;
 
+    @Column(name = "alarm_createdDate")
+    private LocalDateTime createdDate;
+
+    @Column(name = "alarm_eventIdx")
+    private Long eventIdx;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_idx")
     private AppMember appMember;
 
+    @Builder
+    public Alarm(Long idx,AlarmType type,String content, Long eventIdx, LocalDateTime createdDate, int status, AppMember appMember){
+        this.idx = idx;
+        this.type = type;
+        this.content = content;
+        this.eventIdx = eventIdx;
+        this.createdDate = createdDate;
+        this.status = status;
+        this.appMember = appMember;
+
+    }
+
+    /**
+     * 알람 상태 변경
+     */
+    public void updateStatus(int status) {
+        this.status = status;
+    }
 }

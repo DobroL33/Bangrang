@@ -1,6 +1,5 @@
 package com.ssafy.bangrang.domain.member.api;
 
-import com.ssafy.bangrang.domain.member.api.request.AppMemberAlarmOnOffRequestDto;
 import com.ssafy.bangrang.domain.member.api.request.AppMemberNicknameRequestDto;
 import com.ssafy.bangrang.domain.member.api.response.StampResponseDto;
 import com.ssafy.bangrang.domain.member.service.AppMemberService;
@@ -38,11 +37,11 @@ public class AppMemberApi {
     @PostMapping("/nickname")
     public ResponseEntity<?> nicknamePlus(@RequestBody AppMemberNicknameRequestDto appMemberNicknameRequestDto,
                                                  @AuthenticationPrincipal UserDetails userDetails) throws Exception {
-        appMemberService.nicknameUpdate(appMemberNicknameRequestDto.getNickname(), userDetails);
+        appMemberService.nicknamePlus(appMemberNicknameRequestDto.getNickname(), userDetails);
         return ResponseEntity.ok().body("");
     }
     @ApiOperation(value = "닉네임 변경")
-    @PutMapping("/nickname")
+    @PatchMapping("/nickname")
     public ResponseEntity<?> nicknameUpdate(@RequestBody AppMemberNicknameRequestDto appMemberNicknameRequestDto,
                                             @AuthenticationPrincipal UserDetails userDetails) throws Exception {
         appMemberService.nicknameUpdate(appMemberNicknameRequestDto.getNickname(), userDetails);
@@ -59,20 +58,22 @@ public class AppMemberApi {
         return ResponseEntity.ok().body(result);
     }
     @ApiOperation(value = "프로필 이미지 변경")
-    @PostMapping("/profileImg")
+    @PatchMapping("/profileImg")
     public ResponseEntity<?> profileImgUpdate(@RequestPart("image")MultipartFile file,
                                               @AuthenticationPrincipal UserDetails userDetails) throws Exception{
         return ResponseEntity.ok().body(appMemberService.profileImgUpdate(file, userDetails));
     }
 
-    @ApiOperation(value = "알람 ON/OFF")
-    @PutMapping("/alarm")
-    public ResponseEntity<?> alarmOnOff(@RequestBody AppMemberAlarmOnOffRequestDto appMemberAlarmOnOffRequestDto,
-                                        @AuthenticationPrincipal UserDetails userDetails) throws Exception {
-        appMemberService.alarmOnOff(appMemberAlarmOnOffRequestDto.getAlarmSet(), userDetails);
-        return ResponseEntity.ok().body("");
-    }
+    @ApiOperation(value = "회원 탈퇴")
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<?> quit(HttpServletRequest httpServletRequest,
+                                  @AuthenticationPrincipal UserDetails userDetails) {
 
+        Long result = appMemberService.withdraw(jwtService.extractAccessToken(httpServletRequest)
+                .orElseThrow(() -> new IllegalArgumentException("비정상적인 access token 입니다.")), userDetails);
+
+        return ResponseEntity.ok().body(result);
+    }
     // 멤버 도장 리스트 요청
     @GetMapping("/stamp")
     public ResponseEntity getMemberStampList(@AuthenticationPrincipal UserDetails userDetails){

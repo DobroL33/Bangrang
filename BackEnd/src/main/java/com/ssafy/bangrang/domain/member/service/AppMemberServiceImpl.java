@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -119,13 +121,23 @@ public class AppMemberServiceImpl implements AppMemberService {
         return user.getIdx();
     }
 
+    /**
+     * 회원탈퇴
+     */
     @Override
-    public void alarmOnOff(Boolean alarmSet,UserDetails userDetails) throws Exception {
+    @Transactional
+    public Long withdraw(String accessToken, UserDetails userDetails) {
         AppMember user = appMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
-        user.alarmOnOff(alarmSet);
-    }
 
+        user.updateDeletedDate();
+        appMemberRepository.save(user);
+
+        redisRefreshTokenService.deleteRefreshToken(user.getId());
+        redisAccessTokenService.setRedisAccessToken(accessToken.replace("Bearer ", ""), "QUIT");
+
+        return user.getIdx();
+    }
     @Override
     public String profileImgUpdate(MultipartFile multipartFile, UserDetails userDetails) throws Exception {
         AppMember user = appMemberRepository.findById(userDetails.getUsername())
