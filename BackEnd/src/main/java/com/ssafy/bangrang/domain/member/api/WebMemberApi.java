@@ -26,6 +26,12 @@ public class WebMemberApi {
     private final WebMemberService webMemberService;
     private final JwtService jwtService;
 
+    @ApiOperation(value = "웹 로그아웃")
+    @GetMapping("/idCheck/{id}")
+    public ResponseEntity<?> idUsefulCheck(@PathVariable("id") String id) throws Exception {
+        webMemberService.idUsefulCheck(id);
+        return ResponseEntity.ok().body("");
+    }
     @ApiOperation(value = "일반 회원 가입")
     @PostMapping(value = "/signup")
     public ResponseEntity signup(@Valid @RequestPart("authFile") MultipartFile file,
@@ -40,7 +46,6 @@ public class WebMemberApi {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during signup");
         }
-
     }
 
     @ApiOperation(value = "웹 로그아웃")

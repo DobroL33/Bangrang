@@ -40,6 +40,16 @@ public class WebMemberServiceImpl implements WebMemberService {
 
 
     /**
+     * 아이디 중복 검사
+     */
+    @Override
+    public void idUsefulCheck(String id) throws Exception {
+        if(webMemberRepository.findById(id).isPresent())
+            throw new Exception("이미 존재하는 닉네임입니다.");
+    }
+
+
+    /**
      * 일반 회원 가입
      */
     @Override

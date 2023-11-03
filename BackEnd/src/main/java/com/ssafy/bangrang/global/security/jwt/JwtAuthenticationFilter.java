@@ -52,7 +52,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(httpServletRequest.getRequestURI().equals("/api/member/login") ||
                 httpServletRequest.getRequestURI().equals("/api/web/login") ||
                 httpServletRequest.getRequestURI().equals("/api/web/signup") ||
-                httpServletRequest.getRequestURI().contains("/api/member/nicknameCheck") ) {
+                httpServletRequest.getRequestURI().contains("/api/member/nicknameCheck") ||
+                httpServletRequest.getRequestURI().contains("/api/web/idCheck")) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
 
             // 더 이상 필터를 진행하지 않고 return!
