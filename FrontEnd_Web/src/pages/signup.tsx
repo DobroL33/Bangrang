@@ -43,7 +43,7 @@ const SignUp: React.FC = () => {
           // 회원가입 요청 로직
           axios({
               method:'post',
-              url:`${process.env.REACT_APP_API_URL}/web/signup`,
+              url:`${process.env.REACT_APP_API}/web/signup`,
               data:{ 
                 'user':{'id':values.id,
                   'password':values.password,
@@ -65,13 +65,14 @@ const SignUp: React.FC = () => {
     setCheckId(true);
     axios({
       method:'get',
-      url:`${process.env.REACT_APP_API_URL}/web/idCheck/${id}`,
+      url:`${process.env.REACT_APP_API}/web/idCheck/${id}`,
     }).then(res=>{
       setCheckId(true);
     }).catch(err=>{
       alert('이미 존재하는 아이디입니다.')
     })
   }
+
   return (
     <div>
         <img src="assets/logo.png" alt="" />
@@ -107,7 +108,7 @@ const SignUp: React.FC = () => {
           {/* 기관 이름 input */}
           <input type="text" placeholder="기관명" {...formik.getFieldProps('organizationName')}/>
           <p style={{fontSize:'8px', fontWeight:'bold',  color:'red'}}>
-          {formik.values.organizationName === '' ? <span>기관명을 입력해주세요</span> : formik.errors.organizationName ? <span>{formik.errors.organizationName}</span> :<span style={{color:'green'}}>입력완료</span>}
+          {formik.values.organizationName === '' ? <span></span> : formik.errors.organizationName ? <span>{formik.errors.organizationName}</span> :<span style={{color:'green'}}>입력완료</span>}
           </p>
           
           {/* 인증파일 input */}
@@ -119,9 +120,9 @@ const SignUp: React.FC = () => {
                 setFile(formData) }}}
             />
           <p style={{fontSize:'8px', fontWeight:'bold',  color:'red'}}>
-            {file === null ? <span>파일을 첨부해주세요.</span> :<span style={{color:'green'}}>첨부완료</span>}
+            {file === null ? <span>파일을 첨부해주세요</span> :<span style={{color:'green'}}>첨부완료</span>}
           </p>
-          
+
           {/* 정상적으로 모든 입력이 되었을때 버튼 활성화 */}
           {isCheckId && formik.values.password!=='' && formik.values.confirmPassword!=='' && formik.values.organizationName!==''
           && !formik.errors.password && !formik.errors.confirmPassword && !formik.errors.organizationName && file ?
