@@ -9,7 +9,11 @@ const Login: React.FC = () => {
     useEffect(()=>{
       const AccessToken = localStorage.getItem('AccessToken')
       if (AccessToken) {
-        navigate('/manage')
+        if (localStorage.getItem("UserName")==='admin@bangrang') {
+          navigate('/admin')
+        } else {
+          navigate('/manage')
+        }
       }
     },[navigate])
 
@@ -32,7 +36,7 @@ const Login: React.FC = () => {
     }).then(res=>{
       localStorage.setItem("AccessToken",res.headers['authorization']);
       localStorage.setItem('RefreshToken',res.headers['authorization-refresh']);
-      const UserName = res.data.organizationName
+      const UserName = res.data.OrganizationName
       localStorage.setItem("UserName",UserName)
       if (UserName === 'admin@bangrang') {
         navigate('/admin')

@@ -2,10 +2,24 @@ import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import styles from './navbar.module.css'
+import axiosInstance from "../axiosinstance";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate()
+
+  const logout = () => {
+
+    axiosInstance({
+      method:'get',
+      url:`${process.env.REACT_APP_API}/web/logout`,
+    }).then(res=>{
+      localStorage.clear();
+      navigate('/')
+    }).catch(err=>{
+      console.log(err);
+    })
+  }
   return (
     <>
       {location.pathname==='/' ? 
@@ -24,9 +38,16 @@ const Navbar: React.FC = () => {
         <Link to='/manage'>
           <img className={styles.logo} src="assets/logo.png" alt="" />
         </Link>
-        <p className={styles.navbtn} onClick={()=>navigate('/')}>로그아웃</p>
+        <p className={styles.navbtn} onClick={logout}>로그아웃</p>
       </header>
-      : null}
+      : location.pathname==='/admin' ? 
+      <header className='navbar'>
+      <Link to='/manage'>
+        <img className={styles.logo} src="assets/logo.png" alt="" />
+      </Link>
+      <p className={styles.navbtn} onClick={logout}>로그아웃</p>
+    </header>
+    : null}
     </>
   );
 };

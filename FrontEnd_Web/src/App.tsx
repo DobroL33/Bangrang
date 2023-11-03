@@ -10,6 +10,7 @@ import ManageHome from './pages/managehome';
 import Login from './pages/login';
 import NotFound from './pages/notfound';
 import SignUp from './pages/signup';
+import AdminHome from './pages/adminhome';
 
 function App() {
   const location = useLocation();
@@ -18,6 +19,7 @@ function App() {
       <Navbar />      
       <Routes location={location}>
         <Route path="/" element={<IntroHome />} />
+        <Route path="/admin" element={<AdminHome />} />
         <Route path="/manage" element={<ManageHome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />

@@ -1,6 +1,22 @@
-import React from "react";
+import React,{ useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ManageHome: React.FC = () => {
+  
+  const navigate = useNavigate()
+  useEffect(()=>{
+    const AccessToken = localStorage.getItem('AccessToken')
+    if (AccessToken) {
+      if (localStorage.getItem("UserName")==='admin@bangrang') {
+        navigate('/admin')
+      } else {
+        navigate('/manage')
+      }
+    } else {
+      navigate('')
+    }
+  },[navigate])
+
   return (
     <div>
       <div style={{width:'100vw', display:'flex', backgroundColor:'#E2F5FF',padding:'5% 0'}}>
