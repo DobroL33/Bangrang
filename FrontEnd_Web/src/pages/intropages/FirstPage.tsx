@@ -53,26 +53,6 @@ const FirstPage: React.FC = () => {
         <p className={styles.comment2} style={{ marginTop: "5%" }}>
           연습용 페이집니당
         </p>
-        <Marquee
-          className="marquee"
-          play={true}
-          loop={300000}
-          style={{
-            backgroundColor: "#90d0f6",
-            marginTop: "100px",
-            width: "1500px",
-            height: "300px",
-            overflow: "hidden",
-            borderRadius: "20px",
-            transform: "rotate(5deg)",
-          }}
-          direction="right"
-          speed={500}
-        >
-          <img className={styles.loop2} src="assets/MarqueeImg/2.jpg" alt="" />
-          <img className={styles.loop2} src="assets/MarqueeImg/3.jpg" alt="" />
-          <img className={styles.loop2} src="assets/MarqueeImg/4.jpg" alt="" />
-        </Marquee>
       </div>
     </div>
   );
