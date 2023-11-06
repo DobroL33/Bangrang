@@ -4,13 +4,13 @@ package com.ssafy.bangrang.domain.event.api;
 import com.ssafy.bangrang.domain.event.api.response.GetEventAllResponseDto;
 import com.ssafy.bangrang.domain.event.api.response.GetEventDetailResponseDto;
 import com.ssafy.bangrang.domain.event.service.EventService;
+import com.ssafy.bangrang.domain.event.service.LikesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +22,7 @@ import java.util.List;
 public class EventApi {
 
     private final EventService eventService;
+    private final LikesService likesService;
 
     // 전체 행사 리스트 불러오기
     @GetMapping("/list")
@@ -46,6 +47,14 @@ public class EventApi {
         log.info("[특정 행사 정보 요청 끝]", LocalDateTime.now());
 
         return ResponseEntity.ok().body(getEventDetailResponseDto);
+    }
+
+    @PostMapping("/{eventIdx}/likes")
+    public ResponseEntity addEventLikes(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long eventIdx){
+
+        likesService.saveLikes(userDetails, eventIdx);
+
+        return ResponseEntity.ok().build();
     }
 
 }

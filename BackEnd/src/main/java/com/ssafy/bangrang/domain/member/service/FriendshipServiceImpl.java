@@ -6,6 +6,7 @@ import com.ssafy.bangrang.domain.member.entity.Friendship;
 import com.ssafy.bangrang.domain.member.repository.FriendshipRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,9 +43,13 @@ public class FriendshipServiceImpl implements FriendshipService {
     // 친구 삭제
     @Override
     @Transactional
+    @Modifying
     public void deleteFriendship(AppMember appMember, Long friendIdx){
 
-        Friendship deleteFriendship = friendshipRepository.findFriendshipByFriendIdxAndAppMember_Idx(friendIdx, appMember.getIdx()).orElseThrow();
+        log.info("받은 appMember parameter"+appMember.getIdx());
+        log.info("받은 friendIdx parameter"+friendIdx);
+
+        Friendship deleteFriendship = friendshipRepository.findFriendshipByFriendIdxAndAppMemberIdxJpql(friendIdx, appMember.getIdx()).orElseThrow();
         friendshipRepository.deleteById(deleteFriendship.getIdx());
 
     }

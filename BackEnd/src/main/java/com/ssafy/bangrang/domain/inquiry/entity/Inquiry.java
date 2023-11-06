@@ -42,13 +42,12 @@ public class Inquiry extends CommonEntity {
     private Comment comment;
 
     @Builder
-    public Inquiry(String title, String content, String type, AppMember appMember, Event event, Comment comment){
+    public Inquiry(String title, String content, String type, AppMember appMember, Event event){
         this.title = title;
         this.content = content;
         this.type = type;
         this.changeAppMember(appMember);
         this.changeEvent(event);
-        this.changeComment(comment);
     }
 
     public void changeComment(Comment comment) {

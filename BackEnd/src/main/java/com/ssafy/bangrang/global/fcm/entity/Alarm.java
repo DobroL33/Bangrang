@@ -29,7 +29,7 @@ public class Alarm extends CommonEntity {
     private String content;
 
     @Column(name = "alarm_status")
-    private int status;
+    private Number status;
 
     @Column(name = "alarm_createdDate")
     private LocalDateTime createdDate;
