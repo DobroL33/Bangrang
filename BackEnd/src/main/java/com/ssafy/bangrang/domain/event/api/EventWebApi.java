@@ -72,11 +72,11 @@ public class EventWebApi {
         }
     }
 
-    @GetMapping("/{webMemberIdx}")
-    public ResponseEntity<?> getWebMemberEvents(@PathVariable Long webMemberIdx,@AuthenticationPrincipal UserDetails userDetails) {
+    @GetMapping
+    public ResponseEntity<?> getWebMemberEvents(@AuthenticationPrincipal UserDetails userDetails) {
         log.info("웹멤버의 이벤트 목록 보기");
         try {
-            List<Event> eventList = eventWebService.getWebMemberAllEvents(webMemberIdx,userDetails);
+            List<Event> eventList = eventWebService.getWebMemberAllEvents(userDetails);
             log.info(eventList.toString());
             List<EventGetDto> eventGetDtoList = eventList.stream()
                     .map(e -> new EventGetDto(
@@ -105,11 +105,30 @@ public class EventWebApi {
 
         log.info("[전체 행사 리스트 요청 시작]", LocalDateTime.now());
 
-        List<GetEventAllResponseDto> eventList = eventWebService.findAll();
+        try {
+            List<Event> eventList = eventWebService.findAll();
+            log.info(eventList.toString());
+            List<EventGetDto> eventGetDtoList = eventList.stream()
+                    .map(e -> new EventGetDto(
+                                    e.getTitle(),
+                                    e.getSubTitle(),
+                                    e.getContent(),
+                                    e.getEventUrl(),
+                                    e.getAddress(),
+                                    e.getStartDate(),
+                                    e.getEndDate(),
+                                    e.getLongitude(),
+                                    e.getLatitude(),
+                                    e.getLikes().size()
+                            )
+                    )
+                    .collect(Collectors.toList());
 
-        log.info("[전체 행사 리스트 요청 끝]");
+            return ResponseEntity.ok().body(eventGetDtoList);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
 
-        return ResponseEntity.ok().body(eventList);
     }
 
 }
