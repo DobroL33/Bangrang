@@ -8,6 +8,8 @@ body {
   font-family: "TMONBlack";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-user-drag: none;
+  user-select : none;
 }
 
 code {
