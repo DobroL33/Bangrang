@@ -68,26 +68,11 @@ function List() {
   );
 }
 
-const ThirdPage: React.FC = () => {
-  const [scrollPercent, setScrollPercent] = useState(0);
+interface ThirdPageProps {
+  visible: boolean;
+}
 
-  const handleScroll = () => {
-    const scrollTop = window.scrollY;
-    const scrollHeight =
-      document.documentElement.scrollHeight - window.innerHeight;
-
-    const percentage = (scrollTop / scrollHeight) * 100;
-    setScrollPercent(percentage);
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
+const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
   return (
     <div>
       <div className={styles.Page}>
@@ -95,24 +80,11 @@ const ThirdPage: React.FC = () => {
           className={styles.Percent}
           style={{
             position: "absolute",
-            right: scrollPercent < 99 ? "10%" : "35%",
+            right: visible ? "43%" : "10%",
             transition: "0.7s",
-            fontSize: scrollPercent < 99 ? "30px" : "30px",
-            opacity: scrollPercent < 99 ? "1" : "0",
-            color: "#1DAEFF",
-          }}
-        >
-          현재 방랑도 : {scrollPercent.toFixed(0)}%
-        </p>
-        <p
-          className={styles.Percent}
-          style={{
-            position: "absolute",
-            right: scrollPercent < 99 ? "10%" : "43%",
-            transition: "0.7s",
-            opacity: scrollPercent < 99 ? "0" : "1",
-            fontSize: scrollPercent < 99 ? "30px" : "30px",
-            color: "#1DAEFF",
+            opacity: visible ? "1" : "0",
+            fontSize: "30px",
+            color: "#1daeff",
           }}
         >
           방랑 명예의 전당
@@ -121,7 +93,7 @@ const ThirdPage: React.FC = () => {
         <div
           className={styles.listContainer}
           style={{
-            opacity: scrollPercent < 99 ? "0" : "1",
+            opacity: visible ? "1" : "0",
             transition: "1s",
           }}
         >
@@ -140,7 +112,7 @@ const ThirdPage: React.FC = () => {
           textShadow: "#00d0ff71 1px 0 10px",
         }}
       >
-        그 지역만의 도장도 얻어봐요 !!
+        각 지역의 다양한 도장도 모아보세요 !!
       </p>
       <Marquee
         className="marquee"

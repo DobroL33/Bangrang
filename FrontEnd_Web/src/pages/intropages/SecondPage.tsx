@@ -132,7 +132,7 @@ export default function SecondPage() {
               transition: stack < 5 ? "0.6s" : "0s",
             }}
           >
-            추억을 찍고
+            기록을 남기고
           </h1>
           <h1
             style={{
@@ -148,7 +148,7 @@ export default function SecondPage() {
               transition: stack < 1 ? "0.6s" : "0s",
             }}
           >
-            추억을 돌아봐요 !
+            당신의 추억이 됩니다
           </h1>
         </div>
       </div>
@@ -160,7 +160,7 @@ export default function SecondPage() {
             // className="moving"
             src="assets/direction.png"
             style={{
-              width: "450px",
+              width: "350px",
               height: "150px",
               animationDuration: "1s",
               animationIterationCount: "9999",

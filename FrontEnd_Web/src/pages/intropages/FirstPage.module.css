@@ -8,6 +8,33 @@
   justify-content: center;
   flex-direction: column;
 }
+.PathContainer {
+  z-index: -1;
+  position: fixed;
+}
+
+svg {
+  fill: none;
+  width: 1000px;
+  stroke-width: 150px;
+  color: black;
+}
+
+path {
+  /* path 내부에 색깔, 전체 svg의 크기는 svg 의 스타일로 바꿔야함*/
+  z-index: -1;
+  stroke: beige;
+  stroke-dasharray: 250 100;
+  stroke-dashoffset: 4300.85;
+  animation: path 15000ms forwards;
+  fill: transparent;
+}
+
+@keyframes path {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
 
 .pink {
   background: linear-gradient(to right, deeppink 0%, coral 100%);
