@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.bangrang.domain.event.api.request.EventSignUpDto;
 import com.ssafy.bangrang.domain.event.api.request.EventUpdateDto;
+import com.ssafy.bangrang.domain.event.api.response.EventGetDto;
 import com.ssafy.bangrang.domain.event.api.response.GetEventAllResponseDto;
 import com.ssafy.bangrang.domain.event.entity.Event;
 import com.ssafy.bangrang.domain.event.repository.EventRepository;
@@ -226,9 +227,9 @@ public class EventWebService {
     }
 
     //웹멤버의 모든 이벤트 가져오기
-    public List<Event> getWebMemberAllEvents(Long webMemberIdx, UserDetails userDetails) {
+    public List<Event> getWebMemberAllEvents(UserDetails userDetails) {
         log.info("웹멤버 모든 이벤트 가져오기");
-        WebMember webMember = webMemberRepository.findByIdx(webMemberIdx)
+        WebMember webMember = webMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(()->new IllegalArgumentException("찾을수없다"));
 
         List<Event> eventList = eventRepository.findAllByWebMember(webMember);
@@ -239,22 +240,23 @@ public class EventWebService {
 
 
     // 모든 축제 조회하기
-    public List<GetEventAllResponseDto> findAll(){
-        List<GetEventAllResponseDto> eventList = eventRepository.findAll()
-                .stream()
-                .map(e -> GetEventAllResponseDto.builder()
-                        .eventIdx(e.getIdx())
-                        .image(e.getImage())
-                        .title(e.getTitle())
-                        .subtitle(e.getSubTitle())
-                        .startDate(e.getStartDate())
-                        .endDate(e.getEndDate())
-                        .address(e.getAddress())
-                        .latitude(e.getLatitude())
-                        .longitude(e.getLongitude())
-                        .likeCount((long) e.getLikes().size())
-                        .build())
-                .collect(Collectors.toList());
+    public List<Event> findAll(){
+        List<Event> eventList = eventRepository.findAll();
+//                .stream()
+//                .map(e -> new EventGetDto(
+//                        .eventIdx(e.getIdx())
+//                        .eventUrl(e.getEventUrl())
+//                        .title(e.getTitle())
+//                        .subtitle(e.getSubTitle())
+//                        .startDate(e.getStartDate())
+//                        .endDate(e.getEndDate())
+//                        .address(e.getAddress())
+//                        .latitude(e.getLatitude())
+//                        .longitude(e.getLongitude())
+//                        .likeCount((long) e.getLikes().size()))
+//
+//
+//                .collect(Collectors.toList());
 
         return eventList;
     }
