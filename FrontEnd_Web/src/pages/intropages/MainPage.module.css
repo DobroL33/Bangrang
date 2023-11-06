@@ -2,7 +2,7 @@
   width: 100%;
   height: 850px;
   background-image: url("../../../public/assets/MainPage.svg");
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat; /* 배경 이미지 반복 없음 */
 }
 .btnContainer {

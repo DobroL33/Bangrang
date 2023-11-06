@@ -11,6 +11,9 @@ import Login from "./pages/login";
 import NotFound from "./pages/notfound";
 import SignUp from "./pages/signup";
 import AdminHome from "./pages/adminhome";
+import EventRegist from "./pages/eventregist";
+import Inquiry from "./pages/inquiry";
+import RegistManager from "./pages/registmanager";
 
 function App() {
   const location = useLocation();
@@ -20,7 +23,11 @@ function App() {
       <Routes location={location}>
         <Route path="/" element={<IntroHome />} />
         <Route path="/admin" element={<AdminHome />} />
+        <Route path="/admin/inquiry" element={<Inquiry />} />
+        <Route path="/admin/registmanager" element={<RegistManager />} />
         <Route path="/manage" element={<ManageHome />} />
+        <Route path="/manage/inquiry" element={<Inquiry />} />
+        <Route path="/manage/eventregist" element={<EventRegist />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         {/* 없는 페이지 출력 */}
