@@ -72,7 +72,7 @@ public class EventWebApi {
         }
     }
 
-    @GetMapping("/webMember")
+    @GetMapping
     public ResponseEntity<?> getWebMemberEvents(@AuthenticationPrincipal UserDetails userDetails) {
         log.info("웹멤버의 이벤트 목록 보기");
         try {
