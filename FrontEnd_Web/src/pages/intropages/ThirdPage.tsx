@@ -99,7 +99,7 @@ const ThirdPage: React.FC = () => {
             transition: "0.7s",
             fontSize: scrollPercent < 99 ? "30px" : "30px",
             opacity: scrollPercent < 99 ? "1" : "0",
-            color: "#FFFFFF",
+            color: "#1DAEFF",
           }}
         >
           현재 방랑도 : {scrollPercent.toFixed(0)}%
@@ -112,7 +112,7 @@ const ThirdPage: React.FC = () => {
             transition: "0.7s",
             opacity: scrollPercent < 99 ? "0" : "1",
             fontSize: scrollPercent < 99 ? "30px" : "30px",
-            color: "white",
+            color: "#1DAEFF",
           }}
         >
           방랑 명예의 전당
@@ -140,7 +140,7 @@ const ThirdPage: React.FC = () => {
           textShadow: "#00d0ff71 1px 0 10px",
         }}
       >
-        각 지역의 다양한 도장도 모아보세요 !!
+        그 지역만의 도장도 얻어봐요 !!
       </p>
       <Marquee
         className="marquee"

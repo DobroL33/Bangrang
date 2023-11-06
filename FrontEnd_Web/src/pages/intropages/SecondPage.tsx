@@ -13,6 +13,8 @@ const cards = [
   "assets/images/야경.png",
 ];
 
+const moving = {};
+
 const to = (i: number) => ({
   x: 0,
   y: i * -4,
@@ -100,6 +102,29 @@ export default function SecondPage() {
         <div className={styles.infos}></div>
       </div>
       <div className={styles.CommentContainer}>
+        <h1
+          className="stamp"
+          style={{
+            animationName: "stamp",
+            color: "#78ceff",
+            fontSize: "30px",
+            animationDuration: "1s",
+            animationIterationCount: "9999",
+          }}
+        >
+          남는건 결국{" "}
+          <span
+            style={{
+              fontSize: "45px",
+              color: "#1daeff",
+              fontWeight: "bold",
+              textShadow: "3px 3px 3px #78ceff",
+            }}
+          >
+            도장&nbsp;
+          </span>
+          밖에 없지~
+        </h1>
         <div style={{ opacity: stack < 0 ? "0" : "1", transition: "0.8s" }}>
           <h1
             style={{
@@ -107,7 +132,7 @@ export default function SecondPage() {
               transition: stack < 5 ? "0.6s" : "0s",
             }}
           >
-            안녕하세요
+            추억을 찍고
           </h1>
           <h1
             style={{
@@ -115,7 +140,7 @@ export default function SecondPage() {
               transition: stack < 3 ? "0.6s" : "0s",
             }}
           >
-            멘트 추천받을게요
+            도장을 쌓아요 !
           </h1>
           <h1
             style={{
@@ -123,13 +148,28 @@ export default function SecondPage() {
               transition: stack < 1 ? "0.6s" : "0s",
             }}
           >
-            CSS 스타일도 ㅎ
+            추억을 돌아봐요 !
           </h1>
         </div>
       </div>
 
       <div className={styles.DeckContainer}>
         <Deck setStack={setStack} />
+        <div className={styles.metContainer}>
+          <img
+            // className="moving"
+            src="assets/direction.png"
+            style={{
+              width: "450px",
+              height: "150px",
+              animationDuration: "1s",
+              animationIterationCount: "9999",
+              // animationDirection: "left",
+              // transition: "1s",
+            }}
+            alt=""
+          />
+        </div>
       </div>
     </div>
   );

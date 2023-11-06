@@ -1,7 +1,7 @@
 .Page {
   width: 100%;
   height: 3100px;
-  background: linear-gradient(
+  /* background: linear-gradient(
     to bottom,
     #ffffff,
     #ffffff,
@@ -11,7 +11,7 @@
     #ffffff,
     #1daeff,
     #ffffff
-  );
+  ); */
   -ms-overflow-style: none; /* IE, Edge */
   scrollbar-width: none; /* Firefox */
 }

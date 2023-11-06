@@ -9,17 +9,53 @@
 }
 
 .DeckContainer {
+  /* position: relative; */
   align-items: center;
   flex-direction: column;
+  justify-content: start;
   flex: 1;
   display: flex;
 }
+.metContainer {
+  animation-name: moving;
+  position: relative;
+  top: 500px; /* 원하는 위치로 조정 */
+  flex: 1;
+  display: flex;
+  animation-iteration-count: 9999;
+  animation-duration: 0.75s;
+}
+
+.stamp {
+  animation-name: stamp;
+  animation-iteration-count: 9999;
+  animation-duration: 0.75s;
+}
+
+@keyframes moving {
+  from {
+    left: 0px;
+  }
+  to {
+    left: -50px;
+  }
+}
+
+@keyframes stamp {
+  from {
+    rotate: (-30deg);
+  }
+  to {
+    rotate: (30deg);
+  }
+}
+
 .InfoContainer {
   flex: 1;
   z-index: 1;
 }
 .CommentContainer {
-  margin-top: 5%;
+  /* margin-top: 5%; */
   flex: 1;
 }
 .CommentContainer > div {
@@ -32,7 +68,7 @@
 }
 .CommentContainer > div > h1 {
   z-index: 4;
-  background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
+  background: linear-gradient(90deg, #5ee7df 0%, #f0dafe 100%);
   width: 300px;
   height: 80px;
   text-transform: uppercase;
