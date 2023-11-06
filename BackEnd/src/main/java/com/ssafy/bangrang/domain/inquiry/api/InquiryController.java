@@ -13,10 +13,9 @@ import com.ssafy.bangrang.domain.member.repository.WebMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,28 +32,34 @@ public class InquiryController {
     private final InquiryWebService inquiryWebService;
     private final InquiryRepository inquiryRepository;
 
-    //멤버의 문의사항 리스트 보기
-    @GetMapping("/inquiry/event/{idx}")
-    public ResponseEntity<List<InquiryDto>> inquiries(@PathVariable("eventIdx") Long eventIdx) {
-        List<InquiryDto> inquiries = inquiryWebService.getEventInquires(eventIdx)
-                .stream()
-                .map(inquiry -> new InquiryDto(
-                        inquiry.getNickname(),
-                        inquiry.getCreatedAt(),
-                        inquiry.getContent(),
-                        inquiry.getTitle(),
-                        inquiry.getInquiryIdx()
-                ))
-                .collect(Collectors.toList());
 
-        return ResponseEntity.ok(inquiries);
+    //webMember의 문의사항 자세히보기
+    @GetMapping("/inquiry")
+    public ResponseEntity<?> getWebMemberInquiries(@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            log.info("웹 멤버 문의사항 api 시작");
+            List<Inquiry> inquiryList = inquiryWebService.getWebMemberInquires(userDetails);
+            log.info("웹 멤버 문의사항 api 끝");
+            List<InquiryDto> inquiryDtoList = inquiryList.stream()
+                    .map(inquiry -> new InquiryDto(
+                            inquiry.getTitle(),
+                            inquiry.getCreatedAt(),
+                            inquiry.getContent(),
+                            inquiry.getAppMember().getNickname(),
+                            inquiry.getIdx()
+                    ))
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok().body(inquiryDtoList);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-
     //문의사항 자세히 보기
-    @GetMapping("/inquiry/{idx}")
-    public ResponseEntity<?> getInquiryDetail(@PathVariable Long idx) {
-        Optional<Inquiry> inquiryOptional = inquiryRepository.findById(idx);
+    @GetMapping("/inquiry/{inquiryIdx}")
+    public ResponseEntity<?> getInquiryDetail(@PathVariable Long inquiryIdx) {
+        Optional<Inquiry> inquiryOptional = inquiryRepository.findByIdx(inquiryIdx);
         InquiryDetailDto inquiryDetailDto = new InquiryDetailDto();
 
         try {
@@ -72,5 +77,50 @@ public class InquiryController {
         return ResponseEntity.ok(inquiryDetailDto);
     }
 
+    // 모든 문의사항 보기
+    @GetMapping("inquiry/all")
+    public ResponseEntity<?> getAllInquiries() {
+        log.info("모든 문의사항 보기");
+        try {
+            List<Inquiry> inquiryList = inquiryRepository.findAll();
 
+            List<InquiryDto> inquiryDtoList = inquiryList.stream()
+                    .map(inquiry -> new InquiryDto(
+                            inquiry.getTitle(),
+                            inquiry.getCreatedAt(),
+                            inquiry.getContent(),
+                            inquiry.getAppMember().getNickname(),
+                            inquiry.getIdx()
+                    ))
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok().body(inquiryDtoList);
+
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //특정 이벤트의 문의사항 보기
+    @GetMapping("/inquiry/event/{eventIdx}")
+    public ResponseEntity<?> getAllInquiriesByEvent(@PathVariable Long eventIdx) {
+        try {
+            List<Inquiry> inquiryList = inquiryWebService.getEventInquires(eventIdx);
+
+            List<InquiryDto> inquiryDtoList = inquiryList.stream()
+                    .map(inquiry -> new InquiryDto(
+                            inquiry.getTitle(),
+                            inquiry.getCreatedAt(),
+                            inquiry.getContent(),
+                            inquiry.getAppMember().getNickname(),
+                            inquiry.getIdx()
+                    ))
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok().body(inquiryDtoList);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

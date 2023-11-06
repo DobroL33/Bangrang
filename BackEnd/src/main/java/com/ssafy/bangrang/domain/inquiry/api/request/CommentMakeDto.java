@@ -18,7 +18,7 @@ public class CommentMakeDto {
     private String type;
     private String content;
     private Long inquiryIdx;
-    private Long webMemberIdx;
+//    private Long webMemberIdx;
 
 
     @Builder
@@ -27,6 +27,6 @@ public class CommentMakeDto {
         this.type = type;
         this.content = content;
         this.inquiryIdx = inquiryIdx;
-        this.webMemberIdx = webMemberIdx;
+//        this.webMemberIdx = webMemberIdx;
     }
 }
