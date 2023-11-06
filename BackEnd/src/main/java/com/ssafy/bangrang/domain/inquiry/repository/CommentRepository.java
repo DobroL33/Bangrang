@@ -9,9 +9,15 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
 
-    Optional<CommentDto> findByInquiry(Inquiry inquiry);
+    Optional<Comment> findByInquiry(Inquiry inquiry);
 
     //    Long deleteByIdx(Long idx);
     void deleteById(Long idx);
+
+
+    Optional<Comment> findByIdx(Long idx);
+
+    Optional<Comment> findAllByInquiry(Inquiry inquiry);
 //    void delete(Optional<Comment> comment);
 }
+
