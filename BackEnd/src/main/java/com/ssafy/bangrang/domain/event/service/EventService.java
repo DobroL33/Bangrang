@@ -8,5 +8,4 @@ import java.util.List;
 public interface EventService {
     List<GetEventAllResponseDto> findAll();
 
-    GetEventDetailResponseDto findByIdx(Long eventIdx);
 }

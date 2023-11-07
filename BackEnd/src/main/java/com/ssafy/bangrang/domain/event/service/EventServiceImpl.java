@@ -42,25 +42,5 @@ public class EventServiceImpl implements EventService{
         return eventList;
     }
 
-    @Override
-    public GetEventDetailResponseDto findByIdx(Long eventIdx) {
 
-        Event event = eventRepository.findById(eventIdx).orElseThrow();
-        GetEventDetailResponseDto getEventDetailResponseDto = GetEventDetailResponseDto.builder()
-                .image(event.getImage())
-                .subImage(event.getSubImage())
-                .title(event.getTitle())
-                .content(event.getContent())
-                .startDate(event.getStartDate())
-                .endDate(event.getEndDate())
-                .pageURL(event.getEventUrl())
-//                .subEventIdx(event.getIdx())
-                .address(event.getAddress())
-                .latitude(event.getLatitude())
-                .longitude(event.getLongitude())
-                .likeCount((long) event.getLikes().size())
-                .build();
-
-        return getEventDetailResponseDto;
-    }
 }
