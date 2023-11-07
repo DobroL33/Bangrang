@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.ssafy.bangrang.domain.inquiry.api.response.GetWebInquiryAllResponseDto;
+import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
 import com.ssafy.bangrang.domain.member.api.request.WebMemberSignUpRequestDto;
 import com.ssafy.bangrang.domain.member.entity.WebMember;
 import com.ssafy.bangrang.domain.member.repository.WebMemberRepository;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
@@ -102,6 +106,27 @@ public class WebMemberServiceImpl implements WebMemberService {
         redisAccessTokenService.setRedisAccessToken(accessToken.replace("Bearer ", ""), "LOGOUT");
 
         return user.getIdx();
+    }
+
+    @Override
+    public List<GetWebInquiryAllResponseDto> findInquiryById(String username) {
+
+        WebMember webMember = webMemberRepository.findById(username).orElseThrow();
+
+        List<GetWebInquiryAllResponseDto> inquiryList = new ArrayList<>();
+        webMember.getEvents().stream().forEach(event -> {
+            List<Inquiry> inquiries = event.getInquiries();
+            inquiries.stream().forEach(inquiry -> {
+               inquiryList.add(GetWebInquiryAllResponseDto.builder()
+                               .inquiryIdx(inquiry.getIdx())
+                               .title(inquiry.getTitle())
+                               .event(event.getTitle())
+                               .createdAt(inquiry.getCreatedAt())
+                       .build());
+            });
+        });
+
+        return inquiryList;
     }
 
 }

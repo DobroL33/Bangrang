@@ -3,6 +3,8 @@ package com.ssafy.bangrang.domain.inquiry.service;
 import com.ssafy.bangrang.domain.event.entity.Event;
 import com.ssafy.bangrang.domain.event.repository.EventRepository;
 import com.ssafy.bangrang.domain.inquiry.api.request.AddInquiryRequestDto;
+import com.ssafy.bangrang.domain.inquiry.api.response.GetInquiryDetailResponseDto;
+import com.ssafy.bangrang.domain.inquiry.api.response.InquiryDetailComment;
 import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
 import com.ssafy.bangrang.domain.inquiry.repository.InquiryRepository;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
@@ -34,5 +36,30 @@ public class InquiryServiceImpl implements InquiryService {
                 .event(event)
                 .build();
         return inquiryRepository.save(inquiry);
+    }
+
+    @Override
+    public GetInquiryDetailResponseDto findById(Long inquiryIdx) {
+        Inquiry inquiry = inquiryRepository.findById(inquiryIdx).orElseThrow();
+
+        return GetInquiryDetailResponseDto.builder()
+                .inquiryIdx(inquiry.getIdx())
+                .title(inquiry.getTitle())
+                .content(inquiry.getContent())
+                .createdAt(inquiry.getCreatedAt())
+                .nickname(inquiry.getAppMember().getNickname())
+                .event(inquiry.getEvent().getTitle())
+                .comment(InquiryDetailComment.builder()
+                        .commentIdx(inquiry.getComment().getIdx())
+                        .content(inquiry.getComment().getContent())
+                        .createdAt(inquiry.getComment().getCreatedAt())
+                        .build())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long inquiryIdx) {
+        inquiryRepository.deleteById(inquiryIdx);
     }
 }

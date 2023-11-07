@@ -2,23 +2,17 @@ package com.ssafy.bangrang.domain.inquiry.api;
 
 import com.ssafy.bangrang.domain.inquiry.api.request.CommentMakeDto;
 import com.ssafy.bangrang.domain.inquiry.api.request.CommentUpdateDto;
-import com.ssafy.bangrang.domain.inquiry.api.response.CommentDto;
-import com.ssafy.bangrang.domain.inquiry.entity.Comment;
-import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
-import com.ssafy.bangrang.domain.inquiry.repository.CommentRepository;
-import com.ssafy.bangrang.domain.inquiry.service.CommentService;
+import com.ssafy.bangrang.domain.inquiry.service.v2.CommentService;
 import com.ssafy.bangrang.domain.inquiry.service.InquiryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/web")
+//@RestController
+//@RequestMapping("/api/web")
 @RequiredArgsConstructor
 @Slf4j
 public class CommentController {

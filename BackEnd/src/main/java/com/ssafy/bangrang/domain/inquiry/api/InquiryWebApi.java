@@ -5,11 +5,8 @@ import com.ssafy.bangrang.domain.inquiry.api.response.InquiryDetailDto;
 import com.ssafy.bangrang.domain.inquiry.api.response.InquiryDto;
 import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
 import com.ssafy.bangrang.domain.inquiry.repository.InquiryRepository;
-import com.ssafy.bangrang.domain.inquiry.service.CommentService;
-import com.ssafy.bangrang.domain.inquiry.service.InquiryService;
+import com.ssafy.bangrang.domain.inquiry.service.v2.CommentService;
 import com.ssafy.bangrang.domain.inquiry.service.InquiryWebService;
-import com.ssafy.bangrang.domain.member.entity.WebMember;
-import com.ssafy.bangrang.domain.member.repository.WebMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,18 +19,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-@RestController
-@RequestMapping("/api/web")
+//@RestController
+//@RequestMapping("/api/web")
 @RequiredArgsConstructor
 @Slf4j
-public class InquiryController {
+public class InquiryWebApi {
 
     private final CommentService commentService;
     private final InquiryWebService inquiryWebService;
     private final InquiryRepository inquiryRepository;
 
 
-    //webMember의 문의사항 자세히보기
+    // 관리자 일대일 문의 리스트
     @GetMapping("/inquiry")
     public ResponseEntity<?> getWebMemberInquiries(@AuthenticationPrincipal UserDetails userDetails) {
         try {

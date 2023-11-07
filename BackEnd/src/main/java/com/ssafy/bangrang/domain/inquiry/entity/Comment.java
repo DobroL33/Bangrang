@@ -35,6 +35,10 @@ public class Comment extends CommonEntity {
         this.changeInquiry(inquiry);
     }
 
+    public void changeContent(String content){
+        this.content = content;
+    }
+
     public void changeWebMember(WebMember webMember){
         this.webMember = webMember;
         webMember.getComments().add(this);
