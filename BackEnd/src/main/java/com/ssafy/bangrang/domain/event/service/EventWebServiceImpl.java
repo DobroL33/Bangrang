@@ -321,7 +321,7 @@ public class EventWebServiceImpl implements EventWebService{
                 .longitude(foundEvent.getLongitude())
                 .latitude(foundEvent.getLatitude())
                 .eventUrl(foundEvent.getEventUrl())
-                .likeCount(likeCount)
+                .likeCount((long) foundEvent.getLikes().size())
                 .build();
     }
 }
