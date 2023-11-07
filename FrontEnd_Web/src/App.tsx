@@ -14,6 +14,7 @@ import AdminHome from "./pages/adminhome";
 import EventRegist from "./pages/eventregist";
 import Inquiry from "./pages/inquiry";
 import RegistManager from "./pages/registmanager";
+import EventList from "./pages/eventlist";
 
 function App() {
   const location = useLocation();
@@ -27,7 +28,9 @@ function App() {
         <Route path="/admin/registmanager" element={<RegistManager />} />
         <Route path="/manage" element={<ManageHome />} />
         <Route path="/manage/inquiry" element={<Inquiry />} />
+        <Route path="/manage/eventlist" element={<EventList />} />
         <Route path="/manage/eventregist" element={<EventRegist />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         {/* 없는 페이지 출력 */}
