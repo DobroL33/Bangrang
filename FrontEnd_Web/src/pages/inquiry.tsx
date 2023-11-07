@@ -24,7 +24,7 @@ interface Detailinquiry {
 }
 
 const Inquiry: React.FC = () => {
-  const [isInquiry, setInquiry] = useState<inquiry[]>([{inquiryIdx:1,title:"OO축제 운영 시간 문의",event:"<부산 불꽃놀이 축제>",createdAt:new Date()},{inquiryIdx:2,title:"OO축제 운영 시간 문의",event:"<부산 불꽃놀이 축제>",createdAt:new Date()},{inquiryIdx:3,title:"OO축제 운영 시간 문의ddddddddddddddddddddddddddddddddd",event:"<부산 불꽃놀이 축제>",createdAt:new Date()}])
+  const [isInquiry, setInquiry] = useState<inquiry[]>([])
   const [isDetail, setDetail] = useState<Detailinquiry|null>(
     {inquiryIdx:1, title:"OO축제 운영 시간 문의",event:"<부산 불꽃놀이 축제>",createdAt:new Date(),content:"asdfads",nickname:"casdf",
   comment:null}

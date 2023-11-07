@@ -1,8 +1,6 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const AccessToken = localStorage.getItem('AccessToken');
-const navigate = useNavigate();
 const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
@@ -48,7 +46,6 @@ axiosInstance.interceptors.response.use(
       } catch (err) {
         console.log(err);
         localStorage.clear();
-        navigate('/login'); 
       }
     }
     return Promise.reject(error);
