@@ -64,7 +64,7 @@ public class EventWebServiceImpl implements EventWebService{
         WebMember user = webMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
 
-        List<Event> eventList = eventRepository.findByWebMember(user.getIdx());
+        List<Event> eventList = eventRepository.findAllByWebMember(user);
 
         List<GetEventListResponseDto> result = new ArrayList<>();
 

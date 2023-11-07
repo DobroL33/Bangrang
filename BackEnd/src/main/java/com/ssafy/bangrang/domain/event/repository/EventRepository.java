@@ -14,6 +14,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Optional<Event> findByIdx(Long idx);
 
-    @Query("SELECT e FROM Event e WHERE e.webMember = :webMemberidx")
-    List<Event> findByWebMember(Long webMemberidx);
+//    @Query("SELECT e FROM Event e WHERE e.webMember = :webMemberidx")
+//    List<Event> findByWebMember(Long webMemberidx);
 }
