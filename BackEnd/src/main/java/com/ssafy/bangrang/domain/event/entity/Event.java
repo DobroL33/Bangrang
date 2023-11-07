@@ -35,9 +35,11 @@ public class Event extends CommonEntity {
 
     @Column(name = "event_image")
     private String image;
+    // 이미지 1
 
     @Column(name = "event_subImage")
     private String subImage;
+    // 이미지 2
 
     @Column(name = "event_start_date")
     private LocalDateTime startDate;
@@ -56,6 +58,7 @@ public class Event extends CommonEntity {
 
     @Column(name = "event_url")
     private String eventUrl;
+    // 행사 메인 페이지
 
     // 행사 등록한 사람
     @ManyToOne(fetch = FetchType.LAZY)
@@ -74,7 +77,8 @@ public class Event extends CommonEntity {
     private List<Stamp> stamps = new ArrayList<>();
 
     @Builder
-    public Event(String title, String subTitle, String content, String image, String subImage, LocalDateTime startDate, LocalDateTime endDate, String address, Double latitude, Double longitude, String eventUrl, WebMember webMember){
+    public Event(Long idx,String title, String subTitle, String content, String image, String subImage, LocalDateTime startDate, LocalDateTime endDate, String address, Double latitude, Double longitude, String eventUrl, WebMember webMember){
+        this.idx = idx;
         this.title = title;
         this.subTitle = subTitle;
         this.content = content;

@@ -3,7 +3,8 @@ package com.ssafy.bangrang.domain.event.service;
 import com.ssafy.bangrang.domain.event.api.request.EventSignUpDto;
 import com.ssafy.bangrang.domain.event.api.request.EventUpdateDto;
 import com.ssafy.bangrang.domain.event.api.response.GetEventAllResponseDto;
-import com.ssafy.bangrang.domain.event.api.response.GetEventDetailWebResponseDto;
+import com.ssafy.bangrang.domain.event.api.response.GetEventDetailResponseDto;
+import com.ssafy.bangrang.domain.event.api.response.GetEventListResponseDto;
 import com.ssafy.bangrang.domain.event.entity.Event;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,10 @@ import java.util.List;
 
 public interface EventWebService {
     String convertDateToString(LocalDateTime nowDate);
+
+    List<GetEventListResponseDto> getEventList(UserDetails userDetails) throws Exception;
+
+    GetEventDetailResponseDto getEventDetail(Long eventIdx, UserDetails userDetails);
 
     @Transactional
     void saveEvent(EventSignUpDto eventSignUpDto, MultipartFile eventUrl, UserDetails userDetails) throws IOException;
@@ -32,5 +37,4 @@ public interface EventWebService {
     // 모든 축제 조회하기
     List<GetEventAllResponseDto> findAll();
 
-    GetEventDetailWebResponseDto findById(Long eventIdx);
 }

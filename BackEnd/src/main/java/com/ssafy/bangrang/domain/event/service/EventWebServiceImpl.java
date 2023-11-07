@@ -6,7 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.bangrang.domain.event.api.request.EventSignUpDto;
 import com.ssafy.bangrang.domain.event.api.request.EventUpdateDto;
 import com.ssafy.bangrang.domain.event.api.response.GetEventAllResponseDto;
-import com.ssafy.bangrang.domain.event.api.response.GetEventDetailWebResponseDto;
+import com.ssafy.bangrang.domain.event.api.response.GetEventDetailResponseDto;
+import com.ssafy.bangrang.domain.event.api.response.GetEventListResponseDto;
 import com.ssafy.bangrang.domain.event.entity.Event;
 import com.ssafy.bangrang.domain.event.repository.EventRepository;
 import com.ssafy.bangrang.domain.member.entity.WebMember;
@@ -15,6 +16,7 @@ import com.ssafy.bangrang.global.s3service.S3ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,7 +42,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Slf4j
 public class EventWebServiceImpl implements EventWebService{
-
 
     private final EventRepository eventRepository;
     private final WebMemberRepository webMemberRepository;
@@ -53,6 +55,35 @@ public class EventWebServiceImpl implements EventWebService{
     @Value("${cloud.naver.client_secret}")
     String client_secret;
 
+
+    /**
+     * 내가 등록한 이벤트 리스트 조회
+     * */
+    @Override
+    public List<GetEventListResponseDto> getEventList(UserDetails userDetails) throws Exception {
+        WebMember user = webMemberRepository.findById(userDetails.getUsername())
+                .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
+
+        List<Event> eventList = eventRepository.findByWebMember(user.getIdx());
+
+        List<GetEventListResponseDto> result = new ArrayList<>();
+
+        for (Event event : eventList) {
+            GetEventListResponseDto getEventListResponseDto = GetEventListResponseDto.builder()
+                    .eventIdx(event.getIdx())
+                    .title(event.getTitle())
+                    .subTitle(event.getSubTitle())
+                    .eventImg(event.getImage())
+                    .startDate(event.getStartDate())
+                    .endDate(event.getEndDate())
+                    .address(event.getAddress())
+                    .eventUrl(event.getEventUrl())
+                    .build();
+
+            result.add(getEventListResponseDto);
+        }
+        return result;
+    }
 
     @Override
     public String convertDateToString(LocalDateTime nowDate) {
@@ -264,16 +295,26 @@ public class EventWebServiceImpl implements EventWebService{
         return eventList;
     }
 
+    /**
+     * 이벤트 상세정보 조회
+     * */
     @Override
-    public GetEventDetailWebResponseDto findById(Long eventIdx) {
+    public GetEventDetailResponseDto getEventDetail(Long eventIdx, UserDetails userDetails) {
 
-        Event foundEvent = eventRepository.findById(eventIdx).orElseThrow();
+        if (webMemberRepository.findById(userDetails.getUsername()).isEmpty())
+            throw new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1);
+
+        Event foundEvent = eventRepository.findByIdx(eventIdx)
+                .orElseThrow(() -> new EmptyResultDataAccessException("해당 이벤트는 존재하지 않습니다.", 1));
+
         int likeCount = foundEvent.getLikes().size();
 
-        return GetEventDetailWebResponseDto.builder()
+        return GetEventDetailResponseDto.builder()
                 .title(foundEvent.getTitle())
-                .subTitle(foundEvent.getSubTitle())
+                .subtitle(foundEvent.getSubTitle())
                 .content(foundEvent.getContent())
+                .image(foundEvent.getImage())
+                .subImage(foundEvent.getSubImage())
                 .startDate(foundEvent.getStartDate())
                 .endDate(foundEvent.getEndDate())
                 .address(foundEvent.getAddress())

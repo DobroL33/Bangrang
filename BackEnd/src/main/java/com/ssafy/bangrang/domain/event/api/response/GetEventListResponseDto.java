@@ -8,30 +8,28 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class GetEventDetailWebResponseDto {
-
+public class GetEventListResponseDto {
+    private Long eventIdx;
     private String title;
     private String subTitle;
-    private String content;
+    private String eventImg;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String address;
-    private Double longitude;
-    private Double latitude;
     private String eventUrl;
-    private int likeCount;
-
     @Builder
-    public GetEventDetailWebResponseDto(String title, String subTitle, String content, LocalDateTime startDate, LocalDateTime endDate, String address, Double longitude, Double latitude, String eventUrl, int likeCount){
+    public GetEventListResponseDto(Long eventIdx, String title, String subTitle, String eventImg,
+                                   LocalDateTime startDate, LocalDateTime endDate,
+                                   String address, String eventUrl) {
+        this.eventIdx = eventIdx;
         this.title = title;
         this.subTitle = subTitle;
-        this.content = content;
+        this.eventImg = eventImg;
         this.startDate = startDate;
         this.endDate = endDate;
         this.address = address;
-        this.longitude = longitude;
-        this.latitude = latitude;
         this.eventUrl = eventUrl;
-        this.likeCount = likeCount;
+
     }
+
 }
