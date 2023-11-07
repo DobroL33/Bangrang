@@ -37,23 +37,23 @@ const Inquiry: React.FC = () => {
   useEffect(() => {
     const AccessToken = localStorage.getItem("AccessToken");
     if (AccessToken) {
-      if (localStorage.getItem("UserName") !== "admin@bangrang") {
-        if (location.pathname.includes("/admin")) {
-          navigate("/manage");
+      if (localStorage.getItem("UserName")!=='admin@bangrang') {
+        if (location.pathname.includes('/admin')) {
+          navigate('/manage')
+        } else {
+          loaddata()
         }
       } else {
-        if (location.pathname.includes("/manage")) {
-          navigate("/admin");
+        if (location.pathname.includes('/manage')) {
+          navigate('/admin')
+        } else {
+          loaddata()
         }
       }
     } else {
       navigate("/login");
     }
   }, [navigate]);
-
-  useEffect(() => {
-    loaddata();
-  }, []);
 
   const loaddata = () => {
     axiosInstance({
@@ -64,12 +64,6 @@ const Inquiry: React.FC = () => {
     }).catch(err=>{
       console.log(err)
     })
-      .then((res) => {
-        setInquiry(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   const detaildata = (idx: Number) => {
@@ -81,12 +75,6 @@ const Inquiry: React.FC = () => {
     }).catch(err=>{
       console.log(err)
     })
-      .then((res) => {
-        setDetail(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   const commentchange = () => {
@@ -241,19 +229,12 @@ const Inquiry: React.FC = () => {
           <div style={{ width: "100%", height: "5%", backgroundColor: "red" }}>
             문의 리스트
           </div>
-
-          <div style={{ width: "100%", height: "95%", overflowY: "scroll" }}>
-            {isInquiry.map((item, index) => (
-              <div
-                key={index}
-                className={`${
-                  isDetail?.inquiryIdx === item.inquiryIdx
-                    ? styles.sel_inquiry
-                    : ""
-                } ${styles.inquiry_lst}`}
-                onClick={() => detaildata(item.inquiryIdx)}
-              >
-                <div className={styles.inquiry_idx}>{index + 1}</div>
+       
+          <div style={{width:'100%', height:'95%', overflowY:'scroll'}}>
+            {isInquiry.map((item, idx) => (
+              <div key={idx} className={`${isDetail?.inquiryIdx===item.inquiryIdx ? styles.sel_inquiry:''} ${styles.inquiry_lst}`} 
+              onClick={()=>detaildata(item.inquiryIdx)}>
+                <div className={styles.inquiry_idx}>{idx+1}</div>
                 <div className={styles.inquiry_info}>
                   <span>{item.title}</span>
                   <span>{item.event}</span>
