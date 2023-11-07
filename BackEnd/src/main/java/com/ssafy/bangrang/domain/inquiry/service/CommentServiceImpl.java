@@ -38,13 +38,15 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     @Transactional
-    public void deleteCommentV2(Long commentIdx) {
+    public void deleteCommentV2(Long commentIdx,UserDetails userDetails) {
+        WebMember webMember = webMemberRepository.findById(userDetails.getUsername()).orElseThrow();
         commentRepository.deleteById(commentIdx);
     }
 
     @Override
     @Transactional
-    public void updateCommentV2(UpdateCommentRequestDto request) {
+    public void updateCommentV2(UpdateCommentRequestDto request,UserDetails userDetails) {
+        WebMember webMember = webMemberRepository.findById(userDetails.getUsername()).orElseThrow();
         Comment comment = commentRepository.findByIdx(request.getCommentIdx()).orElseThrow();
         comment.changeContent(request.getContent());
     }

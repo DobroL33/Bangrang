@@ -1,4 +1,4 @@
-package com.ssafy.bangrang.domain.inquiry.api.v2;
+package com.ssafy.bangrang.domain.inquiry.api;
 
 import com.ssafy.bangrang.domain.inquiry.api.request.AddCommentRequestDto;
 import com.ssafy.bangrang.domain.inquiry.api.request.UpdateCommentRequestDto;
@@ -11,28 +11,31 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/web")
+@RequestMapping("/api/web/comment")
 @RequiredArgsConstructor
 @Slf4j
 public class CommentApi {
 
     private final CommentService commentService;
 
-    @PostMapping("/comment")
-    public ResponseEntity<?> addComment(@AuthenticationPrincipal UserDetails userDetails, @RequestBody AddCommentRequestDto request){
+    @PostMapping
+    public ResponseEntity<?> addComment(@AuthenticationPrincipal UserDetails userDetails,
+                                        @RequestBody AddCommentRequestDto request){
         commentService.save(userDetails, request);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/comment")
-    public ResponseEntity<?> updateComment(@RequestBody UpdateCommentRequestDto request){
-        commentService.updateCommentV2(request);
+    @PutMapping
+    public ResponseEntity<?> updateComment(@RequestBody UpdateCommentRequestDto request,
+                                           UserDetails userDetails){
+        commentService.updateCommentV2(request,userDetails);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/comment")
-    public ResponseEntity<?> deleteComment(@RequestBody Long commentIdx){
-        commentService.deleteCommentV2(commentIdx);
+    @DeleteMapping
+    public ResponseEntity<?> deleteComment(@RequestBody Long commentIdx,
+                                           UserDetails userDetails){
+        commentService.deleteCommentV2(commentIdx,userDetails);
         return ResponseEntity.ok().build();
     }
 }

@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 public class InquiryDetailComment {
     private Long commentIdx;
     private String content;
-    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @Builder
-    public InquiryDetailComment(Long commentIdx, String content, LocalDateTime createdAt){
+    public InquiryDetailComment(Long commentIdx, String content, LocalDateTime updatedAt){
         this.commentIdx = commentIdx;
         this.content = content;
-        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }

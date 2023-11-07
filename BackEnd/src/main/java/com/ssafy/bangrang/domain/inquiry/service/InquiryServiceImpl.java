@@ -52,7 +52,7 @@ public class InquiryServiceImpl implements InquiryService {
                 .comment(InquiryDetailComment.builder()
                         .commentIdx(inquiry.getComment().getIdx())
                         .content(inquiry.getComment().getContent())
-                        .createdAt(inquiry.getComment().getCreatedAt())
+                        .updatedAt(inquiry.getComment().getUpdatedAt())
                         .build())
                 .build();
     }

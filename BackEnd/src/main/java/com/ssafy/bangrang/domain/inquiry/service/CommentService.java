@@ -6,9 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface CommentService {
 
-    public void save(UserDetails userDetails, AddCommentRequestDto request);
+    void save(UserDetails userDetails, AddCommentRequestDto request);
 
-    public void deleteCommentV2(Long commentIdx);
+    void deleteCommentV2(Long commentIdx,UserDetails userDetails);
 
-    public void updateCommentV2(UpdateCommentRequestDto request);
+    void updateCommentV2(UpdateCommentRequestDto request,UserDetails userDetails);
 }
