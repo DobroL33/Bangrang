@@ -58,7 +58,7 @@ const Inquiry: React.FC = () => {
   const loaddata = () => {
     axiosInstance({
       method:'get',
-      url:`${process.env.REACT_APP_API}/api/web/inquiry`,
+      url:`${process.env.REACT_APP_API}/web/inquiry`,
     }).then(res=>{
       setInquiry(res.data)
     }).catch(err=>{
@@ -69,7 +69,7 @@ const Inquiry: React.FC = () => {
   const detaildata = (idx : Number) => {
     axiosInstance({
       method:'get',
-      url:`${process.env.REACT_APP_API}/api/web/inquiry/${idx}`,
+      url:`${process.env.REACT_APP_API}/web/inquiry/${idx}`,
     }).then(res=>{
       setDetail(res.data)
     }).catch(err=>{
@@ -83,7 +83,7 @@ const Inquiry: React.FC = () => {
     }
     axiosInstance({
       method:'put',
-      url:`${process.env.REACT_APP_API}/api/web/comment`,
+      url:`${process.env.REACT_APP_API}/web/comment`,
       data:{
         commentIdx : isDetail?.comment?.commentIdx,
         content : isComment,
@@ -107,7 +107,7 @@ const Inquiry: React.FC = () => {
   const deletecomment = () => {
     axiosInstance({
       method:'delete',
-      url:`${process.env.REACT_APP_API}/api/web/comment`,
+      url:`${process.env.REACT_APP_API}/web/comment`,
       data:{
         commentIdx : isDetail?.comment?.commentIdx,
       }
@@ -128,7 +128,7 @@ const Inquiry: React.FC = () => {
     }
     axiosInstance({
       method:'post',
-      url:`${process.env.REACT_APP_API}/api/web/comment`,
+      url:`${process.env.REACT_APP_API}/web/comment`,
       data:{
         inquiryIdx : isDetail?.inquiryIdx,
         content : isComment,
@@ -145,7 +145,7 @@ const Inquiry: React.FC = () => {
   const commentrefuse = () => {
     axiosInstance({
       method:'delete',
-      url:`${process.env.REACT_APP_API}/api/web/inquiry`,
+      url:`${process.env.REACT_APP_API}/web/inquiry`,
       data:{
         inquiryIdx : isDetail?.inquiryIdx,
       }
