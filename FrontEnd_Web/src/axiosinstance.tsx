@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const AccessToken = localStorage.getItem('AccessToken');
+
 const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
@@ -25,7 +26,7 @@ axiosInstance.interceptors.response.use(
       const refreshToken = localStorage.getItem('RefreshToken');
 
       try {
-        const { data } = await axios({
+        const { data, headers } = await axios({
           method: 'post',
           url: `${process.env.REACT_APP_API}/refresh`,
           headers : {
@@ -34,8 +35,8 @@ axiosInstance.interceptors.response.use(
           },
           data: { accessToken, refreshToken },
         });
-        const newAccessToken = data.headers['authorization'];
-        const newRefreshToken = data.headers['authorization-refresh'];
+        const newAccessToken = headers['authorization'];
+        const newRefreshToken = headers['authorization-refresh'];
         originalRequest.headers = {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + newAccessToken,

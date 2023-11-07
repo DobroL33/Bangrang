@@ -36,7 +36,7 @@ const Navbar: React.FC = () => {
       console.log(err);
     })
     localStorage.clear();
-      navigate('/')
+    navigate('/login');
   }
   return (
     <>
@@ -71,7 +71,7 @@ const Navbar: React.FC = () => {
         <div className={styles.navbtn}>
           {!IsMobile &&
           <p>안녕하세요.{localStorage.getItem('UserName')} 님</p>}
-          <button onClick={logout}>로그아웃</button>
+          <button onClick={()=>logout()}>로그아웃</button>
         </div>
       </header>
       : location.pathname === '/admin' || location.pathname === '/admin/inquiry' || location.pathname === '/admin/registmanager' ? 
@@ -82,7 +82,7 @@ const Navbar: React.FC = () => {
       <div className={styles.navbtn}>
           {!IsMobile &&
           <p>안녕하세요. 개발자 님</p>}
-          <button onClick={logout}>로그아웃</button>
+          <button onClick={()=>logout()}>로그아웃</button>
         </div>
     </header>
     : null}
