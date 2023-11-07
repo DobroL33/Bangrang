@@ -5,7 +5,7 @@ import com.ssafy.bangrang.domain.inquiry.api.response.InquiryDetailDto;
 import com.ssafy.bangrang.domain.inquiry.api.response.InquiryDto;
 import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
 import com.ssafy.bangrang.domain.inquiry.repository.InquiryRepository;
-import com.ssafy.bangrang.domain.inquiry.service.v2.CommentService;
+import com.ssafy.bangrang.domain.inquiry.service.v1.CommentService;
 import com.ssafy.bangrang.domain.inquiry.service.InquiryWebService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

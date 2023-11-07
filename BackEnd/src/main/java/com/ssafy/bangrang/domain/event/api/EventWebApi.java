@@ -1,16 +1,13 @@
 package com.ssafy.bangrang.domain.event.api;
 
 
-import com.ssafy.bangrang.domain.event.api.request.EventPutDto;
 import com.ssafy.bangrang.domain.event.api.request.EventSignUpDto;
 import com.ssafy.bangrang.domain.event.api.request.EventUpdateDto;
 import com.ssafy.bangrang.domain.event.api.response.EventGetDto;
-import com.ssafy.bangrang.domain.event.api.response.GetEventAllResponseDto;
+import com.ssafy.bangrang.domain.event.api.response.GetEventDetailWebResponseDto;
 import com.ssafy.bangrang.domain.event.entity.Event;
-import com.ssafy.bangrang.domain.event.service.EventWebService;
+import com.ssafy.bangrang.domain.event.service.EventWebServiceImpl;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class EventWebApi {
 
-    private final EventWebService eventWebService;
+    private final EventWebServiceImpl eventWebService;
 
     @PostMapping(path = "/regist", consumes = {"multipart/form-data"})
     public ResponseEntity<?> postWebEvent(@Valid @RequestPart("event") EventSignUpDto eventSignUpDto,
@@ -80,6 +77,7 @@ public class EventWebApi {
             log.info(eventList.toString());
             List<EventGetDto> eventGetDtoList = eventList.stream()
                     .map(e -> new EventGetDto(
+                            e.getIdx(),
                             e.getTitle(),
                             e.getSubTitle(),
                             e.getContent(),
@@ -100,16 +98,16 @@ public class EventWebApi {
         }
     }
 
-    @GetMapping("/list")
-    public ResponseEntity getEventAll(){
+    @GetMapping("/index/{eventIdx}")
+    public ResponseEntity getEventDetailWeb(@PathVariable Long eventIdx){
 
-        log.info("[전체 행사 리스트 요청 시작]", LocalDateTime.now());
+        log.info("[특정 행사 정보 요청 시작]", LocalDateTime.now());
 
-        List<GetEventAllResponseDto> eventList = eventWebService.findAll();
+        GetEventDetailWebResponseDto response = eventWebService.findById(eventIdx);
 
-        log.info("[전체 행사 리스트 요청 끝]");
+        log.info("[특정 행사 정보 요청 끝]", LocalDateTime.now());
 
-        return ResponseEntity.ok().body(eventList);
+        return ResponseEntity.ok().body(null);
     }
 
 }

@@ -1,11 +1,10 @@
-package com.ssafy.bangrang.domain.inquiry.service.v2;
+package com.ssafy.bangrang.domain.inquiry.service.v1;
 
 
 import com.ssafy.bangrang.domain.inquiry.api.request.AddCommentRequestDto;
 import com.ssafy.bangrang.domain.inquiry.api.request.CommentMakeDto;
 import com.ssafy.bangrang.domain.inquiry.api.request.CommentUpdateDto;
 import com.ssafy.bangrang.domain.inquiry.api.request.UpdateCommentRequestDto;
-import com.ssafy.bangrang.domain.inquiry.api.response.CommentDto;
 import com.ssafy.bangrang.domain.inquiry.entity.Comment;
 import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
 import com.ssafy.bangrang.domain.inquiry.repository.CommentRepository;

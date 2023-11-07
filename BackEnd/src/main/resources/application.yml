@@ -46,6 +46,10 @@ spring:
     username: postgres
     password: 1234
 
+#    url: jdbc:postgresql://k9b109.p.ssafy.io:5432/bangrang?charSet=utf-8&prepareThreshold=1
+#    username: bangrang
+#    password: ssafy_b109!_bangrang
+
   # redis 설정
   data:
     redis:

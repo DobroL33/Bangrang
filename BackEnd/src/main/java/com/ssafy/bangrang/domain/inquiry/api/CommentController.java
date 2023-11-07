@@ -2,7 +2,7 @@ package com.ssafy.bangrang.domain.inquiry.api;
 
 import com.ssafy.bangrang.domain.inquiry.api.request.CommentMakeDto;
 import com.ssafy.bangrang.domain.inquiry.api.request.CommentUpdateDto;
-import com.ssafy.bangrang.domain.inquiry.service.v2.CommentService;
+import com.ssafy.bangrang.domain.inquiry.service.v1.CommentService;
 import com.ssafy.bangrang.domain.inquiry.service.InquiryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
