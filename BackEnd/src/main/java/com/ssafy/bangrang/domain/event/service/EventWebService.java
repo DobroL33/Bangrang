@@ -1,7 +1,8 @@
 package com.ssafy.bangrang.domain.event.service;
 
-import com.ssafy.bangrang.domain.event.api.request.EventSignUpDto;
+import com.ssafy.bangrang.domain.event.api.request.CreateEventRequestDto;
 import com.ssafy.bangrang.domain.event.api.request.EventUpdateDto;
+import com.ssafy.bangrang.domain.event.api.request.UpdateEventRequestDto;
 import com.ssafy.bangrang.domain.event.api.response.GetEventAllResponseDto;
 import com.ssafy.bangrang.domain.event.api.response.GetEventDetailResponseDto;
 import com.ssafy.bangrang.domain.event.api.response.GetEventListResponseDto;
@@ -21,15 +22,14 @@ public interface EventWebService {
 
     GetEventDetailResponseDto getEventDetail(Long eventIdx, UserDetails userDetails);
 
-    @Transactional
-    void saveEvent(EventSignUpDto eventSignUpDto, MultipartFile eventUrl, UserDetails userDetails) throws IOException;
+    // 이벤트 등록하기
+    void createEvent(CreateEventRequestDto createEventRequestDto, MultipartFile image, MultipartFile subImage, UserDetails userDetails) throws Exception;
 
     // 이벤트 수정하기
-    @Transactional
-    void updateEvent(Long eventIdx, MultipartFile eventUrl, EventUpdateDto eventUpdateDto, UserDetails userDetails) throws IOException;
+    void updateEvent(Long eventIdx, UpdateEventRequestDto updateEventRequestDto, MultipartFile image, MultipartFile subImage, UserDetails userDetails) throws Exception;
 
     //이벤트 삭제하기
-    void deleteEvent(Long eventIdx, UserDetails userDetails);
+    void deleteEvent(Long eventIdx, UserDetails userDetails) throws Exception;
 
     //웹멤버의 모든 이벤트 가져오기
     List<Event> getWebMemberAllEvents(Long webMemberIdx, UserDetails userDetails);

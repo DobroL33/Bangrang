@@ -1,6 +1,7 @@
 package com.ssafy.bangrang.domain.event.entity;
 
 import com.ssafy.bangrang.domain.event.api.request.EventUpdateDto;
+import com.ssafy.bangrang.domain.event.api.request.UpdateEventRequestDto;
 import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
 import com.ssafy.bangrang.domain.member.entity.Stamp;
 import com.ssafy.bangrang.domain.member.entity.WebMember;
@@ -109,5 +110,25 @@ public class Event extends CommonEntity {
         this.address = eventPutDto.getAddress();
         this.eventUrl = eventUrl;
         return this;
+    }
+    /**
+     * 이벤트 상태 변경
+     */
+    public void updateEvent(UpdateEventRequestDto updateEventRequestDto, double changelati, double changelong) {
+        this.title=updateEventRequestDto.getTitle();
+        this.subTitle=updateEventRequestDto.getSubTitle();
+        this.content=updateEventRequestDto.getContent();
+        this.startDate=updateEventRequestDto.getStartDate();
+        this.endDate=updateEventRequestDto.getEndDate();
+        this.address=updateEventRequestDto.getAddress();
+        this.latitude=changelati;
+        this.longitude=changelong;
+        this.eventUrl=updateEventRequestDto.getEventUrl();
+    }
+    public void updateEventImg(String ImgUrl) {
+        this.image=ImgUrl;
+    }
+    public void updateEventSubImg(String ImgUrl) {
+        this.subImage=ImgUrl;
     }
 }

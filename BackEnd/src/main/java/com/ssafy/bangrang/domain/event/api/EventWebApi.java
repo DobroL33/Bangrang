@@ -1,8 +1,9 @@
 package com.ssafy.bangrang.domain.event.api;
 
 
-import com.ssafy.bangrang.domain.event.api.request.EventSignUpDto;
+import com.ssafy.bangrang.domain.event.api.request.CreateEventRequestDto;
 import com.ssafy.bangrang.domain.event.api.request.EventUpdateDto;
+import com.ssafy.bangrang.domain.event.api.request.UpdateEventRequestDto;
 import com.ssafy.bangrang.domain.event.service.EventWebService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,46 +41,36 @@ public class EventWebApi {
         return ResponseEntity.ok().body(eventWebService.getEventDetail(eventIdx,userDetails));
     }
 
-
-    @PostMapping(path = "/regist", consumes = {"multipart/form-data"})
-    public ResponseEntity<?> postWebEvent(@Valid @RequestPart("event") EventSignUpDto eventSignUpDto,
-                                          @RequestPart(value = "eventUrl") MultipartFile eventUrl,
-                                          @AuthenticationPrincipal UserDetails userDetails
-    ) {
-        log.info("웹 이벤트 생성중");
-        try {
-            eventWebService.saveEvent(eventSignUpDto, eventUrl, userDetails);
-            return ResponseEntity.ok().body("이벤트 생성 완료");
-        } catch (Exception e){
-            log.info("작성 실패");
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    /**
+     * 이벤트 등록하기
+     * */
+    @PostMapping
+    public ResponseEntity<?> createEvent(@Valid @RequestPart("data") CreateEventRequestDto createEventRequestDto,
+                                         @RequestPart("image") MultipartFile image,
+                                         @RequestPart("subImage") MultipartFile subImage,
+                                          @AuthenticationPrincipal UserDetails userDetails) throws Exception{
+        eventWebService.createEvent(createEventRequestDto,image,subImage,userDetails);
+        return ResponseEntity.badRequest().body("");
     }
 
-    @PutMapping("/update/{eventIdx}")
-    public ResponseEntity<?> putEvent(
-            @Valid @RequestPart("event") EventUpdateDto eventUpdateDto,
-            @RequestPart(value = "eventUrl") MultipartFile eventUrl,
-            @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long eventIdx) {
-        log.info("답변 수정");
-        try {
-            eventWebService.updateEvent(eventIdx,eventUrl, eventUpdateDto, userDetails);
-            return ResponseEntity.ok().body("이벤트 수정완료");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    /**
+     * 이벤트 수정하기
+     * */
+    @PutMapping("/{eventIdx}")
+    public ResponseEntity<?> updateEvent(@Valid @PathVariable("eventIdx") Long eventIdx,
+                                         @RequestPart("data") UpdateEventRequestDto updateEventRequestDto,
+                                         @RequestPart("image") MultipartFile image,
+                                         @RequestPart("subImage") MultipartFile subImage,
+                                         @AuthenticationPrincipal UserDetails userDetails) throws Exception{
+        eventWebService.updateEvent(eventIdx,updateEventRequestDto,image,subImage,userDetails);
+        return ResponseEntity.badRequest().body("");
     }
 
-    @PostMapping("/delete/{eventIdx}")
-    public ResponseEntity<?> deleteEvent(@PathVariable Long eventIdx,
-                                         @AuthenticationPrincipal UserDetails userDetails) {
-        log.info("이벤트 삭제");
-        try {
-            eventWebService.deleteEvent(eventIdx,userDetails);
-            return ResponseEntity.ok().body("이벤트 삭제 완료");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @DeleteMapping("/{eventIdx}")
+    public ResponseEntity<?> deleteEvent(@Valid @PathVariable("eventIdx") Long eventIdx,
+                                         @AuthenticationPrincipal UserDetails userDetails) throws Exception{
+        eventWebService.deleteEvent(eventIdx,userDetails);
+        return ResponseEntity.badRequest().body("");
     }
 
 }

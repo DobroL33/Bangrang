@@ -73,7 +73,7 @@ public class AlarmServieImpl implements AlarmService {
         AppMember user = appMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
 
-        List<Alarm> alarmList = alarmRepository.findByAppMember(user.getIdx());
+        List<Alarm> alarmList = alarmRepository.findAllByAppMember(user);
 
         List<AlarmListResponseDto> result = new ArrayList<>();
 
