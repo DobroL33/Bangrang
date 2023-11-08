@@ -51,7 +51,7 @@ public class WebLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandle
         WebMember user = webMemberRepository.findById(id)
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
 
-        if (user.getWebMemberStatus().equals(WebMemberStatus.WATING)){
+        if (user.getWebMemberStatus().equals(WebMemberStatus.WAITING)){
             throw new IllegalStateException("해당 계정은 인증대기 중 입니다.");
         } else if (user.getWebMemberStatus().equals(WebMemberStatus.DECLINED)) {
             throw new IllegalStateException("해당 계정은 인증이 거절되었습니다.");

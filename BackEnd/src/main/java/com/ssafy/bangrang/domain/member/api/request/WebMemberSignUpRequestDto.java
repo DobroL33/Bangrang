@@ -27,7 +27,7 @@ public class WebMemberSignUpRequestDto {
                 .id(this.id)
                 .password(this.password)
                 .organizationName(this.organizationName)
-                .webMemberStatus(WebMemberStatus.WATING)
+                .webMemberStatus(WebMemberStatus.WAITING)
                 .authFile(authFile)
                 .build();
     }

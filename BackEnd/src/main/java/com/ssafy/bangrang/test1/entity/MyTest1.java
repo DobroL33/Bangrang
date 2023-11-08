@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.redis.core.index.GeoIndexed;
 
 @Entity
 @Getter

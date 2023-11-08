@@ -52,9 +52,8 @@ public class AppMember extends Member{
     private List<MemberMapArea> memberMapAreas = new ArrayList<>();
 
     @Builder
-    public AppMember(Long idx, String id, String nickname, String password, String imgUrl,
+    public AppMember(String id, String nickname, String password, String imgUrl,
                      String firebaseToken){
-        this.idx = idx;
         this.id = id;
         this.nickname = nickname;
         this.password = password;

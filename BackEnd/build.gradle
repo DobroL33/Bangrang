@@ -61,8 +61,12 @@ dependencies {
 
     // postgresSql
     implementation 'org.postgresql:postgresql:42.6.0'
-    // hibernate-spatial
+    // hibernate-spatial 및 jts 라이브러리
     implementation 'org.hibernate:hibernate-spatial:6.2.13.Final'
+    implementation 'org.locationtech.jts:jts-core'
+
+    // firebase 설정
+    implementation 'com.google.firebase:firebase-admin'
 
 
 }

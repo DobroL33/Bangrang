@@ -19,6 +19,9 @@ public class PostGisTest {
     @Autowired
     private MyTest1Repository myTest1Repository;
 
+    @Autowired
+    private GeometryFactory geometryFactory;
+
     @Test
     @Disabled
     void pointTest(){
@@ -61,7 +64,6 @@ public class PostGisTest {
 
     @Test
     void testTest(){
-        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
         Point point = geometryFactory.createPoint(new Coordinate(37.541, 126.986));
         System.out.println("point = " + point);
         MyTest1 saved = myTest1Repository.save(MyTest1.builder()

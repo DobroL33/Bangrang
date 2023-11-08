@@ -19,13 +19,13 @@ public class GetInquiryAllResponseDto {
     private String resistDate;
 
     @Builder
-    public GetInquiryAllResponseDto(Long inquiryIdx, String type, String eventName, String title, String content, String answer, LocalDateTime resisteDate){
+    public GetInquiryAllResponseDto(Long inquiryIdx, String type, String eventName, String title, String content, String answer, String resisteDate){
         this.inquiryIdx = inquiryIdx;
         this.type = type;
         this.eventName = eventName;
         this.title = title;
         this.content = content;
         this.answer = answer;
-        this.resistDate = resisteDate.toString();
+        this.resistDate = resisteDate;
     }
 }

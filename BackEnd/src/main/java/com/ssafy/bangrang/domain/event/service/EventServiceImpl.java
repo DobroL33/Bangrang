@@ -6,9 +6,12 @@ import com.ssafy.bangrang.domain.event.entity.Event;
 import com.ssafy.bangrang.domain.event.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,8 @@ public class EventServiceImpl implements EventService{
 
     private final EventRepository eventRepository;
 
+    private final DateTimeFormatter dateTimeFormatter;
+
     @Override
     public List<GetEventAllResponseDto> findAll(){
 
@@ -30,8 +35,8 @@ public class EventServiceImpl implements EventService{
                         .image(e.getImage())
                         .title(e.getTitle())
                         .subtitle(e.getSubTitle())
-                        .startDate(e.getStartDate())
-                        .endDate(e.getEndDate())
+                        .startDate(e.getStartDate().format(dateTimeFormatter))
+                        .endDate(e.getEndDate().format(dateTimeFormatter))
                         .address(e.getAddress())
                         .latitude(e.getLatitude())
                         .longitude(e.getLongitude())
@@ -51,8 +56,8 @@ public class EventServiceImpl implements EventService{
                 .subImage(event.getSubImage())
                 .title(event.getTitle())
                 .content(event.getContent())
-                .startDate(event.getStartDate())
-                .endDate(event.getEndDate())
+                .startDate(event.getStartDate().format(dateTimeFormatter))
+                .endDate(event.getEndDate().format(dateTimeFormatter))
                 .pageURL(event.getEventUrl())
 //                .subEventIdx(event.getIdx())
                 .address(event.getAddress())

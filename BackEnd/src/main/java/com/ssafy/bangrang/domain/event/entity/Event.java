@@ -8,6 +8,9 @@ import com.ssafy.bangrang.domain.member.entity.WebMember;
 import com.ssafy.bangrang.global.common.entity.CommonEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -91,6 +94,8 @@ public class Event extends CommonEntity {
         this.latitude = latitude;
         this.longitude = longitude;
         this.eventUrl = eventUrl;
+        this.eventUrl = eventUrl;
+
         this.changeWebMember(webMember);
     }
 

@@ -7,6 +7,9 @@ import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,7 @@ public class MemberMarkerServiceImpl implements MemberMarkerService{
 
     private final AppMemberRepository appMemberRepository;
     private final MemberMarkerRepository memberMarkerRepository;
+    private final GeometryFactory geometryFactory;
 
     @Transactional
     @Override
@@ -30,8 +34,7 @@ public class MemberMarkerServiceImpl implements MemberMarkerService{
 
         memberMarkerRepository.saveAll(addMarkersRequestDtoList.stream()
                         .map(addMarkersRequestDto -> MemberMarker.builder()
-                                .latitude(addMarkersRequestDto.getX())
-                                .longitude(addMarkersRequestDto.getY())
+                                .location(geometryFactory.createPoint(new Coordinate(addMarkersRequestDto.getX(), addMarkersRequestDto.getY())))
                                 .appMember(appMember)
                                 .build())
                 .collect(Collectors.toList()));

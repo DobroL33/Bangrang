@@ -35,6 +35,8 @@ public class QMemberMapArea extends EntityPathBase<MemberMapArea> {
 
     public final EnumPath<com.ssafy.bangrang.domain.map.model.vo.RegionType> regionType = createEnum("regionType", com.ssafy.bangrang.domain.map.model.vo.RegionType.class);
 
+    public final ComparablePath<org.locationtech.jts.geom.Geometry> shape = createComparable("shape", org.locationtech.jts.geom.Geometry.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 

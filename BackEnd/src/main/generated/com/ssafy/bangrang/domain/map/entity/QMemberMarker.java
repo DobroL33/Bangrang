@@ -31,9 +31,7 @@ public class QMemberMarker extends EntityPathBase<MemberMarker> {
 
     public final NumberPath<Long> idx = createNumber("idx", Long.class);
 
-    public final NumberPath<Double> latitude = createNumber("latitude", Double.class);
-
-    public final NumberPath<Double> longitude = createNumber("longitude", Double.class);
+    public final ComparablePath<org.locationtech.jts.geom.Point> location = createComparable("location", org.locationtech.jts.geom.Point.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

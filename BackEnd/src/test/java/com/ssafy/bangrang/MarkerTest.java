@@ -11,6 +11,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -30,6 +32,9 @@ public class MarkerTest {
 
     @Autowired
     AppMemberRepository appMemberRepository;
+
+    @Autowired
+    GeometryFactory geometryFactory;
 
     @BeforeEach
     void beforeEach(){
@@ -54,8 +59,7 @@ public class MarkerTest {
         
         memberMarkerRepository.saveAll(addMarkersRequestDtoList.stream()
                 .map(addMarkersRequestDto -> MemberMarker.builder()
-                        .latitude(addMarkersRequestDto.getX())
-                        .longitude(addMarkersRequestDto.getY())
+                        .location(geometryFactory.createPoint(new Coordinate(37.541, 126.986)))
                         .appMember(appMember)
                         .build())
                 .collect(Collectors.toList()));

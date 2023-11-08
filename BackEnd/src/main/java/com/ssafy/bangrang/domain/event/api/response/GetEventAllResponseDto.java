@@ -22,13 +22,13 @@ public class GetEventAllResponseDto {
     private Long likeCount;
 
     @Builder
-    public GetEventAllResponseDto(Long eventIdx, String image, String title, String subtitle, LocalDateTime startDate, LocalDateTime endDate, String address, Double latitude, Double longitude, Long likeCount){
+    public GetEventAllResponseDto(Long eventIdx, String image, String title, String subtitle, String startDate, String endDate, String address, Double latitude, Double longitude, Long likeCount){
         this.eventIdx = eventIdx;
         this.image = image;
         this.title = title;
         this.subtitle = subtitle;
-        this.startDate = startDate.toString();
-        this.endDate = endDate.toString();
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;

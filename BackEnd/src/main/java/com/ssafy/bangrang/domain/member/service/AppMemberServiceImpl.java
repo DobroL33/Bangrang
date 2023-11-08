@@ -10,6 +10,7 @@ import com.ssafy.bangrang.global.security.redis.RedisAccessTokenService;
 import com.ssafy.bangrang.global.security.redis.RedisRefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,6 +42,8 @@ public class AppMemberServiceImpl implements AppMemberService {
     private final RedisAccessTokenService redisAccessTokenService;
 
     private final S3Service s3Service;
+
+    private final DateTimeFormatter dateTimeFormatter;
 
     /**
      * 소셜 로그인 & 회원 가입
@@ -180,7 +184,7 @@ public class AppMemberServiceImpl implements AppMemberService {
                         .stampName(appMemberStamp.getStamp().getName())
                         .stampEvent(appMemberStamp.getStamp().getEvent().getIdx())
                         .stampLocation(appMemberStamp.getStamp().getEvent().getAddress())
-                        .stampTime(appMemberStamp.getCreatedAt())
+                        .stampTime(appMemberStamp.getCreatedAt().format(dateTimeFormatter))
                         .build())
                 .collect(Collectors.toList());
 
@@ -214,7 +218,7 @@ public class AppMemberServiceImpl implements AppMemberService {
                         .title(inquiry.getTitle())
                         .content(inquiry.getContent())
                         .answer(inquiry.getComment().getContent())
-                        .resisteDate(inquiry.getCreatedAt())
+                        .resisteDate(inquiry.getCreatedAt().format(dateTimeFormatter))
                         .build())
                 .collect(Collectors.toList());
 

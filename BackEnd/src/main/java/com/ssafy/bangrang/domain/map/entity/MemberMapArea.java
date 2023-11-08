@@ -5,6 +5,8 @@ import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.global.common.entity.CommonEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.MultiPolygon;
 
 @Entity
 @Getter
@@ -22,6 +24,9 @@ public class MemberMapArea extends CommonEntity {
     @Column(name = "member_map_area_region")
     private RegionType regionType;
 
+    @Column(columnDefinition = "geometry(Geometry, 4326)")
+    private Geometry shape;
+
     @Column(name = "member_map_area_dimension")
     private Double dimension;
 
@@ -30,8 +35,9 @@ public class MemberMapArea extends CommonEntity {
     private AppMember appMember;
 
     @Builder
-    public MemberMapArea(RegionType regionType, Double dimension, AppMember appMember){
+    public MemberMapArea(RegionType regionType, MultiPolygon shape, Double dimension, AppMember appMember){
         this.regionType = regionType;
+        this.shape = shape;
         this.dimension = dimension;
         this.changeAppMember(appMember);
     }
@@ -39,5 +45,10 @@ public class MemberMapArea extends CommonEntity {
     private void changeAppMember(AppMember appMember) {
         this.appMember = appMember;
         appMember.getMemberMapAreas().add(this);
+    }
+
+    public void changeShapeAndDimension(MultiPolygon shape, Double dimension){
+        this.shape = shape;
+        this.dimension = dimension;
     }
 }

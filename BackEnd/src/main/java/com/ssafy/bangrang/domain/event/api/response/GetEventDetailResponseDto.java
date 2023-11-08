@@ -25,14 +25,14 @@ public class GetEventDetailResponseDto {
     private String eventUrl;
 
     @Builder
-    public GetEventDetailResponseDto(String image, String subImage, String title, String eventUrl, String subtitle, String content, LocalDateTime startDate, LocalDateTime endDate, String pageURL, String subEventIdx, String address, Double latitude, Double longitude, Long likeCount){
+    public GetEventDetailResponseDto(String image, String subImage, String title, String content, String startDate, String endDate, String pageURL, String subEventIdx, String address, Double latitude, Double longitude, Long likeCount){
         this.image = image;
         this.subImage = subImage;
         this.title = title;
         this.subtitle = subtitle;
         this.content = content;
-        this.startDate = startDate.toString();
-        this.endDate = endDate.toString();
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.pageURL = pageURL;
         this.subEventIdx = subEventIdx;
         this.address = address;
