@@ -1,6 +1,7 @@
 package com.ssafyb109.bangrang.room
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Entity
@@ -10,24 +11,46 @@ import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Entity
-data class UserLocation(
+// Location Entity for Table A
+@Entity(tableName = "current_location")
+data class CurrentLocation(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
 )
 
+// Location Entity for Table B
+@Entity(tableName = "historical_location")
+data class HistoricalLocation(
+    @PrimaryKey(autoGenerate = true) val id: Int? = null,
+    val latitude: Double,
+    val longitude: Double,
+)
+
+// DAO for accessing the database
 @Dao
 interface UserLocationDao {
-    @Query("SELECT * FROM UserLocation WHERE id = :id")
-    fun getUserLocation(id: Int): UserLocation?
+    @Query("SELECT * FROM current_location")
+    suspend fun getCurrentLocations(): List<CurrentLocation>
+
+    @Query("SELECT * FROM historical_location")
+    suspend fun getHistoricalLocations(): List<HistoricalLocation>
 
     @Insert
-    fun insertLocation(location: UserLocation): Long
+    suspend fun insertCurrentLocation(location: CurrentLocation): Long
+
+    @Insert
+    suspend fun insertHistoricalLocation(location: HistoricalLocation): Long
+
+    @Query("DELETE FROM current_location")
+    suspend fun deleteAllCurrentLocations()
+
+    @Query("DELETE FROM historical_location")
+    suspend fun deleteAllHistoricalLocations()
 }
 
-// 인스턴스
-@Database(entities = [UserLocation::class], version = 1)
+// Room Database
+@Database(entities = [CurrentLocation::class, HistoricalLocation::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userLocationDao(): UserLocationDao
 
@@ -36,13 +59,13 @@ abstract class AppDatabase : RoomDatabase() {
         private var INSTANCE: AppDatabase? = null
 
         fun getDatabase(context: Context): AppDatabase {
-            return AppDatabase.Companion.INSTANCE ?: synchronized(this) {
+            return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "your_database_name"
+                    "BangRangDB"
                 ).build()
-                AppDatabase.Companion.INSTANCE = instance
+                INSTANCE = instance
                 instance
             }
         }

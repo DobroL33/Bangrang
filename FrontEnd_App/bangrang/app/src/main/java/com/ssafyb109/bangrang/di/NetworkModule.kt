@@ -3,8 +3,8 @@ package com.ssafyb109.bangrang.di
 import android.content.Context
 import com.ssafyb109.bangrang.api.EventService
 import com.ssafyb109.bangrang.api.InquiryService
+import com.ssafyb109.bangrang.api.MarkerService
 import com.ssafyb109.bangrang.api.RankService
-import com.ssafyb109.bangrang.api.RefreshTokenRequestDTO
 import com.ssafyb109.bangrang.api.UserService
 import com.ssafyb109.bangrang.sharedpreferences.NullOnEmptyConverterFactory
 import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
@@ -13,13 +13,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.runBlocking
-import okhttp3.Authenticator
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
 import javax.inject.Singleton
 
 @Module
@@ -84,6 +81,12 @@ object NetworkModule {
     @Singleton
     fun provideInquiryService(retrofit: Retrofit): InquiryService {
         return retrofit.create(InquiryService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationService(retrofit: Retrofit): MarkerService {
+        return retrofit.create(MarkerService::class.java)
     }
 
     @Module
