@@ -34,6 +34,7 @@ public class CommentServiceImpl implements CommentService{
                 .webMember(webMember)
                 .inquiry(inquiry)
                 .build();
+        commentRepository.save(comment);
     }
 
     @Override

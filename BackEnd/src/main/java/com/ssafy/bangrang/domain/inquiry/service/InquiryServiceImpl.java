@@ -25,6 +25,7 @@ public class InquiryServiceImpl implements InquiryService {
     private final AppMemberRepository appMemberRepository;
 
     @Override
+    @Transactional
     public Inquiry saveInquiry(String memberId, AddInquiryRequestDto addInquiryRequestDto) {
         AppMember appMember = appMemberRepository.findById(memberId).orElseThrow();
         Event event = eventRepository.findById(addInquiryRequestDto.getEventIdx()).orElseThrow();

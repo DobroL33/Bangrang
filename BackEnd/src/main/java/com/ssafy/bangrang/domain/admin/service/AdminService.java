@@ -9,6 +9,6 @@ public interface AdminService {
     List<GetAccountListResponseDto> getAccountList(UserDetails userDetails) throws Exception;
 
     void updateAccountStatus(Long userIdx, int status,UserDetails userDetails) throws Exception;
-    void deleteAccountStatus(Long userIdx,UserDetails userDetails) throws Exception;
+    void deleteAccount(Long userIdx,UserDetails userDetails) throws Exception;
 
 }

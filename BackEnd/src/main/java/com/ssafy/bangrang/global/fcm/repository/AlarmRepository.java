@@ -11,8 +11,8 @@ import java.util.Optional;
 
 public interface AlarmRepository  extends JpaRepository<Alarm, Long> {
     List<Alarm> findAllByAppMember(AppMember appMember);
-    @Query("SELECT u FROM Alarm u WHERE u.idx = :idx and u.appMember = :appMemberidx")
-    Optional<Alarm> findByIdxAndAppMember(Long idx, Long appMemberidx);
+
+    Optional<Alarm> findByIdxAndAppMember(Long idx, AppMember appMember);
 
     Optional<Alarm> findByIdx(Long idx);
 }

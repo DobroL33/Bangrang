@@ -123,6 +123,7 @@ public class EventWebServiceImpl implements EventWebService{
      * 이벤트 생성
      * */
     @Override
+    @Transactional
     public void createEvent(CreateEventRequestDto createEventRequestDto, MultipartFile image, MultipartFile subImage, UserDetails userDetails) throws Exception{
         WebMember user = webMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
@@ -171,6 +172,7 @@ public class EventWebServiceImpl implements EventWebService{
 
     // 이벤트 수정하기
     @Override
+    @Transactional
     public void updateEvent(Long eventIdx, UpdateEventRequestDto updateEventRequestDto, MultipartFile image, MultipartFile subImage, UserDetails userDetails)
             throws Exception {
         WebMember user = webMemberRepository.findById(userDetails.getUsername())
@@ -225,6 +227,7 @@ public class EventWebServiceImpl implements EventWebService{
 
     //이벤트 삭제하기
     @Override
+    @Transactional
     public void deleteEvent(Long eventIdx, UserDetails userDetails) throws Exception {
         WebMember user = webMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));

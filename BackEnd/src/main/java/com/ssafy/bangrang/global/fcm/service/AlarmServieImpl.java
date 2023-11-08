@@ -26,6 +26,7 @@ public class AlarmServieImpl implements AlarmService {
 
     private final AlarmRepository alarmRepository;
     @Override
+    @Transactional
     public void alarmOnOff(Boolean alarmSet, UserDetails userDetails) throws Exception {
         AppMember user = appMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
@@ -36,6 +37,7 @@ public class AlarmServieImpl implements AlarmService {
      * 유저의 알림 리스트 상태 수정
      */
     @Override
+    @Transactional
     public void alarmStatusUpdate(AlarmStatusUpdateRequestDto alarmStatusUpdateRequestDto,
                                   UserDetails userDetails) throws Exception{
         AppMember user = appMemberRepository.findById(userDetails.getUsername())
@@ -44,7 +46,7 @@ public class AlarmServieImpl implements AlarmService {
         if (alarmStatusUpdateRequestDto.getAlarmStatus() == 1){
             for (Long alarmIdx : alarmStatusUpdateRequestDto.getAlarmIdx()) {
                 // 각각의 alarmIdx에 대한 작업 수행
-                Alarm alarm = alarmRepository.findByIdxAndAppMember(alarmIdx, user.getIdx())
+                Alarm alarm = alarmRepository.findByIdxAndAppMember(alarmIdx, user)
                         .orElse(null);
 
                 if (alarm != null) {
@@ -55,7 +57,7 @@ public class AlarmServieImpl implements AlarmService {
         } else if (alarmStatusUpdateRequestDto.getAlarmStatus() == 2) {
             for (Long alarmIdx : alarmStatusUpdateRequestDto.getAlarmIdx()) {
                 // 각각의 alarmIdx에 대한 작업 수행
-                Alarm alarm = alarmRepository.findByIdxAndAppMember(alarmIdx, user.getIdx())
+                Alarm alarm = alarmRepository.findByIdxAndAppMember(alarmIdx, user)
                         .orElse(null);
                 if (alarm != null)
                     alarmRepository.delete(alarm);

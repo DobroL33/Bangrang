@@ -1,5 +1,6 @@
 package com.ssafy.bangrang.domain.inquiry.api;
 
+import com.ssafy.bangrang.domain.inquiry.api.request.DeleteInquiryRequestDto;
 import com.ssafy.bangrang.domain.inquiry.api.response.GetInquiryDetailResponseDto;
 import com.ssafy.bangrang.domain.inquiry.api.response.GetWebInquiryAllResponseDto;
 import com.ssafy.bangrang.domain.inquiry.service.InquiryService;
@@ -59,15 +60,15 @@ public class InquiryWebApi {
     
     // 일대일 문의 사항 삭제 요청
     @DeleteMapping
-    public ResponseEntity<?> deleteInquiry(@RequestBody Long inquiryIdx){
+    public ResponseEntity<?> deleteInquiry(@RequestBody DeleteInquiryRequestDto deleteInquiryRequestDto){
 
         log.info("[일대일 문의 사항 삭제 요청 시작]", LocalDateTime.now());
 
-        inquiryService.deleteById(inquiryIdx);
+        inquiryService.deleteById(deleteInquiryRequestDto.getInquiryIdx());
 
         log.info("[일대일 문의 사항 삭제 요청 끝]");
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("");
     }
 
 

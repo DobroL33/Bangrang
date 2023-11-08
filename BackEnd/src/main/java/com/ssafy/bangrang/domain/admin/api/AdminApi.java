@@ -1,5 +1,6 @@
 package com.ssafy.bangrang.domain.admin.api;
 
+import com.ssafy.bangrang.domain.admin.api.request.DeleteAccountRequestDto;
 import com.ssafy.bangrang.domain.admin.api.request.UpdateAccountStatusRequestDto;
 import com.ssafy.bangrang.domain.admin.service.AdminService;
 import io.swagger.annotations.ApiOperation;
@@ -34,9 +35,9 @@ public class AdminApi {
 
     @ApiOperation(value = "계정 가입신청 삭제")
     @DeleteMapping
-    public ResponseEntity<?> deleteAccountStatus(@Valid @RequestBody Long userIdx,
+    public ResponseEntity<?> deleteAccount(@Valid @RequestBody DeleteAccountRequestDto deleteAccountRequestDto,
                                                  @AuthenticationPrincipal UserDetails userDetails) throws Exception {
-        adminService.deleteAccountStatus(userIdx,userDetails);
+        adminService.deleteAccount(deleteAccountRequestDto.getUserIdx(),userDetails);
         return ResponseEntity.ok().body("");
     }
 }

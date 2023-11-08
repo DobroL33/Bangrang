@@ -1,6 +1,7 @@
 package com.ssafy.bangrang.domain.inquiry.api;
 
 import com.ssafy.bangrang.domain.inquiry.api.request.AddCommentRequestDto;
+import com.ssafy.bangrang.domain.inquiry.api.request.DeleteCommentRequestDto;
 import com.ssafy.bangrang.domain.inquiry.api.request.UpdateCommentRequestDto;
 import com.ssafy.bangrang.domain.inquiry.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -22,20 +23,20 @@ public class CommentApi {
     public ResponseEntity<?> addComment(@AuthenticationPrincipal UserDetails userDetails,
                                         @RequestBody AddCommentRequestDto request){
         commentService.save(userDetails, request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("");
     }
 
     @PutMapping
     public ResponseEntity<?> updateComment(@RequestBody UpdateCommentRequestDto request,
                                            UserDetails userDetails){
         commentService.updateCommentV2(request,userDetails);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("");
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteComment(@RequestBody Long commentIdx,
+    public ResponseEntity<?> deleteComment(@RequestBody DeleteCommentRequestDto deleteCommentRequestDto,
                                            UserDetails userDetails){
-        commentService.deleteCommentV2(commentIdx,userDetails);
-        return ResponseEntity.ok().build();
+        commentService.deleteCommentV2(deleteCommentRequestDto.getCommentIdx(),userDetails);
+        return ResponseEntity.ok().body("");
     }
 }

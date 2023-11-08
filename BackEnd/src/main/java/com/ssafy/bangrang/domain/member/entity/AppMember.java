@@ -89,4 +89,8 @@ public class AppMember extends Member{
     public void cancelDeletedDate() {
         this.deletedAt = null;
     }
+
+    public void updateProfileImg(String imgPath) {
+        this.imgUrl=imgPath;
+    }
 }

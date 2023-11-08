@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = false)
+@Transactional(readOnly = true)
 public class AdminServiceImpl implements AdminService {
 
     private final WebMemberRepository webMemberRepository;
@@ -70,14 +70,12 @@ public class AdminServiceImpl implements AdminService {
             user.changeWebMemberStatus(WebMemberStatus.DECLINED);
         else
             throw new Exception("올바르지 않은 status 변수입니다.");
-        
-//        webMemberRepository.save(user);
 
     }
 
     @Override
     @Transactional
-    public void deleteAccountStatus(Long userIdx, UserDetails userDetails) throws Exception {
+    public void deleteAccount(Long userIdx, UserDetails userDetails) throws Exception {
 
         WebMember admin = webMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
