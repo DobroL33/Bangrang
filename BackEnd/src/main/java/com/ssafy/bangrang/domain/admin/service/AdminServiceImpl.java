@@ -38,6 +38,7 @@ public class AdminServiceImpl implements AdminService {
         for (WebMember webMember : webMemberList) {
             if (webMember.getOrganizationName()!="admin@bangrang") {
                 GetAccountListResponseDto getAccountListResponseDto = GetAccountListResponseDto.builder()
+                        .idx(webMember.getIdx())
                         .id(webMember.getId())
                         .organizationName(webMember.getOrganizationName())
                         .authFile(webMember.getAuthFile())
