@@ -63,6 +63,7 @@ const Login: React.FC = () => {
           onChange={(e) => {
             setId(e.target.value);
           }}
+          autoComplete="username"
         />
         <br />
         <label>비밀번호</label>
