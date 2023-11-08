@@ -6,9 +6,7 @@ const AdminHome: React.FC = () => {
     useEffect(()=>{
       const AccessToken = localStorage.getItem('AccessToken')
       if (AccessToken) {
-        if (localStorage.getItem("UserName")==='admin@bangrang') {
-          navigate('/admin')
-        } else {
+        if (localStorage.getItem("UserName")!=='admin@bangrang') {
           navigate('/manage')
         }
       } else {

@@ -12,10 +12,10 @@ interface manager {
 }
 
 const RegistManager: React.FC = () => {
-  const [isManagers, setManagers] = useState<manager[]>([{idx:1,id:'asdf1',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:2,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WATING'}])
+  const [isManagers, setManagers] = useState<manager[]>([{idx:1,id:'asdf1',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:2,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'}])
   const [isDetail, setDetail] = useState<number|null>(null)
   const [isFilter, setFilter] = useState('ALL');
-  const changeStatus = ['WATING', 'DECLINED', 'ACCEPTED']
+  const changeStatus = ['WAITING', 'DECLINED', 'ACCEPTED']
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const RegistManager: React.FC = () => {
   };
 
   const updateStatus = (statusNum:number) => {
-    // 0 WATING  1 DECLINED   2 ACCEPTED
+    // 0 WAITING  1 DECLINED   2 ACCEPTED
     axiosInstance({
       method:'put',
       url:`${process.env.REACT_APP_API}/admin`,
@@ -105,7 +105,7 @@ const RegistManager: React.FC = () => {
                   전체
                 </label>
                 <label>
-                  <input type="radio" checked={isFilter === 'WATING'} onClick={()=>setFilter('WATING')} />
+                  <input type="radio" checked={isFilter === 'WAITING'} onClick={()=>setFilter('WAITING')} />
                   대기중
                 </label>
                 <label>
@@ -156,7 +156,7 @@ const RegistManager: React.FC = () => {
               <br />
               유저 인증파일 : {isManagers[isDetail].authFile}
               <br />
-              {isManagers[isDetail].status === 'WATING' ?
+              {isManagers[isDetail].status === 'WAITING' ?
                 <div>
                   <p>이 계정은 승인 대기중 입니다.</p>
                   <button onClick={()=>updateStatus(2)}>승인</button>

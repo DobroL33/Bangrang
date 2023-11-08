@@ -8,8 +8,6 @@ const ManageHome: React.FC = () => {
     if (AccessToken) {
       if (localStorage.getItem("UserName") === "admin@bangrang") {
         navigate("/admin");
-      } else {
-        navigate("/manage");
       }
     } else {
       navigate("");
