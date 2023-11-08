@@ -25,10 +25,7 @@ interface Detailinquiry {
 
 const Inquiry: React.FC = () => {
   const [isInquiry, setInquiry] = useState<inquiry[]>([])
-  const [isDetail, setDetail] = useState<Detailinquiry|null>(
-    {inquiryIdx:1, title:"OO축제 운영 시간 문의",event:"<부산 불꽃놀이 축제>",createdAt:new Date(),content:"asdfads",nickname:"casdf",
-  comment:null}
-  )
+  const [isDetail, setDetail] = useState<Detailinquiry|null>(null)
   const [isEdit, setEdit] = useState(false); // comment 수정 on/off
   const [isComment, setComment] = useState(""); // 수정할 comment 내용 담아두는 변수
   const days = ["일", "월", "화", "수", "목", "금", "토"];
@@ -60,7 +57,6 @@ const Inquiry: React.FC = () => {
       method:'get',
       url:`${process.env.REACT_APP_API}/web/inquiry`,
     }).then(res=>{
-      console.log(res)
       setInquiry(res.data)
     }).catch(err=>{
       console.log(err)
@@ -230,8 +226,8 @@ const Inquiry: React.FC = () => {
           <div style={{ width: "100%", height: "5%", backgroundColor: "red" }}>
             문의 리스트
           </div>
-       
-          <div style={{width:'100%', height:'95%', overflowY:'scroll'}}>
+          {isInquiry.length > 0 ?
+          <div style={{width:'100%', height:'95%', overflowY:'auto'}}>
             {isInquiry.map((item, idx) => (
               <div key={idx} className={`${isDetail?.inquiryIdx===item.inquiryIdx ? styles.sel_inquiry:''} ${styles.inquiry_lst}`} 
               onClick={()=>detaildata(item.inquiryIdx)}>
@@ -292,6 +288,10 @@ const Inquiry: React.FC = () => {
               </div>
             ))}
           </div>
+          : 
+          <div style={{width:'100%', height:'95%',display:'flex',alignItems:'center',justifyContent:'center'}}>
+            <h1>등록된 문의가 없습니다 :)</h1>
+          </div>}
         </div>
         <div
           style={{
@@ -299,7 +299,7 @@ const Inquiry: React.FC = () => {
             backgroundColor: "white",
             border: "1px solid black",
           }}
-        >
+          >
           <div
             style={{
               height: "10%",

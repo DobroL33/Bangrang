@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use(
         return await axios(originalRequest);
       } catch (err) {
         console.log(err);
-        localStorage.clear();
+        // localStorage.clear();
       }
     }
     return Promise.reject(error);
