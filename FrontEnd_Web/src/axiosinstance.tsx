@@ -2,7 +2,7 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   headers: {
-    Authorization: "Bearer1 " + localStorage.getItem("AccessToken"),
+    Authorization: "Bearer " + localStorage.getItem("AccessToken"),
   },
 });
 
@@ -32,7 +32,6 @@ axiosInstance.interceptors.response.use(
           },
           data: { accessToken, refreshToken },
         });
-        console.log(headers)
         const newAccessToken = headers['authorization'];
         const newRefreshToken = headers['authorization-refresh'];
         localStorage.setItem("AccessToken", newAccessToken);
@@ -43,7 +42,7 @@ axiosInstance.interceptors.response.use(
         return await axios(originalRequest);
       } catch (err) {
         console.log(err);
-        // localStorage.clear();
+        localStorage.clear();
       }
     }
     return Promise.reject(error);
