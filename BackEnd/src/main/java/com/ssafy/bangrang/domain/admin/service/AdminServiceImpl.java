@@ -28,7 +28,7 @@ public class AdminServiceImpl implements AdminService {
         WebMember admin = webMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
 
-        if (admin.getOrganizationName() != "admin@bangrang")
+        if (!admin.getOrganizationName().equals("admin@bangrang"))
             throw new Exception("관리자 계정이 아닙니다.");
 
         List<WebMember> webMemberList = webMemberRepository.findAll();
@@ -36,7 +36,7 @@ public class AdminServiceImpl implements AdminService {
         List<GetAccountListResponseDto> result = new ArrayList<>();
 
         for (WebMember webMember : webMemberList) {
-            if (webMember.getOrganizationName()!="admin@bangrang") {
+            if (!webMember.getOrganizationName().equals("admin@bangrang")) {
                 GetAccountListResponseDto getAccountListResponseDto = GetAccountListResponseDto.builder()
                         .idx(webMember.getIdx())
                         .id(webMember.getId())
@@ -55,7 +55,7 @@ public class AdminServiceImpl implements AdminService {
         WebMember admin = webMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
 
-        if (admin.getOrganizationName() != "admin@bangrang")
+        if (!admin.getOrganizationName().equals("admin@bangrang"))
             throw new Exception("관리자 계정이 아닙니다.");
 
         WebMember user = webMemberRepository.findByIdx(userIdx)
@@ -78,7 +78,7 @@ public class AdminServiceImpl implements AdminService {
         WebMember admin = webMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
 
-        if (admin.getOrganizationName() != "admin@bangrang")
+        if (!admin.getOrganizationName().equals("admin@bangrang"))
             throw new Exception("관리자 계정이 아닙니다.");
 
         WebMember user = webMemberRepository.findByIdx(userIdx)
