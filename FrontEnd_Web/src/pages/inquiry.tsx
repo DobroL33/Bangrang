@@ -60,6 +60,7 @@ const Inquiry: React.FC = () => {
       method:'get',
       url:`${process.env.REACT_APP_API}/web/inquiry`,
     }).then(res=>{
+      console.log(res)
       setInquiry(res.data)
     }).catch(err=>{
       console.log(err)

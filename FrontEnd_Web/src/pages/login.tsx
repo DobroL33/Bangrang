@@ -33,14 +33,10 @@ const Login: React.FC = () => {
         id: isId,
         password: isPw,
       },
-    })
-      .then((res) => {
+    }).then((res) => {
         localStorage.setItem("AccessToken", res.headers["authorization"]);
-        localStorage.setItem(
-          "RefreshToken",
-          res.headers["authorization-refresh"]
-        );
-        console.log(localStorage.getItem("AccessToken"));
+        localStorage.setItem("RefreshToken",res.headers["authorization-refresh"]);
+
         const UserName = res.data.OrganizationName;
         localStorage.setItem("UserName", UserName);
         if (UserName === "admin@bangrang") {
@@ -76,6 +72,7 @@ const Login: React.FC = () => {
           onChange={(e) => {
             setPw(e.target.value);
           }}
+          autoComplete="current-password"
         />
         <br />
         <button type="submit">로그인</button>
