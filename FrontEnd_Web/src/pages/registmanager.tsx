@@ -15,7 +15,7 @@ const RegistManager: React.FC = () => {
   const [isManagers, setManagers] = useState<manager[]>([{idx:1,id:'asdf1',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:2,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'}])
   const [isDetail, setDetail] = useState<number|null>(null)
   const [isFilter, setFilter] = useState('ALL');
-  const changeStatus = ['WAITING', 'DECLINED', 'ACCEPTED']
+  const changeStatus = ['WAITING',  'ACCEPTED', 'DECLINED']
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const RegistManager: React.FC = () => {
   };
 
   const updateStatus = (statusNum:number) => {
-    // 0 WAITING  1 DECLINED   2 ACCEPTED
+    // 0 WAITING  1 ACCEPTED   2 DECLINED
     axiosInstance({
       method:'put',
       url:`${process.env.REACT_APP_API}/admin`,
@@ -159,8 +159,8 @@ const RegistManager: React.FC = () => {
               {isManagers[isDetail].status === 'WAITING' ?
                 <div>
                   <p>이 계정은 승인 대기중 입니다.</p>
-                  <button onClick={()=>updateStatus(2)}>승인</button>
-                  <button onClick={()=>updateStatus(1)}>거절</button>
+                  <button onClick={()=>updateStatus(1)}>승인</button>
+                  <button onClick={()=>updateStatus(2)}>거절</button>
                 </div>
                 :
                 isManagers[isDetail].status === 'DECLINED' ?
@@ -172,7 +172,7 @@ const RegistManager: React.FC = () => {
                 :
                 <div>
                   <p>이 계정은 승인되었습니다.</p>
-                  <button onClick={()=>updateStatus(1)}>계정 정지</button>
+                  <button onClick={()=>updateStatus(2)}>계정 정지</button>
                 </div>
               }
             </div> 
