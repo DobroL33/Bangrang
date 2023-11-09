@@ -9,7 +9,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import axiosInstance from "../axiosinstance";
-import { FormEncType, useNavigate } from "react-router-dom";
+import { FormEncType, useParams } from "react-router-dom";
 interface Event {
   title: string;
   subTitle: string;
@@ -20,8 +20,8 @@ interface Event {
   eventUrl: string;
 }
 
-const EventRegist: React.FC = () => {
-  const navigate = useNavigate();
+const EventUpdate: React.FC = () => {
+  const { eventIdx } = useParams();
   const [event, setEvent] = useState<Event>({
     title: "",
     subTitle: "",
@@ -33,6 +33,27 @@ const EventRegist: React.FC = () => {
   });
   const [image, setImage] = useState<FileList | null>(null);
   const [subImage, setSubImage] = useState<FileList | null>(null);
+
+  useEffect(() => {
+    axiosInstance
+      .get(`${process.env.REACT_APP_API}/web/event/${eventIdx}`)
+      .then((res) => {
+        // 응답에서 데이터 추출 및 상태 업데이트
+        const eventData = res.data;
+        setEvent({
+          title: eventData.title,
+          subTitle: eventData.subTitle,
+          content: eventData.content,
+          startDate: eventData.startDate,
+          endDate: eventData.endDate,
+          address: eventData.address,
+          eventUrl: eventData.eventUrl,
+        });
+        setImage(eventData.image);
+        setSubImage(eventData.subImage);
+      })
+      .catch((err) => console.log(err));
+  }, [eventIdx]);
 
   const { title, subTitle, content, startDate, endDate, address, eventUrl } =
     event;
@@ -111,10 +132,17 @@ const EventRegist: React.FC = () => {
       formData.append("subImage", subImage[0]);
     }
 
-    formData.append(
-      "data",
-      new Blob([JSON.stringify(event)], { type: "application/json" })
-    );
+    // const data = {
+    //   ...event,
+    //   startDate: new Date(event.startDate),
+    //   endDate: new Date(event.endDate),
+    // };
+
+    formData.append("data", JSON.stringify(event));
+    // formData.append(
+    //   "data",
+    //   new Blob([JSON.stringify(event)], { type: "application/json" })
+    // );
 
     axiosInstance({
       method: "post",
@@ -126,8 +154,6 @@ const EventRegist: React.FC = () => {
     })
       .then((res) => {
         console.log(res);
-        alert("이벤트 등록 완료");
-        navigate("/manage/eventlist");
       })
       .catch((err) => console.log(err));
   };
@@ -225,11 +251,11 @@ const EventRegist: React.FC = () => {
         )}
       </form>
 
-      {/* <button type="button" onClick={() => console.log(event)}>
+      <button type="button" onClick={() => console.log(event)}>
         이벤트 찍기
-      </button> */}
+      </button>
     </div>
   );
 };
 
-export default EventRegist;
+export default EventUpdate;

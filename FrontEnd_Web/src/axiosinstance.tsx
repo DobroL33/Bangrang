@@ -1,10 +1,15 @@
 import axios from "axios";
 
-const axiosInstance = axios.create({
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + localStorage.getItem("AccessToken"),
-  },
+const axiosInstance = axios.create();
+
+axiosInstance.interceptors.request.use((request) => {
+  const accessToken = localStorage.getItem("AccessToken");
+
+  if (accessToken) {
+    request.headers["Authorization"] = `Bearer ${accessToken}`;
+  }
+
+  return request;
 });
 
 axiosInstance.interceptors.response.use(

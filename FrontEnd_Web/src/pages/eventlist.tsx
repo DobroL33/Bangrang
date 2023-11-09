@@ -144,6 +144,7 @@ const EventList: React.FC = () => {
       <button onClick={() => navigate("/manage/eventregist")}>
         이벤트 작성
       </button>
+
       <div
         style={{
           width: "100%",
@@ -264,6 +265,13 @@ const EventList: React.FC = () => {
                   latitude={isDetail.latitude}
                   longtitude={isDetail.longitude}
                 />
+                <button
+                  onClick={() =>
+                    navigate(`/manage/eventupdate/${isDetail.eventIdx}`)
+                  }
+                >
+                  이벤트 수정
+                </button>
               </div>
             </div>
           ) : null}

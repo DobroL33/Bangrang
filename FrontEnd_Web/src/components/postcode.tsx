@@ -64,6 +64,14 @@ const PostCode: React.FC<Props> = ({ setAddress }) => {
       <br />
       <ReactModal isOpen={isOpen} ariaHideApp={false} style={customStyles}>
         <DaumPostcode onComplete={completeHandler} />
+
+        <button
+          type="button"
+          style={{ display: "flex", justifyContent: "center" }}
+          onClick={toggle}
+        >
+          X
+        </button>
       </ReactModal>
     </div>
   );
