@@ -89,7 +89,6 @@ function Deck({ setStack }: { setStack: (i: number) => void }) {
 
 export default function SecondPage() {
   const [stack, setStack] = useState<number>(-1);
-  console.log({ stack });
 
   return (
     <div className={styles.Page}>

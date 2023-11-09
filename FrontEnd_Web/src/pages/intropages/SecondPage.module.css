@@ -23,7 +23,8 @@
   flex: 1;
   display: flex;
   animation-iteration-count: 9999;
-  animation-duration: 0.75s;
+  animation-duration: 0.3s;
+  animation-direction: alternate;
 }
 
 .stamp {

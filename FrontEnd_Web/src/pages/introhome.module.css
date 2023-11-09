@@ -1,6 +1,6 @@
 .Page {
   width: 100%;
-  height: 3100px;
+  height: auto;
   /* background: linear-gradient(
     to bottom,
     #ffffff,
@@ -12,6 +12,7 @@
     #1daeff,
     #ffffff
   ); */
+  overflow-x: hidden;
   -ms-overflow-style: none; /* IE, Edge */
   scrollbar-width: none; /* Firefox */
 }

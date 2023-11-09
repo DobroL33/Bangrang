@@ -3,7 +3,16 @@
   text-align: center;
   width: 100vw;
   height: 100vh;
-  background-color: #fafafa;
+  background-color: #ffffff;
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
+}
+body {
+  overflow-x: hidden;
+}
+
+.App::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .App-link {

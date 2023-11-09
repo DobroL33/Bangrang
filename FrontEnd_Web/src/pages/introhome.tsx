@@ -62,7 +62,7 @@ const IntroHome: React.FC = () => {
         {scrollPercent.toFixed(0)}%
       </p>
       <MainPage></MainPage>
-      <FirstPage></FirstPage>
+      {/* <FirstPage></FirstPage> */}
       <SecondPage></SecondPage>
       <ThirdPage visible={visible}></ThirdPage>
     </div>
