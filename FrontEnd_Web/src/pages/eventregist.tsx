@@ -65,7 +65,7 @@ const EventRegist: React.FC = () => {
     console.log(event);
   };
 
-  const datePickerFormat = "YYYY-MM-DDTHH:mm:00";
+  const datePickerFormat = "YYYY-MM-DDTHH:mm:ss";
   // const datePickerUtils = {
   //   format: datePickerFormat,
   //   parse: (value) => dayjs(value, datePickerFormat, true).toDate(),
@@ -154,13 +154,13 @@ const EventRegist: React.FC = () => {
               label="Controlled picker"
               value={startDate}
               onChange={startDateChange}
-              format="YYYY-MM-DDTHH:mm:00"
+              format="YYYY-MM-DDTHH:mm:ss"
             />
             <DateTimePicker
               label="Controlled picker"
               value={endDate}
               onChange={endDateChange}
-              format="YYYY-MM-DDTHH:mm:00"
+              format="YYYY-MM-DDTHH:mm:ss"
             />
           </DemoContainer>
         </LocalizationProvider>
