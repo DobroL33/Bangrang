@@ -111,10 +111,7 @@ const EventRegist: React.FC = () => {
       formData.append("subImage", subImage[0]);
     }
 
-    formData.append(
-      "data",
-      new Blob([JSON.stringify(event)], { type: "application/json" })
-    );
+    formData.append("data", JSON.stringify(event));
 
     axiosInstance({
       method: "post",
