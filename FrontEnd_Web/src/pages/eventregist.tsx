@@ -154,13 +154,13 @@ const EventRegist: React.FC = () => {
               label="Controlled picker"
               value={startDate}
               onChange={startDateChange}
-              format="YYYY-MM-DDTHH:mm"
+              format="YYYY-MM-DDTHH:mm:00"
             />
             <DateTimePicker
               label="Controlled picker"
               value={endDate}
               onChange={endDateChange}
-              format="YYYY-MM-DDTHH:mm"
+              format="YYYY-MM-DDTHH:mm:00"
             />
           </DemoContainer>
         </LocalizationProvider>

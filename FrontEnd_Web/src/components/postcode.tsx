@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DaumPostcode from "react-daum-postcode";
 import ReactModal from "react-modal";
 interface Props {
@@ -9,12 +9,15 @@ const PostCode: React.FC<Props> = ({ setAddress }) => {
   const [roadAddress, setRoadAddress] = useState<string>("");
   const [detailAddress, setDetailAddress] = useState<string>(""); // 추가
   const [isOpen, setIsOpen] = useState<boolean>(false); //추가
+  useEffect(() => {
+    setAddress(roadAddress);
+  }, [roadAddress]);
 
   const completeHandler = (data: any) => {
     setZipcode(data.zonecode);
     setRoadAddress(data.roadAddress);
+    // setAddress(roadAddress + detailAddress);
     setIsOpen(false); //추가
-    setAddress(roadAddress + detailAddress);
     console.log(zipCode, roadAddress, detailAddress);
   };
 
@@ -46,7 +49,7 @@ const PostCode: React.FC<Props> = ({ setAddress }) => {
   // 추가
   const clickHandler = () => {
     console.log("주소 저장하기");
-    setAddress(roadAddress + detailAddress);
+    setAddress(roadAddress);
     // console.log(zipCode, roadAddress, detailAddress);
   };
 
@@ -57,12 +60,7 @@ const PostCode: React.FC<Props> = ({ setAddress }) => {
         우편번호 검색
       </button>
       <br />
-      <input
-        value={roadAddress}
-        readOnly
-        placeholder="도로명 주소"
-        onChange={clickHandler}
-      />
+      <input value={roadAddress} readOnly placeholder="도로명 주소" />
       <br />
       <ReactModal isOpen={isOpen} ariaHideApp={false} style={customStyles}>
         <DaumPostcode onComplete={completeHandler} />
