@@ -1,0 +1,136 @@
+.Page {
+  width: 100%;
+  height: 1000px;
+}
+.Container {
+  height: auto;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.PathContainer {
+  z-index: -1;
+  position: fixed;
+}
+
+svg {
+  fill: none;
+  width: 1000px;
+  stroke-width: 150px;
+  color: black;
+}
+
+path {
+  /* path 내부에 색깔, 전체 svg의 크기는 svg 의 스타일로 바꿔야함*/
+  z-index: -1;
+  stroke: beige;
+  stroke-dasharray: 250 100;
+  stroke-dashoffset: 4300.85;
+  animation: path 15000ms forwards;
+  fill: transparent;
+}
+
+@keyframes path {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.pink {
+  background: linear-gradient(to right, deeppink 0%, coral 100%);
+}
+
+.teal {
+  background: linear-gradient(to right, SlateBlue 0%, DeepSkyBlue 100%);
+}
+
+.tomato {
+  background: linear-gradient(to right, tomato 0%, gold 100%);
+}
+
+.loop {
+  /* width: auto; */
+  border-radius: 30px;
+  height: 10vw;
+}
+.loop2 {
+  /* width: auto; */
+  border-radius: 30px;
+  height: auto;
+}
+
+.comment1 {
+  padding-left: 10px;
+  padding-right: 10px;
+  width: auto;
+  height: 150px;
+  margin: 30px;
+  display: flex;
+  color: rgb(255, 198, 75);
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  font-size: 40px;
+  background: linear-gradient(
+    to right,
+    rgb(255, 248, 112) 0%,
+    rgb(217, 255, 183) 100%
+  );
+  border-radius: 30px;
+}
+
+.comment2 {
+  padding-left: 10px;
+  padding-right: 10px;
+  width: auto;
+  height: 150px;
+  margin: 30px;
+  display: flex;
+  color: white;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  font-size: 40px;
+  background: linear-gradient(
+    to right,
+    rgb(165, 233, 219) 0%,
+    DeepSkyBlue 100%
+  );
+  border-radius: 30px;
+}
+
+.comment3 {
+  padding-left: 10px;
+  padding-right: 10px;
+  width: auto;
+  height: 150px;
+  margin: 30px;
+  display: flex;
+  color: white;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  font-size: 40px;
+  background: linear-gradient(
+    to right,
+    rgb(205, 157, 90) 0%,
+    rgb(252, 114, 45) 100%
+  );
+  border-radius: 30px;
+}
+
+.comment4 {
+  padding-left: 10px;
+  padding-right: 10px;
+  width: auto;
+  height: 150px;
+  margin: 30px;
+  display: flex;
+  color: white;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  font-size: 40px;
+  background: linear-gradient(to right, SlateBlue 0%, DeepSkyBlue 100%);
+  border-radius: 30px;
+}

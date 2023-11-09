@@ -1,0 +1,124 @@
+/*SecondPage.module.css*/
+.Page {
+  width: 100%;
+  height: 800px;
+  display: flex;
+  cursor: url("https://uploads.codesandbox.io/uploads/user/b3e56831-8b98-4fee-b941-0e27f39883ab/Ad1_-cursor.png")
+      39 39,
+    auto;
+}
+
+.DeckContainer {
+  /* position: relative; */
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1;
+  display: flex;
+}
+.metContainer {
+  animation-name: moving;
+  position: relative;
+  top: 500px; /* 원하는 위치로 조정 */
+  flex: 1;
+  display: flex;
+  animation-iteration-count: 9999;
+  animation-duration: 0.75s;
+}
+
+.stamp {
+  animation-name: stamp;
+  animation-iteration-count: 9999;
+  animation-duration: 0.75s;
+}
+
+@keyframes moving {
+  from {
+    left: 0px;
+  }
+  to {
+    left: -50px;
+  }
+}
+
+@keyframes stamp {
+  from {
+    rotate: (-30deg);
+  }
+  to {
+    rotate: (30deg);
+  }
+}
+
+.InfoContainer {
+  flex: 1;
+  z-index: 1;
+}
+.CommentContainer {
+  /* margin-top: 5%; */
+  flex: 1;
+}
+.CommentContainer > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* font-size: 14.5px; */
+}
+.CommentContainer > div > h1 {
+  z-index: 4;
+  background: linear-gradient(90deg, #5ee7df 0%, #f0dafe 100%);
+  width: 350px;
+  height: 70px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-radius: 30px;
+  color: white;
+  margin-top: 10px;
+  padding-top: 35px;
+  /* color: white; */
+}
+.infos {
+  top: 41%;
+  left: 15%;
+  height: 150px;
+  width: auto;
+}
+.infos > div {
+  display: flex;
+  z-index: 3;
+  margin-top: 25px;
+  font-size: 18px;
+  align-items: center;
+  justify-content: center;
+  color: rgb(255, 195, 126);
+}
+
+.deck {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.deck > div {
+  /* background-color: white; */
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 45vh;
+  min-width: 300px;
+  max-width: 500px;
+  height: 85vh;
+  min-height: 300px;
+  max-height: 400px;
+  will-change: transform;
+  border-radius: 10px;
+  /* box-shadow: 0 12.5px 100px -10px rgba(50, 50, 73, 0.4),
+    0 10px 10px -10px rgba(50, 50, 73, 0.3); */
+}

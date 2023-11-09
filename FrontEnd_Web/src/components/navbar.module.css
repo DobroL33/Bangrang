@@ -1,0 +1,40 @@
+.logo {
+    height: 50px;
+    margin: 20px 0;
+}
+.navbtn_lst {
+    display: flex; 
+}
+.navbtn {
+    margin : 0 10px;
+    display: flex;
+    text-decoration: none;
+    align-items: center;
+}
+.appdown{
+    background-color: #1DAEFF;
+    padding:5px 35px;
+    color:white;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+  
+.dropdown_content{
+    border:#1DAEFF solid 1px;
+    background-color: #FAFAFA;
+    border-radius: 10px;
+    display: block;
+    position : absolute;
+    z-index : 1; /*다른 요소들보다 앞에 배치*/
+    margin-top: 10px;
+    right: 5%;
+}
+
+.dropdown_content a{
+    display : block;
+    margin : 10px;  
+    text-decoration: none;
+    color:#1DAEFF;
+}
