@@ -115,12 +115,14 @@ const EventRegist: React.FC = () => {
       endDate: new Date(event.endDate),
     };
     formData.append("data", JSON.stringify(data));
-    axiosInstance
-      .post(`${process.env.REACT_APP_API}/web/event`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+    axiosInstance({
+      method: "post",
+      url: `${process.env.REACT_APP_API}/web/event`,
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
       .then((res) => {
         console.log(res);
       })
@@ -200,26 +202,27 @@ const EventRegist: React.FC = () => {
             }
           }}
         />
-        <p style={{ fontSize: "8px", fontWeight: "bold", color: "red" }}>
+        {/* <p style={{ fontSize: "8px", fontWeight: "bold", color: "red" }}>
           {subImage === null ? (
             <span>파일을 첨부해주세요</span>
           ) : (
             <span style={{ color: "green" }}>첨부완료</span>
           )}
-        </p>
+        </p> */}
         {title &&
         subTitle &&
         startDate &&
         endDate &&
         content &&
         address &&
-        image &&
-        subImage ? (
+        image ? (
           <button type="submit">이벤트 등록하기</button>
         ) : (
           <button disabled>이벤트 등록하기</button>
         )}
       </form>
+
+      <button onClick={() => console.log(event)}>이벤트 찍기</button>
     </div>
   );
 };

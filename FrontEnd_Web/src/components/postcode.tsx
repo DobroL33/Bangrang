@@ -56,16 +56,16 @@ const PostCode: React.FC<Props> = ({ setAddress }) => {
         우편번호 검색
       </button>
       <br />
-      <input value={roadAddress} readOnly placeholder="도로명 주소" />
+      <input
+        value={roadAddress}
+        readOnly
+        placeholder="도로명 주소"
+        onChange={clickHandler}
+      />
       <br />
       <ReactModal isOpen={isOpen} ariaHideApp={false} style={customStyles}>
         <DaumPostcode onComplete={completeHandler} />
       </ReactModal>
-
-      <br />
-      <button type="button" onClick={clickHandler}>
-        주소 저장
-      </button>
     </div>
   );
 };
