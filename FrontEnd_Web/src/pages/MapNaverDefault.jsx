@@ -20,7 +20,7 @@ const MapNaverDefault = ({ latitude, longtitude }) => {
       position: location,
       map,
     });
-  }, []);
+  }, [location]);
 
   return (
     <>
