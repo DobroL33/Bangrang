@@ -219,83 +219,85 @@ const EventList: React.FC = () => {
           >
             이벤트
           </div>
-          {isDetail ? (
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <div
-                style={{
-                  width: "40%",
-                  height: "80%",
-                  border: " 1px solid black",
-                  marginTop: "5%",
-                  borderRadius: "10px",
-                  textAlign: "left", // Add this line to make the content left-aligned
-                }}
-              >
-                <img
-                  src={`${isDetail.image}`}
-                  style={{ width: "30%", height: "20%" }}
-                  alt="축제 이미지"
-                />
-                {isDetail.subImage ? (
-                  <img
-                    src={isDetail.subImage}
-                    style={{ width: "30%", height: "20%" }}
-                    alt="서브 축제이미지"
-                  />
-                ) : null}
-                <div>
-                  <h3 style={{ textAlign: "left", paddingLeft: "10px" }}>
-                    {isDetail.title}
-                  </h3>
-                  <p
-                    style={{
-                      marginTop: "2px",
-                      color: "#949494",
-                      fontSize: "12px",
-                      textAlign: "left", // Add this line to make the content left-aligned
-                      paddingLeft: "10px",
-                    }}
-                  >
-                    {isDetail.address}
-                  </p>
-                  <p
-                    style={{
-                      marginTop: "2px",
-                      color: "#949494",
-                      fontSize: "12px",
-                      textAlign: "left", // Add this line to make the content left-aligned
-                      paddingLeft: "10px",
-                    }}
-                  >
-                    {isDetail.startDate} ~ {isDetail.endDate}
-                  </p>
-                  <p
-                    style={{
-                      marginTop: "5px",
-                      color: "#949494",
-                      fontSize: "10px",
-                      textAlign: "left", // Add this line to make the content left-aligned
-                      paddingLeft: "10px",
-                    }}
-                  >
-                    {isDetail.content}
-                  </p>
-                </div>
-
-                <MapNaverDefault
-                  latitude={isDetail.latitude}
-                  longtitude={isDetail.longitude}
-                />
-                <button
-                  onClick={() =>
-                    navigate(`/manage/eventupdate/${isDetail.eventIdx}`)
-                  }
+          <div>
+            {isDetail ? (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <div
+                  style={{
+                    width: "40%",
+                    height: "80%",
+                    border: " 1px solid black",
+                    marginTop: "5%",
+                    borderRadius: "10px",
+                    textAlign: "left", // Add this line to make the content left-aligned
+                  }}
                 >
-                  이벤트 수정
-                </button>
+                  <img
+                    src={`${isDetail.image}`}
+                    style={{ width: "30%", height: "20%" }}
+                    alt="축제 이미지"
+                  />
+                  {isDetail.subImage ? (
+                    <img
+                      src={isDetail.subImage}
+                      style={{ width: "30%", height: "20%" }}
+                      alt="서브 축제이미지"
+                    />
+                  ) : null}
+                  <div>
+                    <h3 style={{ textAlign: "left", paddingLeft: "10px" }}>
+                      {isDetail.title}
+                    </h3>
+                    <p
+                      style={{
+                        marginTop: "2px",
+                        color: "#949494",
+                        fontSize: "12px",
+                        textAlign: "left", // Add this line to make the content left-aligned
+                        paddingLeft: "10px",
+                      }}
+                    >
+                      {isDetail.address}
+                    </p>
+                    <p
+                      style={{
+                        marginTop: "2px",
+                        color: "#949494",
+                        fontSize: "12px",
+                        textAlign: "left", // Add this line to make the content left-aligned
+                        paddingLeft: "10px",
+                      }}
+                    >
+                      {isDetail.startDate} ~ {isDetail.endDate}
+                    </p>
+                    <p
+                      style={{
+                        marginTop: "5px",
+                        color: "#949494",
+                        fontSize: "10px",
+                        textAlign: "left", // Add this line to make the content left-aligned
+                        paddingLeft: "10px",
+                      }}
+                    >
+                      {isDetail.content}
+                    </p>
+                  </div>
+
+                  <MapNaverDefault
+                    latitude={isDetail.latitude}
+                    longtitude={isDetail.longitude}
+                  />
+                  <button
+                    onClick={() =>
+                      navigate(`/manage/eventupdate/${isDetail.eventIdx}`)
+                    }
+                  >
+                    이벤트 수정
+                  </button>
+                </div>
               </div>
-            </div>
-          ) : null}
+            ) : null}
+          </div>
         </div>
       </div>
     </div>
