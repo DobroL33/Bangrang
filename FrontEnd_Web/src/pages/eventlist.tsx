@@ -76,8 +76,6 @@ const EventList: React.FC = () => {
     likeCount: 0,
   });
 
-  const [isEdit, setEdit] = useState(false); // comment 수정 on/off
-  const [isComment, setComment] = useState(""); // 수정할 comment 내용 담아두는 변수
   const days = ["일", "월", "화", "수", "목", "금", "토"];
   const [eventList, setEventList] = useState<Event[]>([]);
 
@@ -171,24 +169,39 @@ const EventList: React.FC = () => {
           >
             이벤트 리스트
           </div>
-
-          <div style={{ width: "100%", height: "95%", overflowY: "scroll" }}>
-            {eventList.map((item, index) => (
-              <div
-                key={item.eventIdx}
-                className={`${
-                  isDetail?.eventIdx === item.eventIdx ? styles.sel_inquiry : ""
-                } ${styles.inquiry_lst}`}
-                onClick={() => detaildata(item.eventIdx)}
-              >
-                <div className={styles.inquiry_idx}>{index + 1}</div>
-                <div className={styles.inquiry_info}>
-                  <span>{item.title}</span>
-                  <span>{item.subTitle}</span>
+          {eventList.length > 0 ? (
+            <div style={{ width: "100%", height: "95%", overflowY: "scroll" }}>
+              {eventList.map((item, index) => (
+                <div
+                  key={item.eventIdx}
+                  className={`${
+                    isDetail?.eventIdx === item.eventIdx
+                      ? styles.sel_inquiry
+                      : ""
+                  } ${styles.inquiry_lst}`}
+                  onClick={() => detaildata(item.eventIdx)}
+                >
+                  <div className={styles.inquiry_idx}>{index + 1}</div>
+                  <div className={styles.inquiry_info}>
+                    <span>{item.title}</span>
+                    <span>{item.subTitle}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div
+              style={{
+                width: "100%",
+                height: "95%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <h1>등록된 이벤트가 없습니다 :)</h1>
+            </div>
+          )}
         </div>
         <div
           style={{
@@ -218,9 +231,17 @@ const EventList: React.FC = () => {
                   textAlign: "left", // Add this line to make the content left-aligned
                 }}
               >
-                <img src={`${isDetail.image}`} alt="축제 이미지" />
+                <img
+                  src={`${isDetail.image}`}
+                  style={{ width: "30%", height: "20%" }}
+                  alt="축제 이미지"
+                />
                 {isDetail.subImage ? (
-                  <img src={isDetail.subImage} alt="서브 축제이미지" />
+                  <img
+                    src={isDetail.subImage}
+                    style={{ width: "30%", height: "20%" }}
+                    alt="서브 축제이미지"
+                  />
                 ) : null}
                 <div>
                   <h3 style={{ textAlign: "left", paddingLeft: "10px" }}>

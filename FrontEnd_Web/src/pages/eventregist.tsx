@@ -109,6 +109,8 @@ const EventRegist: React.FC = () => {
     }
     if (subImage != null) {
       formData.append("subImage", subImage[0]);
+    } else {
+      formData.append("subImage", "");
     }
 
     formData.append(

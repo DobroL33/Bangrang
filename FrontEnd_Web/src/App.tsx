@@ -15,6 +15,7 @@ import EventRegist from "./pages/eventregist";
 import Inquiry from "./pages/inquiry";
 import RegistManager from "./pages/registmanager";
 import EventList from "./pages/eventlist";
+import EventUpdate from "./pages/eventupdate";
 
 function App() {
   const location = useLocation();
@@ -30,6 +31,7 @@ function App() {
         <Route path="/manage/inquiry" element={<Inquiry />} />
         <Route path="/manage/eventlist" element={<EventList />} />
         <Route path="/manage/eventregist" element={<EventRegist />} />
+        <Route path="/manage/eventupdate/:eventIdx" element={<EventUpdate />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
