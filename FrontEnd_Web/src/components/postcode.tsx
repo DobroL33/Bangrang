@@ -45,6 +45,7 @@ const PostCode: React.FC<Props> = ({ setAddress }) => {
 
   // 추가
   const clickHandler = () => {
+    console.log("주소 저장하기");
     setAddress(roadAddress + detailAddress);
     // console.log(zipCode, roadAddress, detailAddress);
   };

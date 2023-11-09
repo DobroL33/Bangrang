@@ -109,12 +109,13 @@ const EventRegist: React.FC = () => {
     if (subImage != null) {
       formData.append("subImage", subImage[0]);
     }
-    const data = {
-      ...event,
-      startDate: new Date(event.startDate),
-      endDate: new Date(event.endDate),
-    };
-    formData.append("data", JSON.stringify(data));
+
+    // const data = {
+    //   ...event,
+    //   startDate: new Date(event.startDate),
+    //   endDate: new Date(event.endDate),
+    // };
+    formData.append("data", JSON.stringify(event));
     axiosInstance({
       method: "post",
       url: `${process.env.REACT_APP_API}/web/event`,
