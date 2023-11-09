@@ -1,13 +1,15 @@
 package com.ssafy.bangrang.domain.event.api;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.bangrang.domain.event.api.request.CreateEventRequestDto;
-import com.ssafy.bangrang.domain.event.api.request.EventUpdateDto;
 import com.ssafy.bangrang.domain.event.api.request.UpdateEventRequestDto;
 import com.ssafy.bangrang.domain.event.service.EventWebService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,12 +47,20 @@ public class EventWebApi {
      * 이벤트 등록하기
      * */
     @PostMapping
-    public ResponseEntity<?> createEvent(@Valid @RequestPart("data") CreateEventRequestDto createEventRequestDto,
+    public ResponseEntity<?> createEvent(@Valid @RequestPart("data") String data,
                                          @RequestPart("image") MultipartFile image,
                                          @RequestPart("subImage") MultipartFile subImage,
                                           @AuthenticationPrincipal UserDetails userDetails) throws Exception{
-        eventWebService.createEvent(createEventRequestDto,image,subImage,userDetails);
-        return ResponseEntity.badRequest().body("");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            CreateEventRequestDto createEventRequestDto = objectMapper.readValue(data, CreateEventRequestDto.class);
+            eventWebService.createEvent(createEventRequestDto,image,subImage,userDetails);
+            return ResponseEntity.ok().body("");
+        } catch (JsonProcessingException e) {
+            // 처리 중에 오류가 발생한 경우 예외 처리
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during CreateEvent");
+        }
     }
 
     /**
@@ -58,12 +68,20 @@ public class EventWebApi {
      * */
     @PutMapping("/{eventIdx}")
     public ResponseEntity<?> updateEvent(@Valid @PathVariable("eventIdx") Long eventIdx,
-                                         @RequestPart("data") UpdateEventRequestDto updateEventRequestDto,
+                                         @RequestPart("data") String data,
                                          @RequestPart("image") MultipartFile image,
                                          @RequestPart("subImage") MultipartFile subImage,
                                          @AuthenticationPrincipal UserDetails userDetails) throws Exception{
-        eventWebService.updateEvent(eventIdx,updateEventRequestDto,image,subImage,userDetails);
-        return ResponseEntity.badRequest().body("");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            UpdateEventRequestDto updateEventRequestDto = objectMapper.readValue(data, UpdateEventRequestDto.class);
+            eventWebService.updateEvent(eventIdx,updateEventRequestDto,image,subImage,userDetails);
+            return ResponseEntity.ok().body("");
+        } catch (JsonProcessingException e) {
+            // 처리 중에 오류가 발생한 경우 예외 처리
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during UpdateEvent");
+        }
     }
 
     @DeleteMapping("/{eventIdx}")
