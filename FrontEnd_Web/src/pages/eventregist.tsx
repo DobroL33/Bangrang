@@ -116,10 +116,11 @@ const EventRegist: React.FC = () => {
     //   endDate: new Date(event.endDate),
     // };
 
-    formData.append(
-      "data",
-      new Blob([JSON.stringify(event)], { type: "application/json" })
-    );
+    formData.append("data", JSON.stringify(event));
+    // formData.append(
+    //   "data",
+    //   new Blob([JSON.stringify(event)], { type: "application/json" })
+    // );
 
     axiosInstance({
       method: "post",
