@@ -13,7 +13,7 @@ public interface AppMemberService {
 
     Long findIdxByNickname(String nickname);
 
-    Long kakaologin(String id, String ImgUrl) throws Exception;
+    Long sociallogin(String id, String ImgUrl) throws Exception;
 
     String profileImgUpdate(MultipartFile file, UserDetails userDetails) throws Exception;
 

@@ -81,7 +81,7 @@ public class AppLoginAuthenticationFilter extends AbstractAuthenticationProcessi
 
             if (user == null) {
                 try {
-                    appMemberService.kakaologin("kakao@"+num, thumbnailImageUrl);
+                    appMemberService.sociallogin("kakao@"+num, thumbnailImageUrl);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -96,12 +96,11 @@ public class AppLoginAuthenticationFilter extends AbstractAuthenticationProcessi
             return this.getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
         } else if (social.equals("google")) {
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-type", "application/x-www-form-urlencoded; charset=utf-8");
             headers.add("Authorization", "Bearer "+ token);
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
             ResponseEntity<String> response =
-                    restTemplate.exchange("https://kapi.kakao.com/v2/user/me",
+                    restTemplate.exchange("https://www.googleapis.com/oauth2/v3/userinfo",
                             HttpMethod.GET,
                             new HttpEntity<>(null, headers),
                             String.class);
@@ -110,20 +109,19 @@ public class AppLoginAuthenticationFilter extends AbstractAuthenticationProcessi
 
             Map<String, ?> data = objectMapper.readValue(body, Map.class);
             String num = String.valueOf(data.get("id"));
-            Map<String, Object> kakaoAccount = (Map<String, Object>) data.get("kakao_account");
-            String thumbnailImageUrl = (String) ((Map<String, Object>) kakaoAccount.get("profile")).get("thumbnail_image_url");
+            String thumbnailImageUrl = String.valueOf(data.get("picture"));
 
-            AppMember user = appMemberRepository.findById("kakao@"+num)
+            AppMember user = appMemberRepository.findById("google@"+num)
                     .orElse(null);
 
             if (user == null) {
                 try {
-                    appMemberService.kakaologin("kakao@"+num, thumbnailImageUrl);
+                    appMemberService.sociallogin("google@"+num, thumbnailImageUrl);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken("kakao@"+num, "social");
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken("google@"+num, "social");
 
             return this.getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
 

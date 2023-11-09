@@ -50,7 +50,7 @@ public class AppMemberServiceImpl implements AppMemberService {
      */
     @Override
     @Transactional
-    public Long kakaologin(String id, String ImgUrl) throws Exception {
+    public Long sociallogin(String id, String ImgUrl) throws Exception {
 
         AppMember appMember = AppMember.builder()
                 .id(id)
@@ -65,6 +65,7 @@ public class AppMemberServiceImpl implements AppMemberService {
         // 생성한 계정의 Idx 번호 리턴
         return saveUser.getIdx();
     }
+
 
     /* 닉네임 중복 확인 */
     @Override
