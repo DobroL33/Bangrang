@@ -65,7 +65,7 @@ const EventRegist: React.FC = () => {
     console.log(event);
   };
 
-  const datePickerFormat = "YYYY-MM-DDTHH:MM:SS";
+  const datePickerFormat = "YYYY-MM-DDTHH:mm:00";
   // const datePickerUtils = {
   //   format: datePickerFormat,
   //   parse: (value) => dayjs(value, datePickerFormat, true).toDate(),
@@ -223,7 +223,9 @@ const EventRegist: React.FC = () => {
         )}
       </form>
 
-      <button onClick={() => console.log(event)}>이벤트 찍기</button>
+      <button type="button" onClick={() => console.log(event)}>
+        이벤트 찍기
+      </button>
     </div>
   );
 };
