@@ -152,6 +152,8 @@ public class EventWebServiceImpl implements EventWebService{
             subImg = s3Service.uploadToS3(fileName,fileBytes, subImage.getContentType());
         } else subImg = null;
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
         Event event = Event.builder()
                 .title(createEventRequestDto.getTitle())
                 .subTitle(createEventRequestDto.getSubTitle())
@@ -160,8 +162,8 @@ public class EventWebServiceImpl implements EventWebService{
                 .eventUrl(createEventRequestDto.getEventUrl())
                 .longitude(longitude)
                 .latitude(latitude)
-                .startDate(LocalDateTime.parse(createEventRequestDto.getStartDate()))
-                .endDate(LocalDateTime.parse(createEventRequestDto.getEndDate()))
+                .startDate(LocalDateTime.parse(createEventRequestDto.getStartDate(),formatter))
+                .endDate(LocalDateTime.parse(createEventRequestDto.getEndDate(),formatter))
                 .image(img)
                 .subImage(subImg)
                 .webMember(user)
