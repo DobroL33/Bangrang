@@ -44,7 +44,7 @@ public class InquiryWebApi {
     // 특정 일대일 문의 사항 상세정보 요청
     @GetMapping("/{inquiryIdx}")
     public ResponseEntity getInquiryDetail(@PathVariable Long inquiryIdx,
-                                           UserDetails userDetails){
+                                           @AuthenticationPrincipal UserDetails userDetails){
 
         webMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
@@ -60,7 +60,11 @@ public class InquiryWebApi {
     
     // 일대일 문의 사항 삭제 요청
     @DeleteMapping
-    public ResponseEntity<?> deleteInquiry(@RequestBody DeleteInquiryRequestDto deleteInquiryRequestDto){
+    public ResponseEntity<?> deleteInquiry(@RequestBody DeleteInquiryRequestDto deleteInquiryRequestDto,
+                                           @AuthenticationPrincipal UserDetails userDetails){
+
+        webMemberRepository.findById(userDetails.getUsername())
+                .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
 
         log.info("[일대일 문의 사항 삭제 요청 시작]", LocalDateTime.now());
 
