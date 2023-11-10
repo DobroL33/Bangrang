@@ -1,4 +1,4 @@
-package com.ssafy.bangrang.global.config;
+package com.ssafy.bangrang.global.batch;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

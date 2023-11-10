@@ -28,7 +28,7 @@ spring:
   # jpa 설정
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 #      hibernate:
       dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
     properties:
@@ -107,6 +107,7 @@ spring:
     jdbc:
       # never로 바꿔주기
       initialize-schema: always
+      schema: classpath:org/springframework/batch/core/schema-postgresql.sql
 
 # jwt 설정
 jwt:

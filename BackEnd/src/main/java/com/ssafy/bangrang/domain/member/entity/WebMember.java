@@ -48,14 +48,4 @@ public class WebMember extends Member{
         this.webMemberStatus = webMemberStatus;
     }
 
-    @Builder
-    public WebMember(Long idx, String id, String password, String organizationName, WebMemberStatus webMemberStatus, String authFile) {
-        this.idx = idx;
-        this.id = id;
-        this.password = password;
-        this.organizationName = organizationName;
-        this.webMemberStatus = webMemberStatus;
-        this.authFile = authFile;
-    }
-
 }

@@ -35,7 +35,7 @@ public class MemberMapArea extends CommonEntity {
     private AppMember appMember;
 
     @Builder
-    public MemberMapArea(RegionType regionType, MultiPolygon shape, Double dimension, AppMember appMember){
+    public MemberMapArea(RegionType regionType, Geometry shape, Double dimension, AppMember appMember){
         this.regionType = regionType;
         this.shape = shape;
         this.dimension = dimension;

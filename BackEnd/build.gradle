@@ -68,6 +68,10 @@ dependencies {
     // firebase 설정
 //    implementation 'com.google.firebase:firebase-admin'
 
+    // batch 설정
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    testImplementation 'org.springframework.batch:spring-batch-test'
+
 
 }
 
