@@ -1,4 +1,10 @@
-import React, { useState, ChangeEvent, useEffect, FormEvent } from "react";
+import React, {
+  useState,
+  ChangeEvent,
+  useEffect,
+  FormEvent,
+  useRef,
+} from "react";
 import DaumPostcode from "react-daum-postcode";
 import PostCode from "../components/postcode";
 import dayjs, { Dayjs } from "dayjs";
@@ -10,6 +16,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import axiosInstance from "../axiosinstance";
 import { FormEncType, useParams } from "react-router-dom";
+import { spawn } from "child_process";
 interface Event {
   title: string;
   subTitle: string;
@@ -22,6 +29,7 @@ interface Event {
 
 const EventUpdate: React.FC = () => {
   const { eventIdx } = useParams();
+  const imgRef = useRef();
   const [event, setEvent] = useState<Event>({
     title: "",
     subTitle: "",
@@ -31,24 +39,41 @@ const EventUpdate: React.FC = () => {
     address: "",
     eventUrl: "",
   });
+  const [imageSrc, setImageSrc] = useState<string | null>("");
   const [image, setImage] = useState<FileList | null>(null);
   const [subImage, setSubImage] = useState<FileList | null>(null);
+  const [updateStartDate, setUpdateStartDate] = useState("");
+  const [updateEndDate, setUpdateEndDate] = useState("");
+  const [nowStartDate, setNowStartDate] = useState("");
+  const [nowEndDate, setNowEndDate] = useState("");
+
+  useEffect(() => {
+    const [datePart, timePart] = event.startDate.split("T");
+    setNowStartDate(datePart + " " + timePart);
+  }, [event.startDate]);
+
+  useEffect(() => {
+    const [datePart, timePart] = event.startDate.split("T");
+    setNowEndDate(datePart + " " + timePart);
+  }, [event.endDate]);
 
   useEffect(() => {
     axiosInstance
       .get(`${process.env.REACT_APP_API}/web/event/${eventIdx}`)
       .then((res) => {
+        // console.log(res);
         // 응답에서 데이터 추출 및 상태 업데이트
         const eventData = res.data;
         setEvent({
           title: eventData.title,
-          subTitle: eventData.subTitle,
+          subTitle: eventData.subtitle,
           content: eventData.content,
           startDate: eventData.startDate,
           endDate: eventData.endDate,
           address: eventData.address,
           eventUrl: eventData.eventUrl,
         });
+        setImageSrc(eventData.image);
         setImage(eventData.image);
         setSubImage(eventData.subImage);
       })
@@ -88,11 +113,6 @@ const EventUpdate: React.FC = () => {
   };
 
   const datePickerFormat = "YYYY-MM-DDTHH:mm:ss";
-  // const datePickerUtils = {
-  //   format: datePickerFormat,
-  //   parse: (value) => dayjs(value, datePickerFormat, true).toDate(),
-  //   // You can add other utils as needed, such as `isValid`, etc.
-  // };
 
   const startDateChange = (date: string | null) => {
     if (date) {
@@ -102,7 +122,6 @@ const EventUpdate: React.FC = () => {
         startDate: formattedDate,
       }));
     }
-    console.log(event);
   };
 
   const endDateChange = (date: string | null) => {
@@ -132,21 +151,11 @@ const EventUpdate: React.FC = () => {
       formData.append("subImage", subImage[0]);
     }
 
-    // const data = {
-    //   ...event,
-    //   startDate: new Date(event.startDate),
-    //   endDate: new Date(event.endDate),
-    // };
-
     formData.append("data", JSON.stringify(event));
-    // formData.append(
-    //   "data",
-    //   new Blob([JSON.stringify(event)], { type: "application/json" })
-    // );
 
     axiosInstance({
-      method: "post",
-      url: `${process.env.REACT_APP_API}/web/event`,
+      method: "put",
+      url: `${process.env.REACT_APP_API}/web/event/${eventIdx}`,
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
@@ -159,7 +168,7 @@ const EventUpdate: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ height: "100vh", display: "flex", justifyContent: "center" }}>
       <form onSubmit={registEvent}>
         <h1>이벤트 등록하기</h1>
         <span>이벤트 제목</span>
@@ -173,20 +182,26 @@ const EventUpdate: React.FC = () => {
 
         <br />
         <span>주소 작성</span>
-        <PostCode setAddress={(value: string) => handleAddressChange(value)} />
+        <PostCode
+          address={address}
+          setAddress={(value: string) => handleAddressChange(value)}
+        />
         <br />
-
+        <p>시작 날짜 : {nowStartDate}</p>
+        <p>종료 날짜 : {nowEndDate}</p>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
             <DateTimePicker
-              label="Controlled picker"
-              value={startDate}
+              label="시작 날짜"
+              sx={{ width: "10%" }}
+              value={updateStartDate}
               onChange={startDateChange}
               format="YYYY-MM-DDTHH:mm:ss"
             />
             <DateTimePicker
-              label="Controlled picker"
-              value={endDate}
+              sx={{ width: "10%" }}
+              label="종료 날짜"
+              value={updateEndDate}
               onChange={endDateChange}
               format="YYYY-MM-DDTHH:mm:ss"
             />
@@ -199,12 +214,23 @@ const EventUpdate: React.FC = () => {
         <br />
         {/* 이미지 input */}
         <span>이미지 등록</span>
+        {imageSrc ? (
+          <img
+            style={{ width: "20vw", height: "20vh" }}
+            src={imageSrc}
+            alt="sdsd"
+          />
+        ) : (
+          <span>이미지 입력되었습니다.</span>
+        )}
+
         <input
           type="file"
           placeholder="인증파일"
           onChange={({ target: { files } }) => {
             if (files && files[0]) {
               setImage(files);
+              setImageSrc(null);
             } else {
               setImage(null);
             }
@@ -250,10 +276,6 @@ const EventUpdate: React.FC = () => {
           <button disabled>이벤트 등록하기</button>
         )}
       </form>
-
-      <button type="button" onClick={() => console.log(event)}>
-        이벤트 찍기
-      </button>
     </div>
   );
 };

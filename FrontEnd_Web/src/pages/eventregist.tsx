@@ -144,19 +144,22 @@ const EventRegist: React.FC = () => {
 
         <br />
         <span>주소 작성</span>
-        <PostCode setAddress={(value: string) => handleAddressChange(value)} />
+        <PostCode
+          address={address}
+          setAddress={(value: string) => handleAddressChange(value)}
+        />
         <br />
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
             <DateTimePicker
-              label="Controlled picker"
+              label="시작 날짜"
               value={startDate}
               onChange={startDateChange}
               format="YYYY-MM-DDTHH:mm:ss"
             />
             <DateTimePicker
-              label="Controlled picker"
+              label="종료 날짜"
               value={endDate}
               onChange={endDateChange}
               format="YYYY-MM-DDTHH:mm:ss"

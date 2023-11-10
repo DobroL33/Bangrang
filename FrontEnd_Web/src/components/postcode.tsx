@@ -3,8 +3,9 @@ import DaumPostcode from "react-daum-postcode";
 import ReactModal from "react-modal";
 interface Props {
   setAddress: (value: string) => void;
+  address: string;
 }
-const PostCode: React.FC<Props> = ({ setAddress }) => {
+const PostCode: React.FC<Props> = ({ setAddress, address }) => {
   const [zipCode, setZipcode] = useState<string>("");
   const [roadAddress, setRoadAddress] = useState<string>("");
   const [detailAddress, setDetailAddress] = useState<string>(""); // 추가
@@ -61,6 +62,7 @@ const PostCode: React.FC<Props> = ({ setAddress }) => {
       </button>
       <br />
       <input value={roadAddress} readOnly placeholder="도로명 주소" />
+      <p>현재 등록 주소 : {address}</p>
       <br />
       <ReactModal isOpen={isOpen} ariaHideApp={false} style={customStyles}>
         <DaumPostcode onComplete={completeHandler} />

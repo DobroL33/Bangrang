@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 const MapNaverDefault = ({ latitude, longtitude }) => {
   const mapElement = useRef(null);
   const { naver } = window;
-  // console.log(longtitude, latitude);
+
   useEffect(() => {
     if (!mapElement.current || !naver) return;
 
@@ -20,12 +20,12 @@ const MapNaverDefault = ({ latitude, longtitude }) => {
       position: location,
       map,
     });
-  }, [location]);
+  }, [latitude]);
 
   return (
     <>
       {/* <h1>Naver Map - Default</h1> */}
-      <div ref={mapElement} style={{ minHeight: "200px" }} />
+      <div ref={mapElement} style={{ minHeight: "150px" }} />
     </>
   );
 };
