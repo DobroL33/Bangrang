@@ -10,6 +10,7 @@
     height: 95%;
     border: 1px solid black;
     border-radius: 1rem;
+    background-color: #FAFAFA;
 }
 
 .filterbar {
@@ -34,7 +35,7 @@
 }
 
 .data {
-    background-color: white;
+    background-color:  #E2F5FF;
     display: flex;
     height: 12%;
     width: 27%;
@@ -46,7 +47,7 @@
 }
 
 .data:hover {
-    background-color: red;
+    background-color: greenyellow;
 }
 
 .data_pk {
@@ -74,4 +75,13 @@
 
 .cursor {
     cursor: pointer;
+}
+
+.detailframe {
+    height: 100%;
+    width: 27%;
+    border-left: 1px solid black;
+    word-wrap: break-word;
+    box-sizing: border-box;
+    padding:2%;
 }

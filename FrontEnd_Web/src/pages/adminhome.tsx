@@ -16,7 +16,7 @@ const AdminHome: React.FC = () => {
 
   return (
     <div className={styles.homebox} style={{height:(window.innerHeight-80)}}>
-      <h1>ADMIN</h1>
+      <h1>ADMIN 업무</h1>
       <div className={styles.funcbox}>
         <div className={styles.func} 
         onClick={()=>navigate('/admin/inquiry')}>

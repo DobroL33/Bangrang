@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axiosinstance";
 import styles from "./registmanager.module.css";
+import axios from "axios";
 
 interface manager {
   idx:number;
@@ -42,6 +43,23 @@ const RegistManager: React.FC = () => {
     })
   };
 
+  const filedownload = (url:string) => {
+    const fileName = url.split('/').pop(); // URL을 '/'로 분할하고 마지막 요소를 추출합니다.
+    axios({
+      method:'get',
+      url:url,
+      responseType:'blob'
+    }).then(res=>{
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName || 'ss'); // 파일명을 지정할 수 있음
+      document.body.appendChild(link);
+      link.click();
+    }).catch(err=>{
+      console.log(err)
+    })
+  }
   const updateStatus = (statusNum:number) => {
     // 0 WAITING  1 ACCEPTED   2 DECLINED
     axiosInstance({
@@ -129,7 +147,7 @@ const RegistManager: React.FC = () => {
               )))}
             </div>
           </div>
-          <div style={{height:'100%', width:'27%',borderLeft:'1px solid black'}}>
+          <div className={styles.detailframe}>
             {isDetail!==null ? 
             <div>
               <h1>유저 상세정보 조회</h1>
@@ -142,6 +160,8 @@ const RegistManager: React.FC = () => {
               유저 상태 : {isManagers[isDetail].status}
               <br />
               유저 인증파일 : {isManagers[isDetail].authFile}
+              <br />  
+              <button onClick={()=>filedownload(isManagers[isDetail].authFile)}>다운로드</button>
               <br />
               {isManagers[isDetail].status === 'WAITING' ?
                 <div>
