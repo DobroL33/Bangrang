@@ -13,6 +13,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,11 +121,12 @@ public class Event extends CommonEntity {
      * 이벤트 상태 변경
      */
     public void updateEvent(UpdateEventRequestDto updateEventRequestDto, double changelati, double changelong) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         this.title=updateEventRequestDto.getTitle();
         this.subTitle=updateEventRequestDto.getSubTitle();
         this.content=updateEventRequestDto.getContent();
-        this.startDate=updateEventRequestDto.getStartDate();
-        this.endDate=updateEventRequestDto.getEndDate();
+        this.startDate=LocalDateTime.parse(updateEventRequestDto.getStartDate(),formatter);
+        this.endDate=LocalDateTime.parse(updateEventRequestDto.getEndDate());
         this.address=updateEventRequestDto.getAddress();
         this.latitude=changelati;
         this.longitude=changelong;
