@@ -81,7 +81,7 @@ const Navbar: React.FC = () => {
         location.pathname === "/manage/inquiry" ||
         location.pathname === "/manage/eventregist" ||
         location.pathname === "/manage/eventList" ? (
-        <header className="navbar">
+        <header className="navbar" style={{backgroundColor:'#E2F5FF'}}>
           <Link to="/manage">
             <img className={styles.logo} src="assets/logo.png" alt="" />
           </Link>
@@ -95,7 +95,7 @@ const Navbar: React.FC = () => {
       ) : location.pathname === "/admin" ||
         location.pathname === "/admin/inquiry" ||
         location.pathname === "/admin/registmanager" ? (
-        <header className="navbar">
+        <header className="navbar" style={{backgroundColor:'#E2F5FF'}}>
           <Link to="/admin">
             <img className={styles.logo} src="assets/logo.png" alt="" />
           </Link>

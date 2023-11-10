@@ -205,9 +205,9 @@ const Inquiry: React.FC = () => {
         boxSizing: "border-box",
       }}
     >
-      <p style={{ border: "1px solid black", margin: 0, width: "100%" }}>
+      {/* <p style={{ border: "1px solid black", margin: 0, width: "100%" }}>
         1 : 1 문의
-      </p>
+      </p> */}
       <div
         style={{
           width: "100%",

@@ -46,7 +46,7 @@ body {
 }
 
 .airplane {
-  position: absolute;
+  position: relative;
   left: 0;
   top: 0;
   width: 100px;
@@ -76,7 +76,6 @@ body {
 
 .airplaneScrollTimeline {
   position: relative;
-  height: 4700px;
   margin: 100px 0;
 }
 

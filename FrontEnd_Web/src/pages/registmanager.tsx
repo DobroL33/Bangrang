@@ -12,7 +12,7 @@ interface manager {
 }
 
 const RegistManager: React.FC = () => {
-  const [isManagers, setManagers] = useState<manager[]>([{idx:1,id:'asdf1',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:2,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'},{idx:1,id:'asdf',organizationName:'asdfds',authFile:'asdf',status:'WAITING'}])
+  const [isManagers, setManagers] = useState<manager[]>([])  
   const [isDetail, setDetail] = useState<number|null>(null)
   const [isFilter, setFilter] = useState('ALL');
   const changeStatus = ['WAITING',  'ACCEPTED', 'DECLINED']
@@ -78,71 +78,58 @@ const RegistManager: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: window.innerHeight - 80,
-        backgroundColor: "#E2F5FF",
-        padding: "3% 10%",
-        boxSizing: "border-box",}}> 
-      <h1 style={{ border: "1px solid black", margin: 0, width: "100%" }}>
+    <div className={styles.homebox} style={{height: window.innerHeight - 80}}> 
+      <h1 style={{  margin: 0 }}>
         관리자 승인 업무
       </h1>
-      <div style={{
-          width: "100%",
-          height:"95%",
-          backgroundColor: "white",
-          border: "1px solid black",}}>
-
+      <div className={styles.funcbox}>
         {isManagers.length > 0 ?
         <div style={{width:'100%', height:'100%',display:'flex'}}>
-          <div style={{height:'100%', width:'70%', backgroundColor:'olive'}}>
-            <div style={{height:'5%',width:'96%',alignItems:'center',display:'flex', justifyContent:'space-between', margin:'0 2%'}}>
+          <div style={{height:'100%', width:'73%'}}>
+            <div className={styles.filterbar}>
               <div>
                 <span>필터 : </span>
-                <label>
+                <label className={styles.cursor}>
                   <input type="radio" checked={isFilter === 'ALL'} onClick={()=>setFilter('ALL')}/>
                   전체
                 </label>
-                <label>
+                <label className={styles.cursor}>
                   <input type="radio" checked={isFilter === 'WAITING'} onClick={()=>setFilter('WAITING')} />
                   대기중
                 </label>
-                <label>
+                <label className={styles.cursor}>
                   <input type="radio" checked={isFilter === 'ACCEPTED'} onClick={()=>setFilter('ACCEPTED')}/>
                   승인
                 </label>
-                <label>
+                <label className={styles.cursor}>
                   <input type="radio" checked={isFilter === 'DECLINED'} onClick={()=>setFilter('DECLINED')}/>
                   거절
                 </label>
               </div>
-              <span onClick={()=>{loaddata();setDetail(null);}}>
+              <span onClick={()=>{loaddata();setDetail(null);}}
+              className={styles.cursor}>
                 🔁 새로고침
               </span>
             </div>
 
-            <div style={{height:'95%',width:'100%', backgroundColor:'bisque', overflowY:'auto', display:'flex',flexWrap: 'wrap'}}>
+            <div className={styles.databox}>
               {isManagers.map((manager, idx) => (
                 (isFilter === 'ALL' || isFilter === manager.status) &&
                 (
-                <div key={idx} style={{backgroundColor:'white', display:'flex', height:'10%', width:'27%', justifyContent:'space-between',alignItems:'center', margin:'2% 3%',
-              borderRadius:'1rem'}}
-                onClick={()=>setDetail(idx)}>
-                  <div style={{width:'15%',}}>{manager.idx}</div>
-                  <div style={{display:'flex', flexDirection:'column', width:'55%', textAlign:'start'}}>
+                <div key={idx} className={styles.data} onClick={()=>setDetail(idx)}>
+                  <div className={styles.data_pk} >{manager.idx}</div>
+                  <div className={styles.data_info}>
                     <span style={{fontSize:'12px'}}>{manager.id}</span>
-                    <span style={{}}>{manager.organizationName}</span>
+                    <span>{manager.organizationName}</span>
                   </div>
-                  <div style={{backgroundColor:'gray', width:'25%',height:'90%',marginRight:'2%',borderRadius:'30%', justifyContent:'center',alignItems:'center',
-                display:'flex', fontSize:'10px'}}>
+                  <div className={styles.data_status}>
                     {manager.status}
                   </div>
                 </div>
               )))}
+            </div>
           </div>
-          </div>
-          <div style={{height:'100%', width:'30%',borderLeft:'1px solid black'}}>
+          <div style={{height:'100%', width:'27%',borderLeft:'1px solid black'}}>
             {isDetail!==null ? 
             <div>
               <h1>유저 상세정보 조회</h1>
@@ -176,15 +163,17 @@ const RegistManager: React.FC = () => {
                 </div>
               }
             </div> 
-            : <h1>유저 상세정보 조회</h1>
+            : 
+            <div>
+              <h1>유저 상세정보 조회</h1>
+              <p>상세정보 조회를 하시려면<br />
+              해당 유저를 클릭해주세요!</p>
+            </div>
+            
             }
           </div>
-        
         </div>
-        : 
-        <div style={{width:'100%', height:'95%',display:'flex',alignItems:'center',justifyContent:'center'}}>
-          <h1>유저가 존재하지 않습니다 ㅠ.ㅠ</h1>
-        </div>}
+        : <h1>유저가 존재하지 않습니다 ㅠㅠ <br /><br />일해라 일!!</h1>}
       </div>
     </div>
   );

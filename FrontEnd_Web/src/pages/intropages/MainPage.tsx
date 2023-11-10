@@ -82,7 +82,7 @@ const MainPage: React.FC = () => {
         ))}
       </div>
       <div className={styles.wrap}>
-        <div className={styles.airplaneScrollTimeline}>
+        <div className={styles.airplaneScrollTimeline} style={{height:window.innerWidth*3}}>
           <div className={styles.track}>
             <img
               className={styles.airplane}
