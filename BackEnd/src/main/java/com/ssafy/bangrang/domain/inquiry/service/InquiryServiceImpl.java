@@ -43,19 +43,32 @@ public class InquiryServiceImpl implements InquiryService {
     public GetInquiryDetailResponseDto findById(Long inquiryIdx) {
         Inquiry inquiry = inquiryRepository.findById(inquiryIdx).orElseThrow();
 
-        return GetInquiryDetailResponseDto.builder()
-                .inquiryIdx(inquiry.getIdx())
-                .title(inquiry.getTitle())
-                .content(inquiry.getContent())
-                .createdAt(inquiry.getCreatedAt())
-                .nickname(inquiry.getAppMember().getNickname())
-                .event(inquiry.getEvent().getTitle())
-                .comment(InquiryDetailComment.builder()
-                        .commentIdx(inquiry.getComment().getIdx())
-                        .content(inquiry.getComment().getContent())
-                        .updatedAt(inquiry.getComment().getUpdatedAt())
-                        .build())
-                .build();
+        if (inquiry.getComment()!=null) {
+            return GetInquiryDetailResponseDto.builder()
+                    .inquiryIdx(inquiry.getIdx())
+                    .title(inquiry.getTitle())
+                    .content(inquiry.getContent())
+                    .createdAt(inquiry.getCreatedAt())
+                    .nickname(inquiry.getAppMember().getNickname())
+                    .event(inquiry.getEvent().getTitle())
+                    .comment(InquiryDetailComment.builder()
+                            .commentIdx(inquiry.getComment().getIdx())
+                            .content(inquiry.getComment().getContent())
+                            .updatedAt(inquiry.getComment().getUpdatedAt())
+                            .build())
+                    .build();
+        }
+        else {
+            return GetInquiryDetailResponseDto.builder()
+                    .inquiryIdx(inquiry.getIdx())
+                    .title(inquiry.getTitle())
+                    .content(inquiry.getContent())
+                    .createdAt(inquiry.getCreatedAt())
+                    .nickname(inquiry.getAppMember().getNickname())
+                    .event(inquiry.getEvent().getTitle())
+                    .comment(null)
+                    .build();
+        }
     }
 
     @Override
