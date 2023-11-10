@@ -41,7 +41,8 @@ interface DetailEvent {
 
 const EventList: React.FC = () => {
   const [selectedEventIdx, setSelectedEventIdx] = useState(0);
-
+  const [nowStartDate, setNowStartDate] = useState("");
+  const [nowEndDate, setNowEndDate] = useState("");
   const [isDetail, setDetail] = useState<DetailEvent | null>({
     // eventIdx: 0,
     title: "",
@@ -78,6 +79,7 @@ const EventList: React.FC = () => {
       })
       .catch((err) => console.log(err));
   };
+
   const navigate = useNavigate();
   useEffect(() => {
     if (localStorage.getItem("AccessToken")) {
@@ -89,19 +91,6 @@ const EventList: React.FC = () => {
     }
   }, [navigate]);
 
-  // const loaddata = () => {
-  //   axiosInstance({
-  //     method: "get",
-  //     url: `${process.env.REACT_APP_API}/api/web/inquiry`,
-  //   })
-  //     .then((res) => {
-  //       setInquiry(res.data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-
   const detaildata = (eventIdx: Number) => {
     axiosInstance({
       method: "get",
@@ -110,6 +99,10 @@ const EventList: React.FC = () => {
       .then((res) => {
         console.log(res);
         setDetail(res.data);
+        const [datePart, timePart] = res.data.startDate.split("T");
+        setNowStartDate(datePart + " " + timePart);
+        const [edatePart, etimePart] = res.data.endDate.split("T");
+        setNowEndDate(edatePart + " " + etimePart);
       })
       .catch((err) => {
         console.log(err);
@@ -126,10 +119,6 @@ const EventList: React.FC = () => {
         boxSizing: "border-box",
       }}
     >
-      <button onClick={() => navigate("/manage/eventregist")}>
-        이벤트 작성
-      </button>
-
       <div
         style={{
           width: "100%",
@@ -148,7 +137,7 @@ const EventList: React.FC = () => {
           <div
             style={{
               width: "100%",
-              height: "5%",
+              height: "30px",
               backgroundColor: "blue",
               fontSize: "20px",
               color: "white",
@@ -200,7 +189,7 @@ const EventList: React.FC = () => {
         >
           <div
             style={{
-              height: "10%",
+              height: "50px",
               fontSize: 40,
               borderBottom: "1px solid black",
             }}
@@ -212,12 +201,13 @@ const EventList: React.FC = () => {
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <div
                   style={{
+                    padding: "5px",
                     width: "40%",
-                    height: "80%",
-                    border: " 1px solid black",
-                    marginTop: "2%",
+                    height: "90%",
+                    border: "2px solid black",
+                    // marginTop: "2%",
                     borderRadius: "10px",
-                    textAlign: "left", // Add this line to make the content left-aligned
+                    textAlign: "left",
                   }}
                 >
                   <img
@@ -233,12 +223,18 @@ const EventList: React.FC = () => {
                     />
                   ) : null} */}
                   <div>
-                    <h3 style={{ textAlign: "left", paddingLeft: "10px" }}>
+                    <h3
+                      style={{
+                        textAlign: "left",
+                        paddingLeft: "10px",
+                        margin: 0,
+                      }}
+                    >
                       {isDetail.title}
                     </h3>
                     <p
                       style={{
-                        marginTop: "2px",
+                        margin: 0,
                         color: "#949494",
                         fontSize: "12px",
                         textAlign: "left", // Add this line to make the content left-aligned
@@ -249,18 +245,29 @@ const EventList: React.FC = () => {
                     </p>
                     <p
                       style={{
-                        marginTop: "2px",
+                        marginTop: "10px",
+                        marginBottom: 0,
                         color: "#949494",
-                        fontSize: "12px",
+                        fontSize: "10px",
                         textAlign: "left", // Add this line to make the content left-aligned
                         paddingLeft: "10px",
                       }}
                     >
-                      {isDetail.startDate} ~ {isDetail.endDate}
+                      시작 날짜 : {nowStartDate}
                     </p>
                     <p
                       style={{
-                        marginTop: "5px",
+                        margin: 0,
+                        color: "#949494",
+                        fontSize: "10px",
+                        textAlign: "left", // Add this line to make the content left-aligned
+                        paddingLeft: "10px",
+                      }}
+                    >
+                      종료 날짜 : {nowEndDate}
+                    </p>
+                    <p
+                      style={{
                         color: "#949494",
                         fontSize: "10px",
                         textAlign: "left", // Add this line to make the content left-aligned
@@ -275,30 +282,73 @@ const EventList: React.FC = () => {
                     latitude={isDetail.latitude}
                     longtitude={isDetail.longitude}
                   />
-                  <button
-                    onClick={() => {
-                      navigate(`/manage/eventupdate/${selectedEventIdx}`);
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
                     }}
                   >
-                    이벤트 수정
-                  </button>
-                  <button
-                    onClick={() => {
-                      axiosInstance
-                        .delete(
-                          `${process.env.REACT_APP_API}/web/event/${selectedEventIdx}`
-                        )
-                        .then((res) => loaddata())
-                        .catch((err) => console.log(err));
-                    }}
-                  >
-                    이벤트 삭제
-                  </button>
+                    <button
+                      style={{
+                        background: "#1DAEFF",
+                        border: "none",
+                        borderRadius: "3px",
+                        width: "30%",
+                        height: "25px",
+                        marginTop: "5px",
+                        color: "white",
+                        fontWeight: "bold",
+                      }}
+                      onClick={() => {
+                        navigate(`/manage/eventupdate/${selectedEventIdx}`);
+                      }}
+                    >
+                      이벤트 수정
+                    </button>
+                    <button
+                      style={{
+                        background: "#1DAEFF",
+                        border: "none",
+                        borderRadius: "3px",
+                        width: "30%",
+                        marginTop: "5px",
+                        color: "white",
+                        fontWeight: "bold",
+                      }}
+                      onClick={() => {
+                        axiosInstance
+                          .delete(
+                            `${process.env.REACT_APP_API}/web/event/${selectedEventIdx}`
+                          )
+                          .then((res) => loaddata())
+                          .catch((err) => console.log(err));
+                      }}
+                    >
+                      이벤트 삭제
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : null}
           </div>
         </div>
+      </div>
+      <br />
+      <div style={{ position: "absolute", right: "9.5%", width: "10%" }}>
+        <button
+          style={{
+            background: "#1DAEFF",
+            border: "none",
+            borderRadius: "3px",
+            width: "100%",
+            padding: "6px",
+            color: "white",
+            fontWeight: "bold",
+          }}
+          onClick={() => navigate("/manage/eventregist")}
+        >
+          이벤트 작성
+        </button>
       </div>
     </div>
   );

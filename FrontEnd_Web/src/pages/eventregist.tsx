@@ -10,6 +10,8 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import axiosInstance from "../axiosinstance";
 import { FormEncType, useNavigate } from "react-router-dom";
+import styles from "./eventregist.module.css";
+
 interface Event {
   title: string;
   subTitle: string;
@@ -130,88 +132,147 @@ const EventRegist: React.FC = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={registEvent}>
-        <h1>이벤트 등록하기</h1>
-        <span>이벤트 제목</span>
-        <input value={title} onChange={handleTitleChange} />
-        <br />
-        <span>이벤트 부제목</span>
-        <input value={subTitle} onChange={handleSubTitleChange} />
-        <br />
-        <span>내용 작성</span>
-        <textarea value={content} onChange={handleContentChange} />
-
-        <br />
-        <span>주소 작성</span>
-        <PostCode
-          address={address}
-          setAddress={(value: string) => handleAddressChange(value)}
-        />
-        <br />
-
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
-            <DateTimePicker
-              label="시작 날짜"
-              value={startDate}
-              onChange={startDateChange}
-              format="YYYY-MM-DDTHH:mm:ss"
-            />
-            <DateTimePicker
-              label="종료 날짜"
-              value={endDate}
-              onChange={endDateChange}
-              format="YYYY-MM-DDTHH:mm:ss"
-            />
-          </DemoContainer>
-        </LocalizationProvider>
-        <br />
-        <span>이벤트 url 등록하기</span>
-        <input type="text" value={eventUrl} onChange={handleEventUrlChange} />
-        <br />
-        <br />
-        {/* 이미지 input */}
-        <span>이미지 등록</span>
-        <input
-          type="file"
-          placeholder="인증파일"
-          onChange={({ target: { files } }) => {
-            if (files && files[0]) {
-              setImage(files);
-            } else {
-              setImage(null);
-            }
+    <div
+      style={{
+        padding: "20px",
+        maxWidth: "90%",
+        margin: "auto",
+        border: "2px solid gray",
+      }}
+    >
+      <form onSubmit={registEvent} style={{ maxWidth: "80%", margin: "auto" }}>
+        <h1 style={{ textAlign: "center" }}>이벤트 등록하기</h1>
+        <div
+          style={{
+            marginBottom: "15px",
+            display: "flex",
+            justifyContent: "center",
           }}
-        />
-        <p style={{ fontSize: "8px", fontWeight: "bold", color: "red" }}>
-          {image === null ? (
-            <span>파일을 첨부해주세요</span>
-          ) : (
-            <span style={{ color: "green" }}>첨부완료</span>
-          )}
-        </p>
-        <br />
-        {/* 서브이미지 input */}
-        <span>서브이미지 등록</span>
-        <input
-          type="file"
-          placeholder="인증파일"
-          onChange={({ target: { files } }) => {
-            if (files && files[0]) {
-              setSubImage(files);
-            } else {
-              setSubImage(null);
-            }
+        >
+          <label style={{ width: "100px" }}>Title :</label>
+          <input
+            className={styles.select_input}
+            style={{
+              width: "40%",
+              boxSizing: "border-box",
+              border: "1px solid black",
+              borderRadius: "5px",
+            }}
+            type="text"
+            value={title}
+            onChange={handleTitleChange}
+          />
+        </div>
+
+        <div
+          style={{
+            marginBottom: "15px",
+            display: "flex",
+            justifyContent: "center",
           }}
-        />
-        {/* <p style={{ fontSize: "8px", fontWeight: "bold", color: "red" }}>
-          {subImage === null ? (
-            <span>파일을 첨부해주세요</span>
-          ) : (
-            <span style={{ color: "green" }}>첨부완료</span>
-          )}
-        </p> */}
+        >
+          <label style={{ width: "100px" }}>SubTitle :</label>
+          <input
+            className={styles.select_input}
+            style={{
+              width: "40%",
+              boxSizing: "border-box",
+              border: "1px solid black",
+              borderRadius: "5px",
+            }}
+            type="text"
+            value={subTitle}
+            onChange={handleSubTitleChange}
+          />
+        </div>
+
+        <div
+          style={{
+            marginBottom: "15px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center", // 수직 가운데 정렬
+          }}
+        >
+          <label style={{ marginBottom: "5px" }}>내용 작성</label>
+          <textarea
+            className={styles.select_input}
+            style={{ width: "90%", height: "70%" }}
+            value={content}
+            onChange={handleContentChange}
+            rows={5}
+          />
+        </div>
+
+        <div style={{ marginBottom: "15px" }}>
+          <label>주소 작성</label>
+          <PostCode
+            address={address}
+            setAddress={(value: string) => handleAddressChange(value)}
+          />
+        </div>
+
+        <div style={{ marginBottom: "15px" }}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
+              <DateTimePicker
+                label="시작 날짜"
+                value={startDate}
+                onChange={startDateChange}
+                format="YYYY-MM-DDTHH:mm:ss"
+              />
+              <DateTimePicker
+                label="종료 날짜"
+                value={endDate}
+                onChange={endDateChange}
+                format="YYYY-MM-DDTHH:mm:ss"
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+        </div>
+
+        <div style={{ marginBottom: "15px" }}>
+          <label>이벤트 url 등록하기</label>
+          <input type="text" value={eventUrl} onChange={handleEventUrlChange} />
+        </div>
+
+        <div style={{ marginBottom: "15px" }}>
+          <label>이미지 등록</label>
+          <input
+            type="file"
+            placeholder="인증파일"
+            onChange={({ target: { files } }) => {
+              if (files && files[0]) {
+                setImage(files);
+              } else {
+                setImage(null);
+              }
+            }}
+          />
+          <p style={{ fontSize: "8px", fontWeight: "bold", color: "red" }}>
+            {image === null ? (
+              <span>파일을 첨부해주세요</span>
+            ) : (
+              <span style={{ color: "green" }}>첨부완료</span>
+            )}
+          </p>
+        </div>
+
+        <div style={{ marginBottom: "15px" }}>
+          <label>서브이미지 등록</label>
+          <input
+            type="file"
+            placeholder="인증파일"
+            onChange={({ target: { files } }) => {
+              if (files && files[0]) {
+                setSubImage(files);
+              } else {
+                setSubImage(null);
+              }
+            }}
+          />
+        </div>
+
         {title &&
         subTitle &&
         startDate &&
@@ -219,15 +280,15 @@ const EventRegist: React.FC = () => {
         content &&
         address &&
         image ? (
-          <button type="submit">이벤트 등록하기</button>
+          <button type="submit" style={{ cursor: "pointer" }}>
+            이벤트 등록하기
+          </button>
         ) : (
-          <button disabled>이벤트 등록하기</button>
+          <button type="button" disabled>
+            이벤트 등록하기
+          </button>
         )}
       </form>
-
-      {/* <button type="button" onClick={() => console.log(event)}>
-        이벤트 찍기
-      </button> */}
     </div>
   );
 };
