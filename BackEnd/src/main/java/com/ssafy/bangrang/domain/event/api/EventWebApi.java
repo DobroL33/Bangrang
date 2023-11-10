@@ -40,7 +40,7 @@ public class EventWebApi {
     @GetMapping("/{eventIdx}")
     public ResponseEntity<?> getEventDetail(@Valid @PathVariable("eventIdx") Long eventIdx,
                                                 @AuthenticationPrincipal UserDetails userDetails) throws Exception{
-        return ResponseEntity.ok().body(eventWebService.getEventDetail(eventIdx,userDetails));
+        return ResponseEntity.ok().body(eventWebService.getEventDetailWeb(eventIdx,userDetails));
     }
 
     /**

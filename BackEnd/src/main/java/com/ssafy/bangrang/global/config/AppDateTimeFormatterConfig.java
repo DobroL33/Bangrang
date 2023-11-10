@@ -10,7 +10,7 @@ public class AppDateTimeFormatterConfig {
 
     @Bean
     public DateTimeFormatter dateTimeFormatter() {
-        return DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        return DateTimeFormatter.ofPattern("yyyyMMddHHmm");
     }
 
 }

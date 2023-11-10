@@ -55,6 +55,8 @@ public class EventWebServiceImpl implements EventWebService{
     private final AmazonS3Client amazonS3Client;
     private final S3ServiceImpl s3Service;
 
+    private final DateTimeFormatter dateTimeFormatter;
+
     @Value("${cloud.naver.client_id}")
     String client_id;
 
@@ -225,7 +227,6 @@ public class EventWebServiceImpl implements EventWebService{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         return nowDate.format(formatter);
     }
-
 
     //이벤트 삭제하기
     @Override
