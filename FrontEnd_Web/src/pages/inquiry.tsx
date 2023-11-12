@@ -7,13 +7,13 @@ interface inquiry {
   inquiryIdx: Number;
   title: string;
   event: string;
-  createdAt: Date;
+  createdAt: string;
 }
 interface Detailinquiry {
   inquiryIdx: Number;
   title: string;
   content: string;
-  createdAt: Date;
+  createdAt: string;
   event: string | null;
   nickname: string;
   comment: {
@@ -196,91 +196,72 @@ const Inquiry: React.FC = () => {
       });
   };
   return (
-    <div
-      style={{
-        width: "100%",
-        height: window.innerHeight - 80,
-        backgroundColor: "#E2F5FF",
-        padding: "3% 10%",
-        boxSizing: "border-box",
-      }}
+    <div className={styles.homebox}
+      style={{height: window.innerHeight - 80}}
     >
-      {/* <p style={{ border: "1px solid black", margin: 0, width: "100%" }}>
-        1 : 1 문의
-      </p> */}
-      <div
-        style={{
-          width: "100%",
-          height: "95%",
-          border: "1px solid black",
-          display: "flex",
-        }}
-      >
-        <div
-          style={{
-            width: "30%",
-            backgroundColor: "white",
-            border: "1px solid black",
-          }}
-        >
-          <div style={{ width: "100%", height: "5%", backgroundColor: "red" }}>
-            문의 리스트
+      <h1 style={{  margin: 0 }}>
+        1 : 1 문의 업무
+      </h1>
+      <div className={styles.funcbox}>
+        <div style={{width: "30%"}}>
+          <div className={styles.filterbar}>
+            필터 : 
           </div>
           {isInquiry.length > 0 ?
-          <div style={{width:'100%', height:'95%', overflowY:'auto'}}>
+          <div className={styles.databox}>
             {isInquiry.map((item, idx) => (
-              <div key={idx} className={`${isDetail?.inquiryIdx===item.inquiryIdx ? styles.sel_inquiry:''} ${styles.inquiry_lst}`} 
+              <div key={idx} className={`${isDetail?.inquiryIdx===item.inquiryIdx ? styles.sel_data:''} ${styles.data}`} 
               onClick={()=>detaildata(item.inquiryIdx)}>
-                <div className={styles.inquiry_idx}>{idx+1}</div>
-                <div className={styles.inquiry_info}>
+                <div className={styles.data_idx}>{idx+1}</div>
+                <div className={styles.data_info}>
                   <span>{item.title}</span>
                   <span>{item.event}</span>
                 </div>
-                <div className={styles.inquiry_date}>
-                  {item.createdAt.getFullYear() === new Date().getFullYear() ? (
+                <div className={styles.data_date}>
+                  {new Date(item.createdAt).getFullYear() === new Date().getFullYear() ? (
                     <span>
-                      {item.createdAt.getMonth() + 1 < 10
-                        ? "0" + item.createdAt.getMonth() + 1
-                        : item.createdAt.getMonth() + 1}
+                      {new Date(item.createdAt).getMonth() + 1 < 10
+                        ? "0" + new Date(item.createdAt).getMonth() + 1
+                        : new Date(item.createdAt).getMonth() + 1}
                       월{" "}
-                      {item.createdAt.getDate() < 10
-                        ? "0" + item.createdAt.getDate()
-                        : item.createdAt.getDate()}
+                      {new Date(item.createdAt).getDate() < 10
+                        ? "0" + new Date(item.createdAt).getDate()
+                        : new Date(item.createdAt).getDate()}
                       일
                     </span>
                   ) : (
                     <span>
-                      {item.createdAt.getFullYear()}년{" "}
-                      {item.createdAt.getMonth() + 1 < 10
-                        ? "0" + item.createdAt.getMonth() + 1
-                        : item.createdAt.getMonth() + 1}
+                      {new Date(item.createdAt).getFullYear()}년{" "}
+                      {new Date(item.createdAt).getMonth() + 1 < 10
+                        ? "0" + new Date(item.createdAt).getMonth() + 1
+                        : new Date(item.createdAt).getMonth() + 1}
                       월{" "}
-                      {item.createdAt.getDate() < 10
-                        ? "0" + item.createdAt.getDate()
-                        : item.createdAt.getDate()}
+                      {new Date(item.createdAt).getDate() < 10
+                        ? "0" + new Date(item.createdAt).getDate()
+                        : new Date(item.createdAt).getDate()}
                       일
                     </span>
                   )}
-                  {item.createdAt.getHours() <= 12 ? (
+                  {new Date(item.createdAt).getHours() <= 12 ? (
                     <span>
-                      {item.createdAt.getHours() < 10
-                        ? "0" + item.createdAt.getHours()
-                        : item.createdAt.getHours()}{" "}
+                      {new Date(item.createdAt).getHours() < 10
+                        ? "0" + new Date(item.createdAt).getHours()
+                        : new Date(item.createdAt).getHours()}{" "}
                       :{" "}
-                      {item.createdAt.getMinutes() < 10
-                        ? "0" + item.createdAt.getMinutes()
-                        : item.createdAt.getMinutes()}{" "}
+                      {new Date(item.createdAt).getMinutes() < 10
+                        ? "0" + new Date(item.createdAt).getMinutes()
+                        : new Date(item.createdAt).getMinutes()}{" "}
                       am
                     </span>
                   ) : (
                     <span>
-                      {item.createdAt.getHours() % 12 < 10
-                        ? "0" + (item.createdAt.getHours() % 12)
-                        : item.createdAt.getHours() % 12}{" "}
+                      {new Date(item.createdAt).getHours() % 12 < 10
+                        ? "0" + (new Date(item.createdAt).getHours() % 12)
+                        : new Date(item.createdAt).getHours() % 12}{" "}
                       :{" "}
-                      {item.createdAt.getMinutes() < 10
-                        ? "0" + item.createdAt.getMinutes()
-                        : item.createdAt.getMinutes()}{" "}
+                      {new Date(item.createdAt).getMinutes() < 10
+                        ? "0" + new Date(item.createdAt).getMinutes()
+                        : new Date(item.createdAt).getMinutes()}{" "}
                       pm
                     </span>
                   )}
@@ -293,21 +274,14 @@ const Inquiry: React.FC = () => {
             <h1>등록된 문의가 없습니다 :)</h1>
           </div>}
         </div>
-        <div
-          style={{
-            width: "70%",
-            backgroundColor: "white",
-            border: "1px solid black",
-          }}
-          >
+        <div className={styles.detailbox}>
           <div
             style={{
               height: "10%",
               fontSize: 40,
-              borderBottom: "1px solid black",
             }}
           >
-            문의사항
+           상세정보 조회
           </div>
           {isDetail ? (
             <div style={{ height: "90%" }}>
@@ -316,121 +290,61 @@ const Inquiry: React.FC = () => {
                   height: "60%",
                   padding: "2%",
                   boxSizing: "border-box",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    height: "10%",
-                  }}
-                >
-                  <span
-                    onClick={() => {
-                      setDetail(null);
-                    }}
-                  >
-                    닫기
-                  </span>
-                  <span>작성자 : {isDetail.nickname}</span>
-                </div>
+                }}>
+                <p style={{textAlign:'end',margin:'0 10%'}}>
+                  작성자 : {isDetail.nickname}
+                </p>
+              
 
-                <div style={{ margin: "2% 10%", height: "90%" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      textAlign: "start",
-                      height: "15%",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "20%",
-                        border: "1px solid black",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: 10,
-                        boxSizing: "border-box",
-                      }}
-                    >
+                <div className={styles.detail_databox}>
+                  <div className={styles.detail_data}>
+                    <div className={styles.detail_type}
+                    style={{borderTopLeftRadius:'1rem'}}>
                       문의 제목
                     </div>
-                    <div
-                      style={{
-                        width: "80%",
-                        border: "1px solid black",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: 10,
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      {isDetail.title} {isDetail.event}
+                    <div className={styles.detail_content}>
+                      {isDetail.title} ({isDetail.event})
                     </div>
                   </div>
 
-                  <div
-                    style={{
-                      display: "flex",
-                      textAlign: "start",
-                      height: "15%",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "20%",
-                        border: "1px solid black",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: 10,
-                        boxSizing: "border-box",
-                      }}
-                    >
+                  <div className={styles.detail_data}>
+                    <div className={styles.detail_type}>
                       문의 등록일
                     </div>
-                    <div
-                      style={{
-                        width: "80%",
-                        border: "1px solid black",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: 10,
-                        boxSizing: "border-box",
-                      }}
-                    >
+                    <div className={styles.detail_content}>
                       <span>
-                        {isDetail.createdAt.getFullYear()}년{" "}
-                        {isDetail.createdAt.getMonth() + 1 < 10
-                          ? "0" + isDetail.createdAt.getMonth() + 1
-                          : isDetail.createdAt.getMonth() + 1}
+                        {new Date(isDetail.createdAt).getFullYear()}년{" "}
+                        {new Date(isDetail.createdAt).getMonth() + 1 < 10
+                          ? "0" + new Date(isDetail.createdAt).getMonth() + 1
+                          : new Date(isDetail.createdAt).getMonth() + 1}
                         월{" "}
-                        {isDetail.createdAt.getDate() < 10
-                          ? "0" + isDetail.createdAt.getDate()
-                          : isDetail.createdAt.getDate()}
-                        일 ({days[isDetail.createdAt.getDay()]})
+                        {new Date(isDetail.createdAt).getDate() < 10
+                          ? "0" + new Date(isDetail.createdAt).getDate()
+                          : new Date(isDetail.createdAt).getDate()}
+                        일 ({days[new Date(isDetail.createdAt).getDay()]})
                       </span>
-                      {isDetail.createdAt.getHours() <= 12 ? (
+                      {new Date(isDetail.createdAt).getHours() <= 12 ? (
                         <span>
                           　
-                          {isDetail.createdAt.getHours() < 10
-                            ? "0" + isDetail.createdAt.getHours()
-                            : isDetail.createdAt.getHours()}{" "}
+                          {new Date(isDetail.createdAt).getHours() < 10
+                            ? "0" + new Date(isDetail.createdAt).getHours()
+                            : new Date(isDetail.createdAt).getHours()}{" "}
                           :{" "}
-                          {isDetail.createdAt.getMinutes() < 10
-                            ? "0" + isDetail.createdAt.getMinutes()
-                            : isDetail.createdAt.getMinutes()}{" "}
+                          {new Date(isDetail.createdAt).getMinutes() < 10
+                            ? "0" + new Date(isDetail.createdAt).getMinutes()
+                            : new Date(isDetail.createdAt).getMinutes()}{" "}
                           am
                         </span>
                       ) : (
                         <span>
                           　
-                          {isDetail.createdAt.getHours() % 12 < 10
-                            ? "0" + (isDetail.createdAt.getHours() % 12)
-                            : isDetail.createdAt.getHours() % 12}{" "}
+                          {new Date(isDetail.createdAt).getHours() % 12 < 10
+                            ? "0" + (new Date(isDetail.createdAt).getHours() % 12)
+                            : new Date(isDetail.createdAt).getHours() % 12}{" "}
                           :{" "}
-                          {isDetail.createdAt.getMinutes() < 10
-                            ? "0" + isDetail.createdAt.getMinutes()
-                            : isDetail.createdAt.getMinutes()}{" "}
+                          {new Date(isDetail.createdAt).getMinutes() < 10
+                            ? "0" + new Date(isDetail.createdAt).getMinutes()
+                            : new Date(isDetail.createdAt).getMinutes()}{" "}
                           pm
                         </span>
                       )}
@@ -444,25 +358,21 @@ const Inquiry: React.FC = () => {
                       height: "70%",
                     }}
                   >
-                    <div
+                    <div className={styles.detail_type}
                       style={{
-                        width: "20%",
-                        border: "1px solid black",
-                        display: "flex",
-                        padding: "5px 10px",
-                        boxSizing: "border-box",
+                        border: "none",
+                        alignItems:'start',
+                        paddingTop: "5px",
+                        borderBottomLeftRadius:'1rem'
                       }}
                     >
                       문의 내용
                     </div>
-                    <div
+                    <div className={styles.detail_content}
                       style={{
-                        width: "80%",
-                        border: "1px solid black",
-                        display: "flex",
-                        padding: "5px 10px",
-                        boxSizing: "border-box",
-                      }}
+                        borderBottom: "none",
+                        alignItems:'start',
+                        paddingTop: "5px"}}
                     >
                       {isDetail.content}
                     </div>
@@ -480,30 +390,18 @@ const Inquiry: React.FC = () => {
                   <div
                     style={{ display: "flex", justifyContent: "space-between" }}
                   >
-                    답변
+                    문의 응답
                     <div>
                       <button onClick={commentregist}>등록</button>
-                      <button onClick={commentrefuse}>답변거절</button>
+                      <button style={{marginLeft:'3px'}} onClick={commentrefuse}>답변거절</button>
                     </div>
                   </div>
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "85%",
-                      display: "flex",
-                      boxSizing: "border-box",
-                    }}
-                  >
                     <textarea
-                      style={{ resize: "none" }}
-                      name=""
-                      id=""
+                      className={styles.textbox}
                       cols={100}
                       rows={100}
                       value={isComment}
-                      onChange={(e) => setComment(e.target.value)}
-                    ></textarea>
-                  </div>
+                      onChange={(e) => setComment(e.target.value)}/>
                 </div>
               ) : (
                 <div
@@ -520,7 +418,7 @@ const Inquiry: React.FC = () => {
                     {isEdit ? (
                       <div>
                         <button onClick={commentchange}>완료</button>
-                        <button
+                        <button style={{marginLeft:'3px'}} 
                           onClick={() => {
                             setEdit(false);
                             setComment("");
@@ -539,49 +437,31 @@ const Inquiry: React.FC = () => {
                         >
                           수정
                         </button>
-                        <button onClick={deletecomment}>삭제</button>
+                        <button style={{marginLeft:'3px'}} onClick={deletecomment}>삭제</button>
                       </div>
                     )}
                   </div>
                   {isEdit ? (
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "85%",
-                        display: "flex",
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      <textarea
-                        style={{ resize: "none" }}
-                        name=""
-                        id=""
-                        cols={100}
-                        rows={100}
-                        value={isComment}
-                        onChange={(e) => {
-                          setComment(e.target.value);
-                        }}
-                      />
-                    </div>
+                    <textarea
+                    className={styles.textbox}
+                    cols={100}
+                    rows={100}
+                    value={isComment}
+                    onChange={(e) => setComment(e.target.value)}/>
                   ) : (
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "85%",
-                        border: "1px solid black",
-                        textAlign: "start",
-                        padding: "1%",
-                        boxSizing: "border-box",
-                      }}
-                    >
+                    <div className={styles.detail_comment}>
                       {isDetail.comment.content}
                     </div>
                   )}
                 </div>
               )}
             </div>
-          ) : null}
+          ) :             
+          <div>
+            <br /><br />
+          <h2>상세정보 조회를 하시려면<br />
+          해당 문의를 클릭해주세요!</h2>
+        </div>        }
         </div>
       </div>
     </div>
