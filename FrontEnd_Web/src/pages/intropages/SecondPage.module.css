@@ -29,12 +29,6 @@
   animation-direction: alternate;
 }
 
-.stamp {
-  animation-name: stamp;
-  animation-iteration-count: 9999;
-  animation-duration: 0.75s;
-}
-
 @keyframes moving {
   from {
     left: 30px;
@@ -45,11 +39,14 @@
 }
 
 @keyframes stamp {
-  from {
-    rotate: (-30deg);
+  0% {
+    transform: rotate(-7.5deg);
   }
-  to {
-    rotate: (30deg);
+  50% {
+    transform: rotate(7.5deg);
+  }
+  100% {
+    transform: rotate(-7.5deg);
   }
 }
 
@@ -90,6 +87,13 @@
   text-align: center; /* 텍스트를 가운데 정렬합니다. */
 }
 
+.stampComment {
+  animation-name: stamp;
+  animation-iteration-count: infinite;
+  animation-duration: 0.6s;
+  animation-direction: alternate;
+  display: inline-block;
+}
 .infos {
   top: 41%;
   left: 15%;

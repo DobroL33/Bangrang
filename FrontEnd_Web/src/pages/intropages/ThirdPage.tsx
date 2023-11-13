@@ -50,7 +50,7 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
 
   const springConfigs = {
     from: { transform: "scale(1)" },
-    to: { transform: "scale(0.7)" },
+    to: { transform: "scale(0.85)" },
     config: { duration: 1000, tension: 100, friction: 10 },
     reset: true,
     reverse: true,

@@ -126,6 +126,7 @@ export default function SecondPage() {
         >
           남는건 결국{" "}
           <span
+            className={styles.stampComment}
             style={{
               fontSize: "45px",
               color: "#1daeff",
