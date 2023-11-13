@@ -153,7 +153,7 @@ const EventRegist: React.FC = () => {
           <input
             className={styles.select_input}
             style={{
-              width: "40%",
+              width: "100%",
               boxSizing: "border-box",
               border: "1px solid black",
               borderRadius: "5px",
@@ -163,7 +163,6 @@ const EventRegist: React.FC = () => {
             onChange={handleTitleChange}
           />
         </div>
-
         <div
           style={{
             marginBottom: "15px",
@@ -175,7 +174,7 @@ const EventRegist: React.FC = () => {
           <input
             className={styles.select_input}
             style={{
-              width: "40%",
+              width: "100%",
               boxSizing: "border-box",
               border: "1px solid black",
               borderRadius: "5px",
@@ -197,13 +196,12 @@ const EventRegist: React.FC = () => {
           <label style={{ marginBottom: "5px" }}>내용 작성</label>
           <textarea
             className={styles.select_input}
-            style={{ width: "90%", height: "70%" }}
+            style={{ width: "100%", height: "70%" }}
             value={content}
             onChange={handleContentChange}
             rows={5}
           />
         </div>
-
         <div style={{ marginBottom: "15px" }}>
           <label>주소 작성</label>
           <PostCode
@@ -212,20 +210,33 @@ const EventRegist: React.FC = () => {
           />
         </div>
 
-        <div style={{ marginBottom: "15px" }}>
+        <div
+          style={{
+            marginBottom: "15px",
+          }}
+        >
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
+            <DemoContainer
+              components={["DateTimePicker", "DateTimePicker"]}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <DateTimePicker
                 label="시작 날짜"
                 value={startDate}
                 onChange={startDateChange}
                 format="YYYY-MM-DDTHH:mm:ss"
+                sx={{ width: "100%" }}
               />
               <DateTimePicker
                 label="종료 날짜"
                 value={endDate}
                 onChange={endDateChange}
                 format="YYYY-MM-DDTHH:mm:ss"
+                sx={{ width: "100%" }}
               />
             </DemoContainer>
           </LocalizationProvider>
@@ -233,11 +244,16 @@ const EventRegist: React.FC = () => {
 
         <div style={{ marginBottom: "15px" }}>
           <label>이벤트 url 등록하기</label>
-          <input type="text" value={eventUrl} onChange={handleEventUrlChange} />
+          <input
+            style={{ width: "100%" }}
+            type="text"
+            value={eventUrl}
+            onChange={handleEventUrlChange}
+          />
         </div>
 
         <div style={{ marginBottom: "15px" }}>
-          <label>이미지 등록</label>
+          <label style={{ marginRight: "15px" }}>이미지 등록</label>
           <input
             type="file"
             placeholder="인증파일"
@@ -259,7 +275,7 @@ const EventRegist: React.FC = () => {
         </div>
 
         <div style={{ marginBottom: "15px" }}>
-          <label>서브이미지 등록</label>
+          <label style={{ marginRight: "15px" }}>서브이미지 등록</label>
           <input
             type="file"
             placeholder="인증파일"

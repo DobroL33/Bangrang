@@ -56,18 +56,24 @@ const PostCode: React.FC<Props> = ({ setAddress, address }) => {
 
   return (
     <div>
-      <input value={zipCode} readOnly placeholder="우편번호" />
-      <button type="button" onClick={toggle}>
+      <span>현재 등록 주소 : {address}</span>
+      <button type="button" onClick={toggle} style={{ marginLeft: "5%" }}>
         우편번호 검색
       </button>
       <br />
       <input
+        value={zipCode}
+        readOnly
+        placeholder="우편번호"
+        style={{ width: "30%" }}
+      />
+      <input
         value={roadAddress}
         readOnly
         placeholder="도로명 주소"
-        style={{ width: "30%" }}
+        style={{ width: "68%" }}
       />
-      <p>현재 등록 주소 : {address}</p>
+
       <br />
       <ReactModal isOpen={isOpen} ariaHideApp={false} style={customStyles}>
         <div
