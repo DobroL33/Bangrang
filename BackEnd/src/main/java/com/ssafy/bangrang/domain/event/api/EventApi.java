@@ -1,6 +1,7 @@
 package com.ssafy.bangrang.domain.event.api;
 
 
+import com.ssafy.bangrang.domain.event.api.request.LikeEventRequestDto;
 import com.ssafy.bangrang.domain.event.api.response.GetEventAllResponseDto;
 import com.ssafy.bangrang.domain.event.api.response.GetEventDetailResponseDto;
 import com.ssafy.bangrang.domain.event.service.EventService;
@@ -50,12 +51,15 @@ public class EventApi {
         return ResponseEntity.ok().body(getEventDetailResponseDto);
     }
 
-    @PostMapping("/{eventIdx}/likes")
-    public ResponseEntity addEventLikes(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long eventIdx){
+    /**
+     * 이벤트 좋아요 & 해제
+     * */
+    @PatchMapping("/likes")
+    public ResponseEntity likeEventApply(@RequestBody LikeEventRequestDto likeEventRequestDto,
+                                        @AuthenticationPrincipal UserDetails userDetails){
 
-        likesService.saveLikes(userDetails, eventIdx);
+        likesService.saveLikes(likeEventRequestDto, userDetails);
 
         return ResponseEntity.ok().build();
     }
-
 }

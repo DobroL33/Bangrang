@@ -1,6 +1,7 @@
 package com.ssafy.bangrang.domain.event.service;
 
 
+import com.ssafy.bangrang.domain.event.api.request.LikeEventRequestDto;
 import com.ssafy.bangrang.domain.event.entity.Event;
 import com.ssafy.bangrang.domain.event.entity.Likes;
 import com.ssafy.bangrang.domain.event.repository.EventRepository;
@@ -25,16 +26,20 @@ public class LikesServiceImpl implements LikesService {
 
     @Override
     @Transactional
-    public void saveLikes(UserDetails userDetails, Long eventIdx) {
+    public void saveLikes(LikeEventRequestDto likeEventRequestDto, UserDetails userDetails) {
         AppMember appMember = appMemberRepository.findById(userDetails.getUsername()).orElseThrow();
-        Event event = eventRepository.findById(eventIdx).orElseThrow();
 
-        Likes likes = Likes.builder()
-                .appMember(appMember)
-                .event(event)
-                .build();
+        Event event = eventRepository.findById(likeEventRequestDto.getEventIdx()).orElseThrow();
 
-        likesRepository.save(likes);
-
+        if (likeEventRequestDto.getLikeSet()) {
+            Likes likes = likesRepository.findByAppMemberAndEvent(appMember, event).orElseThrow();
+            likesRepository.delete(likes);
+        } else {
+            Likes likes = Likes.builder()
+                    .appMember(appMember)
+                    .event(event)
+                    .build();
+            likesRepository.save(likes);
+        }
     }
 }
