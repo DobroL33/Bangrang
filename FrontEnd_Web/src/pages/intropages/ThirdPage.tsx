@@ -51,13 +51,13 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
   const springConfigs = {
     from: { transform: "scale(1)" },
     to: { transform: "scale(0.7)" },
-    config: { duration: 300, tension: 100, friction: 10 },
+    config: { duration: 1000, tension: 100, friction: 10 },
     reset: true,
     reverse: true,
   };
 
   const springStyles = imagePaths.map((_, index) =>
-    useSpring({ ...springConfigs, delay: index * 350 })
+    useSpring({ ...springConfigs, delay: index * 345 })
   );
 
   useEffect(() => {
@@ -89,6 +89,11 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
           }}
         >
           <div className={styles.frontpage1}></div>
+          <div className={styles.messageStyle}>
+            <p>매일 업데이트 되는</p>
+            <p>방랑 랭킹을 확인하며</p>
+            <p>최고 방랑자를 노리세요 !</p>
+          </div>
           <div className={styles.backpage1}></div>
         </div>
         <div
@@ -142,6 +147,11 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
           }}
         >
           <div className={styles.frontpage2}></div>
+          <div className={styles.messageStyle}>
+            <p>여러분의 친구들이</p>
+            <p>당신을 제쳤군요 !</p>
+            <p>두고만 볼건가요 ?</p>
+          </div>
           <div className={styles.backpage2}></div>
         </div>
       </div>
