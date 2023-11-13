@@ -10,8 +10,14 @@ const Images = [
   "public/assets/MarqueeImg/서울.png",
 ];
 
-function List() {
+interface ThirdPageProps {
+  visible: boolean;
+}
+
+const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
   const [rows, set] = useState(data);
+  const [character, setCharacter] = useState("");
+
   useEffect(() => {
     const t = setInterval(() => set(shuffle), 3000);
     return () => clearInterval(t);
@@ -19,7 +25,10 @@ function List() {
 
   let height = 0;
   const transitions = useTransition(
-    rows.map((data) => ({ ...data, y: (height += data.height) - data.height })),
+    rows.map((data) => ({
+      ...data,
+      y: (height += data.height) - data.height,
+    })),
     {
       key: (item: any) => item.name,
       from: { height: 0, opacity: 0 },
@@ -30,57 +39,13 @@ function List() {
   );
 
   return (
-    <div className={styles.list}>
-      {transitions((style, item, t, index) => (
-        <animated.div
-          className={styles.card}
-          style={{ zIndex: data.length - index, ...style }}
-        >
-          <div className={styles.cell}>
-            <div
-              className={styles.details}
-              style={{
-                backgroundImage: item.css,
-                color: "white",
-                fontSize: "20px",
-                fontWeight: "bold",
-                // alignItems: "center",
-                justifyContent: "center",
-                display: "flex",
-                flexDirection: "column",
-                // marginTop: "30px",
-              }}
-            >
-              <p
-                style={{
-                  textAlign: "start",
-                  padding: "20px",
-                  fontFamily: "bold",
-                }}
-              >
-                {index + 1}등 {item.character}
-              </p>
-            </div>
-          </div>
-        </animated.div>
-      ))}
-    </div>
-  );
-}
-
-interface ThirdPageProps {
-  visible: boolean;
-}
-
-const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
-  return (
     <div>
       <div className={styles.Page}>
         <p
           className={styles.Percent}
           style={{
             position: "absolute",
-            right: visible ? "43%" : "10%",
+            transform: visible ? "tranlateX(-50%)" : "tranlateX(100%)",
             transition: "0.7s",
             opacity: visible ? "1" : "0",
             fontSize: "30px",
@@ -89,7 +54,16 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
         >
           방랑 명예의 전당
         </p>
-        <div className={styles.detailContainer}>여기에는 간략한 설명</div>
+        <div
+          className={styles.detailContainer}
+          style={{
+            opacity: visible ? "1" : "0",
+            transition: "1s",
+          }}
+        >
+          <div className={styles.frontpage1}></div>
+          <div className={styles.backpage1}></div>
+        </div>
         <div
           className={styles.listContainer}
           style={{
@@ -97,10 +71,51 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
             transition: "1s",
           }}
         >
-          <List />
+          <div className={styles.list}>
+            {transitions((style, item, t, index) => (
+              <animated.div
+                className={styles.card}
+                style={{ zIndex: data.length - index, ...style }}
+              >
+                <div className={styles.cell}>
+                  <div
+                    className={styles.details}
+                    style={{
+                      backgroundImage: item.css,
+                      color: "white",
+                      fontSize: "20px",
+                      fontWeight: "bold",
+                      // alignItems: "center",
+                      justifyContent: "center",
+                      display: "flex",
+                      flexDirection: "column",
+                      // marginTop: "30px",
+                    }}
+                  >
+                    <p
+                      style={{
+                        textAlign: "start",
+                        padding: "20px",
+                        fontFamily: "bold",
+                      }}
+                    >
+                      {index + 1}등 {item.character}
+                    </p>
+                  </div>
+                </div>
+              </animated.div>
+            ))}
+          </div>
         </div>
-        <div className={styles.messageContainer}>
-          여기에는 알림창 같은 메시지
+        <div
+          className={styles.messageContainer}
+          style={{
+            opacity: visible ? "1" : "0",
+            transition: "1s",
+          }}
+        >
+          <div className={styles.frontpage2}></div>
+          <div className={styles.backpage2}></div>
         </div>
       </div>
       <p
@@ -108,7 +123,6 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
           fontSize: "25px",
           color: "skyblue",
           fontWeight: "bold",
-          backgroundColor: "#ffffff",
           textShadow: "#00d0ff71 1px 0 10px",
         }}
       >
@@ -121,7 +135,6 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
         style={{
           height: "auto",
           paddingBottom: "20px",
-          backgroundColor: "#fafdff",
           // marginBottom: "50px",
           overflow: "hidden",
         }}

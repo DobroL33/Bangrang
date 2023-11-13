@@ -13,16 +13,21 @@ const cards = [
   "assets/images/야경.png",
 ];
 
-const moving = {};
-
 const to = (i: number) => ({
   x: 0,
   y: i * -4,
   scale: 1,
   rot: -10 + Math.random() * 20,
+  opacity: 1, // 초기값 설정
   delay: i * 100,
 });
-const from = (_i: number) => ({ x: 0, rot: 0, scale: 1.5, y: -1000 });
+const from = (_i: number) => ({
+  x: 0,
+  rot: 0,
+  scale: 1.5,
+  y: -1000,
+  opacity: 1,
+}); // 초기값 설정
 const trans = (r: number, s: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${
     r / 10
@@ -57,9 +62,9 @@ function Deck({ setStack }: { setStack: (i: number) => void }) {
           x,
           rot,
           scale: 0.3,
+          opacity: isGone ? 0 : 1, // opacity를 설정
           delay: undefined,
-          config: { friction: 50, tension: down ? 300 : isGone ? 200 : 500 },
-          opacity: 1,
+          config: { friction: 50, tension: down ? 100 : isGone ? 200 : 500 },
         };
       });
       if (!down && gone.size === cards.length)
@@ -72,13 +77,14 @@ function Deck({ setStack }: { setStack: (i: number) => void }) {
 
   return (
     <>
-      {props.map(({ x, y, rot, scale }, i) => (
+      {props.map(({ x, y, rot, scale, opacity }, i) => (
         <animated.div className={styles.deck} key={i} style={{ x, y }}>
           <animated.div
             {...bind(i)}
             style={{
               transform: interpolate([rot, scale], trans),
               backgroundImage: `url(${cards[i]})`,
+              opacity: opacity, // 수정된 부분
             }}
           />
         </animated.div>
@@ -94,8 +100,15 @@ export default function SecondPage() {
     <div className={styles.Page}>
       <div className={styles.InfoContainer}>
         <img
-          src="assets/images/Phone.png"
-          style={{ position: "absolute", width: "350px", left: "10%" }}
+          src="assets/images/Phone.svg"
+          style={{
+            // backgroundColor: "white",
+            position: "absolute",
+            width: "20vw",
+            height: "30vw",
+            left: "10%",
+            marginTop: "5%",
+          }}
           alt=""
         />
         <div className={styles.infos}></div>
@@ -125,33 +138,32 @@ export default function SecondPage() {
           밖에 없지~
         </h1>
         <div style={{ opacity: stack < 0 ? "0" : "1", transition: "0.8s" }}>
-          <h1
+          <div
             style={{
               opacity: stack < 5 ? "1" : "0",
               transition: stack < 5 ? "0.6s" : "0s",
             }}
           >
-            기록을 남기고
-          </h1>
-          <h1
+            <h1>기록을 남기고</h1>
+          </div>
+          <div
             style={{
               opacity: stack < 3 ? "1" : "0",
               transition: stack < 3 ? "0.6s" : "0s",
             }}
           >
-            도장을 쌓아요 !
-          </h1>
-          <h1
+            <h1>도장을 쌓아요 !</h1>
+          </div>
+          <div
             style={{
               opacity: stack < 1 ? "1" : "0",
               transition: stack < 1 ? "0.6s" : "0s",
             }}
           >
-            당신의 추억이 됩니다
-          </h1>
+            <h1>당신의 추억이 됩니다</h1>
+          </div>
         </div>
       </div>
-
       <div className={styles.DeckContainer}>
         <Deck setStack={setStack} />
         <div className={styles.metContainer}>
@@ -159,12 +171,7 @@ export default function SecondPage() {
             // className="moving"
             src="assets/direction.png"
             style={{
-              width: "350px",
-              height: "150px",
-              animationDuration: "1s",
-              animationIterationCount: "9999",
-              // animationDirection: "left",
-              // transition: "1s",
+              width: "20vw",
             }}
             alt=""
           />

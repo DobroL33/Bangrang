@@ -1,6 +1,6 @@
 .Page {
   width: 100%;
-  height: 500px;
+  height: 70vh;
   display: flex;
   justify-content: center;
   direction: row;
@@ -9,33 +9,78 @@
 
 .list {
   border-radius: 30px;
-  background-color: #f8f1f1;
+  /* background-color: #f8f1f1; */
   justify-content: center;
   position: relative;
-  width: 80%;
-  height: 340px;
+  width: 20vw;
+  height: 25vw;
   display: flex;
   direction: column;
 }
 
 .detailContainer {
+  height: 100%;
+  display: flex;
   justify-content: center;
+  align-items: center;
   flex: 1;
+}
+.frontpage1 {
+  position: absolute;
+  width: 15vw;
+  height: 20vw;
+  background-color: rgba(130, 255, 253, 0.753);
+  border-radius: 20px;
+}
+.backpage1 {
+  position: absolute;
+  margin-bottom: -1.5%;
+  margin-left: -1.5%;
+  width: 15vw;
+  height: 20vw;
+  background-color: rgba(99, 138, 255, 0.823);
+  opacity: 0.3;
+  border-radius: 20px;
 }
 
 .listContainer {
   display: flex;
   align-items: center;
-  height: auto;
+  height: 100%;
   justify-content: center;
   flex: 1;
 }
+.shadow {
+  position: absolute;
+  height: 100%;
+  background-color: black;
+  margin-left: 1%;
+  margin-top: 1%;
+}
 
 .messageContainer {
-  flex: 1;
+  height: 100%;
   display: flex;
-  direction: column;
   justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+.frontpage2 {
+  position: absolute;
+  width: 15vw;
+  height: 15vw;
+  background-color: rgba(130, 255, 253, 0.753);
+  border-radius: 20px;
+}
+.backpage2 {
+  position: absolute;
+  margin-bottom: -1.5%;
+  margin-left: -1.5%;
+  width: 15vw;
+  height: 15vw;
+  background-color: rgba(99, 138, 255, 0.823);
+  opacity: 0.3;
+  border-radius: 20px;
 }
 
 .card {

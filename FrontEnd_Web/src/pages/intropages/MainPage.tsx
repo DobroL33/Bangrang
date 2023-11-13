@@ -66,7 +66,7 @@ const MainPage: React.FC = () => {
 
   return (
     <div className={styles.Page}>
-      <div className={styles.districtContainer}>
+      {/* <div className={styles.districtContainer}>
         {cities.map((city, index) => (
           <animated.div
             className={styles[`distric${index + 1}`]}
@@ -80,13 +80,13 @@ const MainPage: React.FC = () => {
             <p>{city}</p>
           </animated.div>
         ))}
-      </div>
+      </div> */}
       <div className={styles.wrap}>
         <div className={styles.airplaneScrollTimeline} style={{height:window.innerWidth*3}}>
           <div className={styles.track}>
             <img
               className={styles.airplane}
-              src="assets/logo.png"
+              src="assets/cloud.svg"
               style={{ offsetDistance: scrollPercent + "%" }}
             />
             <svg
