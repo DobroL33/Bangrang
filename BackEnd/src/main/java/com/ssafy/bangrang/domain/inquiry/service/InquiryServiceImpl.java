@@ -11,6 +11,8 @@ import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,17 +28,32 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Override
     @Transactional
-    public Inquiry saveInquiry(String memberId, AddInquiryRequestDto addInquiryRequestDto) {
-        AppMember appMember = appMemberRepository.findById(memberId).orElseThrow();
-        Event event = eventRepository.findById(addInquiryRequestDto.getEventIdx()).orElseThrow();
-        Inquiry inquiry = Inquiry.builder()
-                .title(addInquiryRequestDto.getTitle())
-                .content(addInquiryRequestDto.getContent())
-                .type(addInquiryRequestDto.getType())
-                .appMember(appMember)
-                .event(event)
-                .build();
-        return inquiryRepository.save(inquiry);
+    public Inquiry saveInquiry(UserDetails userDetails, AddInquiryRequestDto addInquiryRequestDto) {
+        AppMember appMember = appMemberRepository.findById(userDetails.getUsername())
+                .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
+
+        if (addInquiryRequestDto.getType().equals("앱")) {
+            Event event = eventRepository.findByIdx((long) 99999).orElseThrow();
+            Inquiry inquiry = Inquiry.builder()
+                    .title(addInquiryRequestDto.getTitle())
+                    .content(addInquiryRequestDto.getContent())
+                    .type(addInquiryRequestDto.getType())
+                    .appMember(appMember)
+                    .event(event)
+                    .build();
+            return inquiryRepository.save(inquiry);
+        }
+        else {
+            Event event = eventRepository.findByIdx(addInquiryRequestDto.getEventIdx()).orElseThrow();
+            Inquiry inquiry = Inquiry.builder()
+                    .title(addInquiryRequestDto.getTitle())
+                    .content(addInquiryRequestDto.getContent())
+                    .type(addInquiryRequestDto.getType())
+                    .appMember(appMember)
+                    .event(event)
+                    .build();
+            return inquiryRepository.save(inquiry);
+        }
     }
 
     @Override

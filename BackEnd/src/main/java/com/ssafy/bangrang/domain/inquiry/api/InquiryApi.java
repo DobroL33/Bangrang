@@ -38,13 +38,7 @@ public class InquiryApi {
     // 사용자 일대일 문의 등록
     @PostMapping("/resist")
     public ResponseEntity addInquiry(@AuthenticationPrincipal UserDetails userDetails, @RequestBody AddInquiryRequestDto addInquiryRequestDto){
-
-        log.info("[사용자 일대일 문의 등록 요청 시작]", LocalDateTime.now());
-
-        inquiryService.saveInquiry(userDetails.getUsername(), addInquiryRequestDto);
-
-        log.info("[사용자 일대일 문의 등록 요청 끝]");
-
+        inquiryService.saveInquiry(userDetails, addInquiryRequestDto);
         return ResponseEntity.ok().build();
     }
 }
