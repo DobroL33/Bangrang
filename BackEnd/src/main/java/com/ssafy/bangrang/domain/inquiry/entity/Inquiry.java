@@ -14,7 +14,7 @@ import lombok.*;
 @ToString(of = {"idx", "title", "content", "type"})
 public class Inquiry extends CommonEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "inquiry_idx")
     private Long idx;
 
