@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -41,8 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.ssafyb109.bangrang.R
-import com.ssafyb109.bangrang.api.AlarmList
-import com.ssafyb109.bangrang.view.utill.SelectButton
+import com.ssafyb109.bangrang.api.AlarmListResponseDTO
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
 @Composable
@@ -51,6 +49,7 @@ fun AlarmPage(
     userViewModel: UserViewModel,
 ) {
     val alarmListResponse by userViewModel.alarmListResponse.collectAsState()
+    val alarmStatusUpdateResponse by userViewModel.alarmStatusUpdateResponse.collectAsState()
     val errorMessage by userViewModel.errorMessage.collectAsState() // 에러 메시지
     val selectedAlarms = remember { mutableStateOf(setOf<Long>()) } // 선택된 알람
     val isInSelectionMode = remember { mutableStateOf(false) }
@@ -72,26 +71,51 @@ fun AlarmPage(
             selectedAlarms.value = setOf()
         }
     }
+    LaunchedEffect(alarmStatusUpdateResponse){
+        isInSelectionMode.value = false
+        selectedAlarms.value = setOf()
+        userViewModel.clearAlertState()
+    }
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         userViewModel.fetchAlarmList()
+    }
+    // 알람이 0개면 꺼지게
+    LaunchedEffect(selectedAlarms.value.size) {
+        if (selectedAlarms.value.isEmpty() && isInSelectionMode.value) {
+            isInSelectionMode.value = false
+        }
     }
 
     // 읽은 알람 sort
-    val sortedAlarms = (alarmListResponse?.items?.filter { it.alarmStatus == 0 } ?: emptyList()) +
-            (alarmListResponse?.items?.filter { it.alarmStatus == 1 } ?: emptyList())
+    val sortedAlarms = (alarmListResponse?.filter { it.alarmStatus == 0 } ?: emptyList()) +
+            (alarmListResponse?.filter { it.alarmStatus == 1 } ?: emptyList())
 
     Box(
-        modifier = Modifier.fillMaxSize().padding(top = 16.dp),
-        contentAlignment = Alignment.Center
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 16.dp)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            // 선택 모드
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "알림센터",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+
+            // 선택모드
             if (isInSelectionMode.value) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
+                        .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
@@ -104,49 +128,47 @@ fun AlarmPage(
                             text = "읽음",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.clickable {  }
+                            modifier = Modifier
+                                .clickable { userViewModel.updateAlarmStatus(selectedAlarms.value.toList(), 1) }
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             text = "삭제",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.clickable {  }
+                            modifier = Modifier
+                                .clickable { userViewModel.updateAlarmStatus(selectedAlarms.value.toList(), 2) }
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             text = "취소",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.clickable { toggleSelectionMode() } // 선택 모드 종료
+                            modifier = Modifier.clickable { toggleSelectionMode() }
                         )
                     }
                 }
             }
+        }
 
-            Text(
-                text = "알림센터",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            LazyColumn {
-                items(sortedAlarms) { alarm ->
-                    AlarmItem(
-                        navController,
-                        alarm,
-                        selectedAlarms,
-                        { alarmIdx -> toggleSelection(alarmIdx) },
-                        { toggleSelectionMode() },
-                        isInSelectionMode.value
-                    )
-                    Divider(modifier = Modifier.padding(start = 20.dp, end = 20.dp))
-                }
-                item{
-                    Spacer(modifier = Modifier.height(40.dp))
-                }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = if (isInSelectionMode.value) 120.dp else 76.dp)
+        ) {
+            items(sortedAlarms) { alarm ->
+                AlarmItem(
+                    navController,
+                    alarm,
+                    selectedAlarms,
+                    { alarmIdx -> toggleSelection(alarmIdx) },
+                    { toggleSelectionMode() },
+                    isInSelectionMode.value
+                )
+                Divider(modifier = Modifier.padding(horizontal = 20.dp))
+            }
+            item {
+                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     }
@@ -156,15 +178,15 @@ fun AlarmPage(
 @Composable
 fun AlarmItem(
     navController: NavController,
-    alarm: AlarmList,
+    alarm: AlarmListResponseDTO,
     selectedAlarms: MutableState<Set<Long>>,
     toggleSelection: (Long) -> Unit,
     toggleSelectionMode: () -> Unit,
     isInSelectionMode: Boolean
 ) {
     val isSelected = selectedAlarms.value.contains(alarm.alarmIdx)
-    val backgroundColor =
-        if (isSelected) Color.LightGray.copy(alpha = 0.5f) else if (alarm.alarmStatus == 1) Color.LightGray else Color.White
+    val backgroundColor = if (isSelected) Color.LightGray.copy(alpha = 0.5f)  else Color.White
+    val textColor = if (alarm.alarmStatus == 1) Color.DarkGray.copy(alpha = 0.6f) else Color.Black
 
     val imageRes = when (alarm.alarmType) {
         "공지" -> R.drawable.alarm1
@@ -210,8 +232,17 @@ fun AlarmItem(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Column {
-                    Text(text = alarm.content, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                    Text(text = alarm.alarmCreatedDate, fontSize = 15.sp)
+                    Text(
+                        text = alarm.content,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textColor
+                    )
+                    Text( //TODO: FormatDate 적용시키기
+                        text = alarm.alarmCreatedDate,
+                        fontSize = 15.sp,
+                        color = textColor
+                    )
                 }
             }
 

@@ -32,6 +32,7 @@ import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.api.StampDetail
 import com.ssafyb109.bangrang.ui.theme.heavySkyBlue
 import com.ssafyb109.bangrang.ui.theme.lightSkyBlue
+import com.ssafyb109.bangrang.view.utill.DateToKorean
 import com.ssafyb109.bangrang.view.utill.LocationSelector
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
@@ -142,11 +143,11 @@ fun StampItem(stamp: StampDetail) {
             modifier = Modifier.weight(0.7f),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = stamp.stampName, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(text = stamp.stampName, fontSize = 22.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = stamp.stampLocation, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = stamp.stampTime, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(text = DateToKorean(stamp.stampTime), fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
 
         // 오른쪽 이미지

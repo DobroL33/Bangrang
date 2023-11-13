@@ -10,23 +10,16 @@ interface RankService {
     suspend fun fetchAllRank(
     ): Response<RegionDTO>
 
-    // 유저의 전체 랭킹
+    // 유저의 친구 전체 랭킹
     @GET("api/rank/friendRank")
     suspend fun fetchFriendRank(
-    ): Response<RegionDTO>
+    ): Response<List<RegionDTO>>
 
 }
 
-
-data class RankList(
-    val userNickname: String,
-    val userImg: String,
-    val percent: Double,
-)
-
 data class RegionDTO(
-    val myRegionDTO: MyRegionDTO,
-    val rating: Int,
+    val myRatings: List<MyRegionDTO>,
+    val rating: Int, // 상위 몇 %
     val korea: List<RankList>,
     val seoul: List<RankList>,
     val busan: List<RankList>,
@@ -37,7 +30,6 @@ data class RegionDTO(
     val ulsan: List<RankList>,
     val sejong: List<RankList>,
     val jeju: List<RankList>,
-    val dokdo: List<RankList>,
 
     val gangwon: List<RankList>,
     val gyeonggi: List<RankList>,
@@ -49,26 +41,15 @@ data class RegionDTO(
     val chungbuk: List<RankList>,
 )
 
-data class MyRegionDTO(
-    val korea: Pair<Long,Int>,
-    val seoul: Pair<Long,Int>,
-    val busan: Pair<Long,Int>,
-    val incheon: Pair<Long,Int>,
-    val gwangju: Pair<Long,Int>,
-    val daejeon: Pair<Long,Int>,
-    val daegu: Pair<Long,Int>,
-    val ulsan: Pair<Long,Int>,
-    val sejong: Pair<Long,Int>,
-    val jeju: Pair<Long,Int>,
-    val dokdo: Pair<Long,Int>,
+data class RankList(
+    val userNickname: String,
+    val userImg: String,
+    val percent: Double,
+)
 
-    val gangwon: Pair<Long,Int>,
-    val gyeonggi: Pair<Long,Int>,
-    val gyeongnam: Pair<Long,Int>,
-    val gyeongbuk: Pair<Long,Int>,
-    val jeollanam: Pair<Long,Int>,
-    val jeollabuk: Pair<Long,Int>,
-    val chungnam: Pair<Long,Int>,
-    val chungbuk: Pair<Long,Int>,
+data class MyRegionDTO(
+    val region: String,
+    val rate: Long,
+    val percent: Double,
 )
 

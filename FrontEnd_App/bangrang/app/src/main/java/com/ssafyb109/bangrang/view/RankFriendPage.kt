@@ -26,7 +26,7 @@ import com.ssafyb109.bangrang.view.utill.LocationSelector
 
 @Composable
 fun RankFriendPage(
-    friendRankResponse: RegionDTO?
+    friendRankResponse: List<RegionDTO>?
 ){
     val searchText = remember { mutableStateOf("") }
     val activeLocation = remember { mutableStateOf("전국") }

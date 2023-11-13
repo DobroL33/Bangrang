@@ -1,12 +1,12 @@
 package com.ssafyb109.bangrang.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssafyb109.bangrang.api.AlarmList
 import com.ssafyb109.bangrang.api.AlarmListResponseDTO
 import com.ssafyb109.bangrang.api.AlarmStatusRequesetDTO
-import com.ssafyb109.bangrang.api.LoginRequestDTO
+import com.ssafyb109.bangrang.api.FriendListResponseDTO
 import com.ssafyb109.bangrang.api.StampDetail
 import com.ssafyb109.bangrang.api.StampResponseDTO
 import com.ssafyb109.bangrang.repository.ResultType
@@ -31,6 +31,10 @@ class UserViewModel @Inject constructor(
     private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : ViewModel() {
 
+    // 토큰 재발급 응답
+    private val _refreshResponse = MutableStateFlow<Boolean?>(null)
+    val refreshResponse: StateFlow<Boolean?> = _refreshResponse
+
     // 로그인 응답
     private val _loginResponse = MutableSharedFlow<ResultType?>()
     val loginResponse: SharedFlow<ResultType?> = _loginResponse
@@ -47,13 +51,9 @@ class UserViewModel @Inject constructor(
     private val _alarmSettingResponse = MutableStateFlow(sharedPreferencesUtil.getUserAlarm())
     val alarmSettingResponse: StateFlow<Boolean?> = _alarmSettingResponse
 
-//    // 알람 리스트 응답
-//    private val _alarmListResponse = MutableStateFlow<AlarmListResponseDTO?>(null)
-//    val alarmListResponse: StateFlow<AlarmListResponseDTO?> = _alarmListResponse
-
-    // 알람 리스트 응답 샘플용
-    private val _alarmListResponse = MutableStateFlow<AlarmListResponseDTO?>(sampleData)
-    val alarmListResponse: StateFlow<AlarmListResponseDTO?> = _alarmListResponse
+    // 알람 리스트 응답
+    private val _alarmListResponse = MutableStateFlow<List<AlarmListResponseDTO>?>(emptyList())
+    val alarmListResponse: StateFlow<List<AlarmListResponseDTO>?> = _alarmListResponse
 
     // 알람 상태 변경 응답
     private val _alarmStatusUpdateResponse = MutableStateFlow<Boolean?>(null)
@@ -76,8 +76,8 @@ class UserViewModel @Inject constructor(
     val modifyProfileImageResponse: StateFlow<String?> = _modifyProfileImageResponse
 
     // 스탬프 응답 (전체 스탬프)
-    private val _stampsResponse = MutableStateFlow(getDefaultStampResponseData())
-    val stampsResponse: StateFlow<StampResponseDTO> = _stampsResponse
+    private val _stampsResponse = MutableStateFlow<StampResponseDTO?>(null)
+    val stampsResponse: StateFlow<StampResponseDTO?> = _stampsResponse
 
     // 친구 추가 응답
     private val _addFriendResponse = MutableStateFlow<Boolean?>(null)
@@ -87,6 +87,9 @@ class UserViewModel @Inject constructor(
     private val _deleteFriendResponse = MutableStateFlow<Boolean?>(null)
     val deleteFriendResponse: StateFlow<Boolean?> = _deleteFriendResponse
 
+    // 친구 리스트 응답
+    private val _friendListResponse = MutableStateFlow<List<FriendListResponseDTO>?>(emptyList())
+    val friendListResponse: StateFlow<List<FriendListResponseDTO>?> = _friendListResponse
 
 
     // 에러
@@ -95,6 +98,10 @@ class UserViewModel @Inject constructor(
     // 에러 메시지 리셋
     fun clearErrorMessage() {
         _errorMessage.value = null
+    }
+    // 알람 상태 리셋
+    fun clearAlertState(){
+        _alarmStatusUpdateResponse.value = null
     }
 
 
@@ -117,12 +124,19 @@ class UserViewModel @Inject constructor(
             }
         }
     }
+    // 토큰 재발급
+    fun setNewToken(refreshToken: String) {
+        viewModelScope.launch {
+            val result = repository.setNewToken(refreshToken)
+            _refreshResponse.emit(result)
+        }
+    }
 
-    // 구글 로그인
+    // 소셜 로그인
     fun sendTokenToServer(social: String, token: String) {
         viewModelScope.launch {
             _loginResponse.emit(ResultType.LOADING)
-            val result = repository.verifyGoogleToken(social, token)
+            val result = repository.verifySocialToken(social, token)
             _loginResponse.emit(result)
         }
     }
@@ -180,11 +194,12 @@ class UserViewModel @Inject constructor(
     }
 
     // 유저 알람 상태 변경
-    fun updateAlarmStatus(alarmIdx: List<Long>, alarmStatus: List<Int>) {
+    fun updateAlarmStatus(alarmIdx: List<Long>, alarmStatus: Int) {
         val request = AlarmStatusRequesetDTO(alarmIdx, alarmStatus)
         viewModelScope.launch {
             val response = repository.setAlarmStatus(request)
             _alarmStatusUpdateResponse.value = response
+            fetchAlarmList()
             if (!response) {
                 _errorMessage.emit(repository.lastError ?: "알람 상태 변경 실패")
             }
@@ -196,7 +211,10 @@ class UserViewModel @Inject constructor(
     fun modifyNickname(nickName: String) {
         viewModelScope.launch {
             val response = repository.modifyNickname(nickName)
-            _modifyNicknameResponse.value = response
+            if(response){
+                sharedPreferencesUtil.setUserNickname(nickName)
+                _modifyNicknameResponse.value = response
+            }
             if (!response) {
                 _errorMessage.emit(repository.lastError ?: "알 수 없는 에러")
             }
@@ -227,6 +245,7 @@ class UserViewModel @Inject constructor(
 
     // 유저 프로필 이미지 수정
     fun modifyUserProfileImage(image: MultipartBody.Part) {
+        Log.d("@@@@@@@@@@@@@@@@@@@@@@@","$image")
         viewModelScope.launch {
             val response = repository.modifyUserProfileImage(image)
             _modifyProfileImageResponse.value = response
@@ -255,6 +274,7 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             val response = repository.addFriend(nickName)
             _addFriendResponse.value = response
+            fetchFriend()
             if (!response) {
                 _errorMessage.emit(repository.lastError ?: "알 수 없는 에러")
             }
@@ -266,54 +286,24 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             val response = repository.deleteFriend(nickName)
             _deleteFriendResponse.value = response
+            fetchFriend()
             if (!response) {
                 _errorMessage.emit(repository.lastError ?: "알 수 없는 에러")
             }
         }
     }
 
-
-}
-
-// 발표용 샘플 데이터
-private fun getDefaultStampResponseData(): StampResponseDTO {
-    return StampResponseDTO(
-        totalNum = 8,
-        totalType = 2,
-        stamps = listOf(
-            StampDetail(stampName = "경주 천년고도 - 대릉원(천마총)", stampLocation = "경주", stampTime = "2023-10-18 10:00:00"),
-            StampDetail(stampName = "경주 천년고도 - 첨성대", stampLocation = "경주", stampTime = "2023-10-18 11:00:00"),
-            StampDetail(stampName = "경주 천년고도 - 오릉", stampLocation = "경주", stampTime = "2023-10-18 12:00:00"),
-            StampDetail(stampName = "경주 천년고도 - 불국사", stampLocation = "경주", stampTime = "2023-10-18 13:00:00"),
-            StampDetail(stampName = "경주 천년고도 - 석굴암", stampLocation = "경주", stampTime = "2023-10-18 14:00:00"),
-            StampDetail(stampName = "서울의 과거 - 1코스", stampLocation = "서울", stampTime = "2023-10-18 15:00:00"),
-            StampDetail(stampName = "서울의 패션 - 3코스 ", stampLocation = "서울", stampTime = "2023-10-18 16:00:00"),
-            StampDetail(stampName = "서울의 힐링 - 5코스", stampLocation = "서울", stampTime = "2023-10-18 17:00:00")
-        )
-    )
-}
-
-// 연결 실패용 샘플 데이터
-private fun getSampleStampResponseData(): StampResponseDTO {
-    return StampResponseDTO(
-        totalNum = 0,
-        totalType = 0,
-        stamps = listOf(
-            StampDetail(stampName = "응답 없음", stampLocation = "연결 실패", stampTime = "데이터를 불러올 수 없습니다.")
-        )
-    )
-}
-
-// 알람 샘플 데이터
-private val sampleData = AlarmListResponseDTO(
-    items = List(20) {
-        AlarmList(
-            alarmIdx = it.toLong(),
-            alarmType = listOf("공지", "알림", "랭킹", "행사").random(),
-            content = "알람 내용 ${it + 1}",
-            eventIdx = 1,
-            alarmCreatedDate = "2023-10-${(26..30).random()}",
-            alarmStatus = (0..1).random()
-        )
+    // 유저 친구 리스트
+    fun fetchFriend() {
+        viewModelScope.launch {
+            repository.fetchFriend().collect { response ->
+                if (response.isSuccessful) {
+                    _friendListResponse.emit(response.body()!!)
+                } else {
+                    val error = response.errorBody()?.string() ?: "알수없는 에러"
+                    _errorMessage.emit(error)
+                }
+            }
+        }
     }
-)
+}

@@ -1,8 +1,10 @@
 package com.ssafyb109.bangrang.view
 
-import android.content.ContentValues.TAG
+import android.app.Activity
 import android.content.Context
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,8 +23,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,15 +33,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
-import com.ssafyb109.bangrang.MainActivity
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.repository.ResultType
 import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
@@ -52,11 +52,42 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginPage(
     navController: NavHostController,
-    userViewModel: UserViewModel,
-    sharedPreferencesUtil: SharedPreferencesUtil,
+    userViewModel: UserViewModel
 ) {
     val context = LocalContext.current
-    val googleSignInClient = (context as MainActivity).getGoogleLoginAuth()
+
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(context.getString(R.string.gcp_id))
+        .requestEmail()
+        .build()
+
+    val googleSignInClient = GoogleSignIn.getClient(context, gso)
+
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            handleGoogleSignInResult(task, navController, userViewModel)
+        } else {
+            Log.d("GoogleSignIn", "실패")
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            task.addOnFailureListener {
+                Log.e("GoogleSignIn", "실패", it)
+            }
+        }
+    }
+
+    // 구글 자동 로그인 시도
+    LaunchedEffect(key1 = Unit) {
+        googleSignInClient.silentSignIn().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                handleGoogleSignInResult(task, navController, userViewModel)
+            } else {
+                Log.d("GoogleLogin", "자동로그인 실패")
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -95,7 +126,7 @@ fun LoginPage(
         Button(
             onClick = {
                 googleSignInClient.signInIntent.also {
-                    context.startActivityForResult(it, 1001)
+                    googleSignInLauncher.launch(googleSignInClient.signInIntent)
                 }
             },
             modifier = Modifier
@@ -147,10 +178,8 @@ fun performKakaoLogin(context: Context, navController: NavHostController, viewMo
         } else if (token != null) {
             viewModel.sendTokenToServer("kakao",token.accessToken)
             Log.i("KAKAO_LOGIN", "카카오계정으로 로그인 성공2 ${token.accessToken}")
-
         }
     }
-
 
     if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
         UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
@@ -186,15 +215,30 @@ fun performKakaoLogin(context: Context, navController: NavHostController, viewMo
     }
 }
 
-
 fun handleGoogleSignInResult(task: Task<GoogleSignInAccount>, navController: NavHostController, viewModel: UserViewModel) {
     try {
         val account: GoogleSignInAccount? = task.getResult(ApiException::class.java)
         if (account != null) {
-            viewModel.sendTokenToServer("kakao",account.idToken ?: "")
-            navController.navigate("Home")
+            Log.d("@@@@@@@@@@@@@@@@@2","${account.idToken}")
+            viewModel.sendTokenToServer("google",account.idToken ?: "")
         }
     } catch (e: ApiException) {
         Log.w("GOOGLE_SIGN_IN", "Google sign in failed", e)
+    }
+
+    // 이동
+    viewModel.viewModelScope.launch {
+        viewModel.loginResponse.collectLatest { response ->
+            when (response) {
+                ResultType.NICKNAME -> {
+                    navController.navigate("SignUp")
+                }
+                ResultType.SUCCESS -> {
+                    navController.navigate("Home")
+                }
+                // 다른 ResultType에 대한 처리
+                else -> {}
+            }
+        }
     }
 }

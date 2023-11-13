@@ -4,8 +4,10 @@ import android.util.Log
 import com.ssafyb109.bangrang.api.AlarmListResponseDTO
 import com.ssafyb109.bangrang.api.AlarmSettingRequestDTO
 import com.ssafyb109.bangrang.api.AlarmStatusRequesetDTO
+import com.ssafyb109.bangrang.api.FriendListResponseDTO
 import com.ssafyb109.bangrang.api.LoginRequestDTO
-import com.ssafyb109.bangrang.api.LoginResponseDTO
+import com.ssafyb109.bangrang.api.RefreshTokenRequestDTO
+import com.ssafyb109.bangrang.api.RefreshTokenResponseDTO
 import com.ssafyb109.bangrang.api.StampResponseDTO
 import com.ssafyb109.bangrang.api.UserService
 import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
@@ -20,10 +22,24 @@ class UserRepository @Inject constructor(
     private val sharedPreferencesUtil: SharedPreferencesUtil
 ) : BaseRepository() {
 
-    suspend fun verifyGoogleToken(social: String, token:String): ResultType {
+    suspend fun setNewToken( refreshToken:String): Boolean {
+        val requestDTO = RefreshTokenRequestDTO(refreshToken)
+        val response = userService.refreshAccessToken(requestDTO)
+        val data = response.body()
+
+        if(response.isSuccessful){
+            if (data != null) {
+                sharedPreferencesUtil.setUserToken(data.accessToken)
+                return true
+            }
+        }
+        return false
+    }
+
+    suspend fun verifySocialToken(social: String, token:String): ResultType {
         return try {
             val requestDTO = LoginRequestDTO(social,token)
-            val response = userService.userKakaoLogin(requestDTO)
+            val response = userService.userSocialLogin(requestDTO)
             val data = response.body()
 
             if (response.isSuccessful) {
@@ -105,7 +121,7 @@ class UserRepository @Inject constructor(
     }
 
     // 유저 알람 리스트
-    fun getAlarmList(): Flow<Response<AlarmListResponseDTO>> = flow {
+    fun getAlarmList(): Flow<Response<List<AlarmListResponseDTO>>> = flow {
         try {
             val response = userService.getAlarmList()
             if(response.isSuccessful) {
@@ -216,6 +232,7 @@ class UserRepository @Inject constructor(
     suspend fun addFriend(nickName: String): Boolean {
         return try {
             val response = userService.resistFriend(nickName)
+
             if(response.isSuccessful) {
                 true
             } else {
@@ -242,6 +259,20 @@ class UserRepository @Inject constructor(
         } catch (e: Exception) {
             lastError = handleNetworkException(e)
             false
+        }
+    }
+
+    // 친구 목록 불러오기
+    fun fetchFriend(): Flow<Response<List<FriendListResponseDTO>>> = flow {
+        try {
+            val response = userService.fetchFriend()
+            if(response.isSuccessful) {
+                emit(response)
+            } else {
+                lastError = handleNetworkException(response = response)
+            }
+        } catch (e: Exception) {
+            lastError = handleNetworkException(e)
         }
     }
 }

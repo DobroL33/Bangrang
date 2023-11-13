@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">방랑</string>
-    <string name="gcp_id">685789983424-6ivdb5g4s5eqlpre5oceqb6nhhuma9s3.apps.googleusercontent.com</string>
+    <string name="gcp_id">685789983424-48g79rpse4m31g8162l8m06irm6c2107.apps.googleusercontent.com</string>
+    <string name="gcp_id_android">685789983424-rrtjadd9ejo9per743gmqqa9fnno7st3.apps.googleusercontent.com</string>
     <string name="naver_client_id">jn0fli53cw</string>
     <string name="naver_client_pw"></string>
 </resources>

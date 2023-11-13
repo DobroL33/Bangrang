@@ -15,23 +15,18 @@ import retrofit2.http.Path
 
 interface UserService {
 
-    // 카카오 로그인
-    @POST("api/member/login")
-    suspend fun userKakaoLogin(
-        @Body request: LoginRequestDTO
-    ): Response<LoginResponseDTO>
-
-    // 구글 로그인
-    @POST("api/member/login/google")
-    suspend fun userGoogleLogin(
-        @Body request: LoginRequestDTO
-    ): Response<LoginResponseDTO>
-
     // 토큰 재발급
-    @POST("api/member/refresh")
+    @POST("api/refresh")
     suspend fun refreshAccessToken(
         @Body refreshTokenRequest: RefreshTokenRequestDTO
     ): Response<RefreshTokenResponseDTO>
+
+    // 소셜 로그인
+    @POST("api/member/login")
+    suspend fun userSocialLogin(
+        @Body request: LoginRequestDTO
+    ): Response<LoginResponseDTO>
+
 
     // 닉네임 중복확인
     @GET("api/member/nicknameCheck/{nickname}")
@@ -40,13 +35,13 @@ interface UserService {
     ): Response<Void>
 
     // 닉네임 등록하기
-    @POST("api/member/{nickname}")
+    @POST("api/member/nickname")
     suspend fun resistNickname(
-        @Path("nickname") nickname : String
+        @Body request: String
     ): Response<Void>
 
     // 유저 알람 설정
-    @POST("api/member/alarm")
+    @PATCH("api/member/alarm")
     suspend fun setAlarmSetting(
         @Body request: AlarmSettingRequestDTO
     ): Response<Void>
@@ -54,7 +49,7 @@ interface UserService {
     // 유저 알람 리스트
     @GET("api/member/alarm")
     suspend fun getAlarmList(
-    ): Response<AlarmListResponseDTO>
+    ): Response<List<AlarmListResponseDTO>>
 
     // 유저 알람 상태 변경
     @PATCH("api/member/alarm/status")
@@ -64,9 +59,9 @@ interface UserService {
 
 
     // 닉네임 수정하기
-    @PUT("api/member/{nickname}")
+    @PATCH("api/member/nickname")
     suspend fun modifyNickname(
-        @Path("nickname") nickname : String
+        @Body request: String
     ): Response<Void>
 
     // 회원 탈퇴
@@ -104,6 +99,11 @@ interface UserService {
         @Path("nickname") nickName : String
     ): Response<Void>
 
+    // 친구 목록 불러오기
+    @GET("api/member/friend")
+    suspend fun fetchFriend(
+    ): Response<List<FriendListResponseDTO>>
+
 }
 
 // 카카오 로그인 요청 DTO
@@ -128,8 +128,6 @@ data class RefreshTokenRequestDTO(
 data class RefreshTokenResponseDTO(
     val accessToken: String
 )
-
-
 
 
 // 닉네임 중복확인 요청 응답 DTO = Path, Void
@@ -159,10 +157,6 @@ data class AlarmSettingRequestDTO(
 // 알람 목록 응답 DTO
 
 data class AlarmListResponseDTO(
-    val items: List<AlarmList>
-)
-
-data class AlarmList(
     val alarmIdx: Long,
     val alarmType: String, // 알람 타입("공지","알림","랭킹","행사")
     val content: String,
@@ -175,6 +169,11 @@ data class AlarmList(
 // 알람 상태변경 응답 DTO
 data class AlarmStatusRequesetDTO(
     val alarmIdx: List<Long>,
-    val alarmStatus: List<Int>, // 알람 상태(0 = 삭제 1 = 읽음 나중을 위해 일단 int)
+    val alarmStatus: Int, // 알람 상태(0 = 삭제 1 = 읽음 나중을 위해 일단 int)
 )
 
+// 친구 목록 불러오기 응답 DTO
+data class FriendListResponseDTO(
+    val nickname: String,
+    val userImage: String?,
+)

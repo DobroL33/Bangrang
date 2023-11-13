@@ -2,6 +2,7 @@ package com.ssafyb109.bangrang.api
 
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface EventService {
@@ -16,6 +17,12 @@ interface EventService {
     suspend fun findEvent(
         @Path("index") index: String
     ): Response<EventIndexListResponseDTO>
+
+    // 이벤트 좋아요
+    @POST("api/event/likes/{index}")
+    suspend fun likeEvent(
+        @Path("index") index: String
+    ): Response<Void>
 
 }
 

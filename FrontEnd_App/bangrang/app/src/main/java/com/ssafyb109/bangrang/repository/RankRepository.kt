@@ -28,7 +28,7 @@ class RankRepository @Inject constructor(
     }
 
     // 친구 랭킹 불러오기
-    suspend fun fetchFriendRank(): Flow<Response<RegionDTO>> = flow {
+    suspend fun fetchFriendRank(): Flow<Response<List<RegionDTO>>> = flow {
         try {
             val response = rankService.fetchFriendRank()
             if (response.isSuccessful) {

@@ -3,7 +3,15 @@ package com.ssafyb109.bangrang.view
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -20,11 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ssafyb109.bangrang.api.InquiryListResponseDTO
 import com.ssafyb109.bangrang.ui.theme.heavySkyBlue
-import com.ssafyb109.bangrang.ui.theme.lightSkyBlue
+import com.ssafyb109.bangrang.view.utill.DateToKorean
 import com.ssafyb109.bangrang.viewmodel.InquiryViewModel
 
 @Composable
@@ -40,7 +46,7 @@ fun InquiryPage(
     val totalPages = (inquiryList.size + itemsPerPage - 1) / itemsPerPage
 
     LaunchedEffect(Unit) {
-        inquiryViewModel.inquiryList
+        inquiryViewModel.fetchInquiries()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -180,8 +186,8 @@ fun InquiryItem(number: Int, inquiry: InquiryListResponseDTO, onClick: () -> Uni
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = number.toString(), modifier = Modifier.weight(1f), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-        Text(text = inquiry.title, modifier = Modifier.weight(5f), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-        Text(text = inquiry.resistDate, modifier = Modifier.weight(2f), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        Text(text = inquiry.title, modifier = Modifier.weight(4f), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        Text(text = DateToKorean(inquiry.resistDate), modifier = Modifier.weight(4f), fontSize = 16.sp, fontWeight = FontWeight.Bold)
     }
 }
 

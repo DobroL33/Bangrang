@@ -21,8 +21,8 @@ class RankViewModel @Inject constructor(
     val allRankResponse: StateFlow<RegionDTO?> = _allRankResponse.asStateFlow()
 
     // 친구 랭킹 응답
-    private val _friendRankResponse = MutableStateFlow<RegionDTO?>(null)
-    val friendRankResponse: StateFlow<RegionDTO?> = _friendRankResponse.asStateFlow()
+    private val _friendRankResponse = MutableStateFlow<List<RegionDTO>?>(emptyList())
+    val friendRankResponse: StateFlow<List<RegionDTO>?> = _friendRankResponse.asStateFlow()
 
     // 에러 메시지
     private val _errorMessage = MutableStateFlow<String?>(null)

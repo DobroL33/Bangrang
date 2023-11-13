@@ -26,7 +26,7 @@ data class InquiryListResponseDTO(
     val eventName: String,
     val title: String,
     val content: String,
-    val answer: String,
+    val answer: String?,
     val resistDate: String,
 )
 

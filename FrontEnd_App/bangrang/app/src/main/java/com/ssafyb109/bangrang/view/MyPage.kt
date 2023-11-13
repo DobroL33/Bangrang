@@ -76,6 +76,8 @@ fun MyPage(
     val showErrorSnackBar = remember { mutableStateOf(false) }
     // 닉네임 중복 결과
     val nicknameAvailability by userViewModel.nicknameAvailability.collectAsState()
+    // 닉네임 변경 결과
+    val modifyNicknameResponse by userViewModel.modifyNicknameResponse.collectAsState()
 
     // 로그아웃
     var isClicked by remember { mutableStateOf(false) }
@@ -111,6 +113,9 @@ fun MyPage(
         if(allRankResponse == null){
             rankViewModel.fetchAllRank()
         }
+    }
+    LaunchedEffect(modifyNicknameResponse){
+        userNickName = sharedPreferencesUtil.getUserNickname()
     }
 
     Column(
@@ -218,6 +223,10 @@ fun MyPage(
 
         Spacer(modifier = Modifier.height(8.dp))
         Divider(color = Color.Gray, thickness = 1.dp)
+
+        SettingItem("친구 목록 관리") {
+            navController.navigate("FriendPage")
+        }
 
         SettingItem("닉네임 변경") {
             showNicknameDialog = true

@@ -48,7 +48,6 @@ class LocationService : Service() {
                     val newUserLocation = CurrentLocation(
                         latitude = location.latitude,
                         longitude = location.longitude,
-                        timestamp = System.currentTimeMillis()
                     )
                     serviceScope.launch {
                         withContext(Dispatchers.IO) {

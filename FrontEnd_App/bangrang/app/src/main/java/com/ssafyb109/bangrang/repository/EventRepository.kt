@@ -3,6 +3,7 @@ package com.ssafyb109.bangrang.repository
 import com.ssafyb109.bangrang.api.EventIndexListResponseDTO
 import com.ssafyb109.bangrang.api.EventSelectListResponseDTO
 import com.ssafyb109.bangrang.api.EventService
+import com.ssafyb109.bangrang.api.InquiryResistRequestDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
@@ -37,4 +38,19 @@ class EventRepository @Inject constructor(
             lastError = handleNetworkException(e)
         }
     }
+//
+//    fun inquiryResist(request: InquiryResistRequestDTO): Boolean {
+//        return try {
+//            val response = inquiryService.inquiryResist(request)
+//            if (response.isSuccessful) {
+//                true
+//            } else {
+//                lastError = handleNetworkException(response = response)
+//                false
+//            }
+//        } catch (e: Exception) {
+//            lastError = handleNetworkException(e)
+//            false
+//        }
+//    }
 }

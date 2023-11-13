@@ -79,7 +79,8 @@ fun EventDetailPage(
                 Image(
                     painter = rememberAsyncImagePainter(model = eventDetail.image),
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
                         .clickable {
                             navController.navigate("FullScreenImagePage/${encodedImageUrl}")
                         },
@@ -89,6 +90,9 @@ fun EventDetailPage(
             Text(text = eventDetail.title, fontSize = 32.sp, fontWeight = FontWeight.Bold)
             Text(text = "시작일 : ${DateToKorean(eventDetail.startDate)}", fontSize = 18.sp)
             Text(text = "종료일 : ${DateToKorean(eventDetail.endDate)}", fontSize = 18.sp)
+            Button(onClick = { navController.navigate("InquiryResistPage/${index}") }) {
+                Text(text = "문의하기")
+            }
             Divider(color = Color.Gray, thickness = 1.dp)
 
             // 임시 사이즈
@@ -102,7 +106,8 @@ fun EventDetailPage(
                 Image(
                     painter = rememberAsyncImagePainter(model = eventDetail.subImage),
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
                         .clickable {
                             navController.navigate("FullScreenImagePage/${encodedImageUrl}")
                         },

@@ -43,9 +43,6 @@ fun HomePage(
         (activeLocation.value == "전국" || it.address.contains(activeLocation.value))
     }
 
-//    LaunchedEffect(Unit) {
-//        userViewModel.updateLocation()
-//    }
 
     val context = LocalContext.current
 

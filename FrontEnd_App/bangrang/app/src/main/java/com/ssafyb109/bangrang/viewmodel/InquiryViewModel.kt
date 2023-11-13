@@ -1,5 +1,6 @@
 package com.ssafyb109.bangrang.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafyb109.bangrang.api.InquiryListResponseDTO
@@ -17,11 +18,7 @@ class InquiryViewModel @Inject constructor(
 ) : ViewModel() {
 
     // 문의 리스트
-//    private val _inquiryList = MutableStateFlow<List<InquiryListResponseDTO>>(listOf())
-//    val inquiryList: StateFlow<List<InquiryListResponseDTO>> = _inquiryList
-
-    // 테스트용 샘플들어간거
-    private val _inquiryList = MutableStateFlow<List<InquiryListResponseDTO>>(sampleInquiries)
+    private val _inquiryList = MutableStateFlow<List<InquiryListResponseDTO>>(listOf())
     val inquiryList: StateFlow<List<InquiryListResponseDTO>> = _inquiryList
 
     // 문의 응답
@@ -38,6 +35,7 @@ class InquiryViewModel @Inject constructor(
             inquiryRepository.inquiryList().collect { response ->
                 if (response.isSuccessful) {
                     _inquiryList.emit(response.body()!!)
+                    Log.d("@@@@@@@@@@@@@@@@","${response.body()}")
                 } else {
                     _errorMessage.emit(inquiryRepository.lastError ?: "알 수 없는 에러")
                 }
@@ -60,12 +58,3 @@ class InquiryViewModel @Inject constructor(
         }
     }
 }
-
-val sampleInquiries: List<InquiryListResponseDTO> = listOf(
-    InquiryListResponseDTO(1,"앱", "이벤트1", "문의 제목1", "문의 내용1", "답변1", "2023-10-24"),
-    InquiryListResponseDTO(2,"행사", "이벤트2", "문의 제목2", "문의 내용2", "답변2", "2023-10-23"),
-    InquiryListResponseDTO(3,"기타", "이벤트3", "문의 제목3", "문의 내용3", "답변3", "2023-10-22"),
-    InquiryListResponseDTO(4,"앱", "이벤트4", "문의 제목4", "문의 내용4", "", "2023-10-21"),
-    InquiryListResponseDTO(5,"행사", "이벤트5", "문의 제목5", "문의 내용5", "", "2023-10-20"),
-    InquiryListResponseDTO(6,"기타", "이벤트6", "문의 제목6", "문의 내용6", "답변4", "2023-10-20"),
-)
