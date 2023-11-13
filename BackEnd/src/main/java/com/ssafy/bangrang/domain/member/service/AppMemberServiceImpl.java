@@ -1,6 +1,8 @@
 package com.ssafy.bangrang.domain.member.service;
 
 import com.ssafy.bangrang.domain.inquiry.api.response.GetInquiryAllResponseDto;
+import com.ssafy.bangrang.domain.inquiry.entity.Comment;
+import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
 import com.ssafy.bangrang.domain.member.api.response.StampDetailDto;
 import com.ssafy.bangrang.domain.member.api.response.StampResponseDto;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
@@ -206,9 +208,11 @@ public class AppMemberServiceImpl implements AppMemberService {
     }
 
     @Override
-    public List<GetInquiryAllResponseDto> findInquiryById(String id){
-        // id로 member를 찾음
-        AppMember appMember = appMemberRepository.findById(id).orElseThrow();
+    public List<GetInquiryAllResponseDto> findInquiryById(UserDetails userDetails){
+
+        AppMember appMember = appMemberRepository.findById(userDetails.getUsername())
+                .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
+
 
         // member의 inquiry를 불러옴
         List<GetInquiryAllResponseDto> inquiryList = appMember.getInquiries()
@@ -220,7 +224,9 @@ public class AppMemberServiceImpl implements AppMemberService {
                         .eventName(inquiry.getEvent().getTitle())
                         .title(inquiry.getTitle())
                         .content(inquiry.getContent())
-                        .answer(inquiry.getComment().getContent())
+                        .answer(Optional.ofNullable(inquiry.getComment())
+                                .map(Comment::getContent)
+                                .orElse(null))
                         .resisteDate(inquiry.getCreatedAt().format(dateTimeFormatter))
                         .build())
                 .collect(Collectors.toList());

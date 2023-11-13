@@ -32,13 +32,7 @@ public class InquiryApi {
     @GetMapping("/list")
     public ResponseEntity getInquiryAll(@AuthenticationPrincipal UserDetails userDetails){
 
-        log.info("[사용자 일대일 문의 리스트 요청 시작]", LocalDateTime.now());
-
-        List<GetInquiryAllResponseDto> inquiryList = appMemberService.findInquiryById(userDetails.getUsername());
-
-        log.info("[사용자 일대일 문의 리스트 요청 끝]");
-
-        return ResponseEntity.ok().body(inquiryList);
+        return ResponseEntity.ok().body(appMemberService.findInquiryById(userDetails));
     }
 
     // 사용자 일대일 문의 등록

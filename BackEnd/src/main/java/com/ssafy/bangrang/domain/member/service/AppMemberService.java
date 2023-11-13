@@ -30,5 +30,5 @@ public interface AppMemberService {
 
     Optional<AppMember> findById(String id);
 
-    List<GetInquiryAllResponseDto> findInquiryById(String id);
+    List<GetInquiryAllResponseDto> findInquiryById(UserDetails userDetails);
 }
