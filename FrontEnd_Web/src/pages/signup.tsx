@@ -8,11 +8,12 @@ import styled from "@emotion/styled";
 const InputContainer = styled.div`
   display: flex;
   align-items: center;
-  width: 18.4rem;
+  width: 25%;
   height: 2.625rem;
   color: #c6c5c5;
   border: 1px solid #3d5cff;
   border-radius: 5px;
+  justify-content: space-between;
 `;
 
 const StyledInput = styled.input`
@@ -138,16 +139,21 @@ const SignUp: React.FC = () => {
             />
             {/* 올바른 아이디 입력시 인증버튼 활성화 */}
             {formik.values.id === "" || formik.errors.id ? (
-              <button type="button" disabled>
+              <button style={{ marginRight: "10%" }} type="button" disabled>
                 인증
               </button>
             ) : isCheckId ? (
-              <button disabled type="button" style={{ color: "green" }}>
+              <button
+                disabled
+                type="button"
+                style={{ color: "green", marginRight: "10%" }}
+              >
                 완료
               </button>
             ) : (
               <button
                 type="button"
+                style={{ marginRight: "10%" }}
                 onClick={() => {
                   idcheck(formik.values.id);
                 }}
@@ -256,6 +262,7 @@ const SignUp: React.FC = () => {
         </p>
 
         {/* 인증파일 input */}
+        <p>인증파일 등록</p>
         <input
           type="file"
           placeholder="인증파일"
