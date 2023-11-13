@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class Likes {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "likes_idx")
     private Long idx;
 
