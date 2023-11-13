@@ -24,7 +24,7 @@ const ManageHome: React.FC = () => {
           <h1>1:1 문의</h1>
         </div>
         <div className={styles.func} 
-        onClick={()=>navigate("/manage/eventList")}>
+        onClick={()=>navigate("/manage/event")}>
           <h1>이벤트 등록 및 관리</h1>
         </div>
       </div>

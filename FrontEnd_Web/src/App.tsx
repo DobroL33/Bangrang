@@ -11,11 +11,9 @@ import Login from "./pages/login";
 import NotFound from "./pages/notfound";
 import SignUp from "./pages/signup";
 import AdminHome from "./pages/adminhome";
-import EventRegist from "./pages/eventregist";
 import Inquiry from "./pages/inquiry";
 import RegistManager from "./pages/registmanager";
-import EventList from "./pages/eventlist";
-import EventUpdate from "./pages/eventupdate";
+import Event from "./pages/event";
 
 function App() {
   const location = useLocation();
@@ -24,14 +22,14 @@ function App() {
       <Navbar />
       <Routes location={location}>
         <Route path="/" element={<IntroHome />} />
+        
         <Route path="/admin" element={<AdminHome />} />
         <Route path="/admin/inquiry" element={<Inquiry />} />
         <Route path="/admin/registmanager" element={<RegistManager />} />
+
         <Route path="/manage" element={<ManageHome />} />
         <Route path="/manage/inquiry" element={<Inquiry />} />
-        <Route path="/manage/eventlist" element={<EventList />} />
-        <Route path="/manage/eventregist" element={<EventRegist />} />
-        <Route path="/manage/eventupdate/:eventIdx" element={<EventUpdate />} />
+        <Route path="/manage/event" element={<Event />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />

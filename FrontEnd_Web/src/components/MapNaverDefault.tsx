@@ -1,6 +1,10 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
-const MapNaverDefault = ({ latitude, longtitude }) => {
+interface Props{
+  latitude:number;
+  longtitude:number;
+}
+const MapNaverDefault: React.FC<Props> = ({latitude, longtitude }) => {
   const mapElement = useRef(null);
   const { naver } = window;
 
@@ -25,7 +29,7 @@ const MapNaverDefault = ({ latitude, longtitude }) => {
   return (
     <>
       {/* <h1>Naver Map - Default</h1> */}
-      <div ref={mapElement} style={{ minHeight: "150px" }} />
+      <div ref={mapElement} style={{ minHeight: "250px" }} />
     </>
   );
 };

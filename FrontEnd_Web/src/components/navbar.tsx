@@ -79,8 +79,7 @@ const Navbar: React.FC = () => {
         </header>
       ) : location.pathname === "/manage" ||
         location.pathname === "/manage/inquiry" ||
-        location.pathname === "/manage/eventregist" ||
-        location.pathname === "/manage/eventList" ? (
+        location.pathname === "/manage/event" ? (
         <header className="navbar" style={{backgroundColor:'#E2F5FF'}}>
           <Link to="/manage">
             <img className={styles.logo} src="assets/logo.png" alt="" />

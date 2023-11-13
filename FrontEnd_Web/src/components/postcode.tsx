@@ -6,26 +6,28 @@ interface Props {
   address: string;
 }
 const PostCode: React.FC<Props> = ({ setAddress, address }) => {
-  const [zipCode, setZipcode] = useState<string>("");
+  // const [zipCode, setZipcode] = useState<string>("");
   const [roadAddress, setRoadAddress] = useState<string>("");
-  const [detailAddress, setDetailAddress] = useState<string>(""); // 추가
+  // const [detailAddress, setDetailAddress] = useState<string>(""); // 추가
   const [isOpen, setIsOpen] = useState<boolean>(false); //추가
-  useEffect(() => {
-    setAddress(roadAddress);
-  }, [roadAddress]);
 
+  useEffect(()=>{
+    setRoadAddress(address);
+  },[])
   const completeHandler = (data: any) => {
-    setZipcode(data.zonecode);
-    setRoadAddress(data.roadAddress);
+    // setZipcode(data.zonecode);
+    // setRoadAddress(data.roadAddress);
+    setAddress(data.roadAddress);
     // setAddress(roadAddress + detailAddress);
     setIsOpen(false); //추가
-    console.log(zipCode, roadAddress, detailAddress);
+    // console.log(zipCode, roadAddress, detailAddress);
   };
 
   // Modal 스타일
   const customStyles = {
     overlay: {
       backgroundColor: "rgba(0,0,0,0.5)",
+      zIndex: 1000, 
     },
     content: {
       left: "0",
@@ -34,6 +36,7 @@ const PostCode: React.FC<Props> = ({ setAddress, address }) => {
       height: "600px",
       padding: "0",
       overflow: "hidden",
+      zIndex: 1001, 
     },
   };
 
@@ -43,46 +46,41 @@ const PostCode: React.FC<Props> = ({ setAddress, address }) => {
   };
 
   // 상세 주소검색 event
-  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDetailAddress(e.target.value);
-  };
+  // const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setDetailAddress(e.target.value);
+  // };
 
   // 추가
-  const clickHandler = () => {
-    console.log("주소 저장하기");
-    setAddress(roadAddress);
-    // console.log(zipCode, roadAddress, detailAddress);
-  };
+  // const clickHandler = () => {
+  //   console.log("주소 저장하기");
+  //   // setAddress(roadAddress);
+  //   // console.log(zipCode, roadAddress, detailAddress);
+  // };
 
   return (
-    <div>
-      <span>현재 등록 주소 : {address}</span>
-      <button type="button" onClick={toggle} style={{ marginLeft: "5%" }}>
-        우편번호 검색
-      </button>
-      <br />
-      <input
+    <div style={{display:'flex', width:'70%', justifyContent:'space-between'}}>
+      {/* <input
         value={zipCode}
         readOnly
         placeholder="우편번호"
         style={{ width: "30%" }}
-      />
+      /> */}
       <input
-        value={roadAddress}
+        value={address}
         readOnly
         placeholder="도로명 주소"
-        style={{ width: "68%" }}
+        style={{ width: "85%" }}
       />
-
-      <br />
+  
+      <button type="button" onClick={toggle} style={{ width:'12%' }}>
+        찾기
+      </button>
       <ReactModal isOpen={isOpen} ariaHideApp={false} style={customStyles}>
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
+            alignItems: "center"}}>
           <DaumPostcode onComplete={completeHandler} />
           <button
             type="button"
@@ -95,8 +93,7 @@ const PostCode: React.FC<Props> = ({ setAddress, address }) => {
               border: "none",
               padding: "5px",
               fontWeight: "bold",
-            }}
-          >
+            }}>
             X
           </button>
         </div>
