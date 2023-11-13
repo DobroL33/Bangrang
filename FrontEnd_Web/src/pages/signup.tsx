@@ -3,6 +3,26 @@ import { useNavigate, Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import styled from "@emotion/styled";
+
+const InputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: 18.4rem;
+  height: 2.625rem;
+  color: #c6c5c5;
+  border: 1px solid #3d5cff;
+  border-radius: 5px;
+`;
+
+const StyledInput = styled.input`
+  flex-shrink: 0;
+  padding-left: 2rem;
+  border: none;
+  outline: none;
+  color: #525252;
+  font-weight: bold;
+`;
 
 const validationSchema = Yup.object().shape({
   id: Yup.string()
@@ -94,40 +114,48 @@ const SignUp: React.FC = () => {
 
   return (
     <div>
-      <img src="assets/logo.png" alt="" />
+      <img src="assets/logo.png" alt="" style={{ width: "50vh" }} />
       <h1>관리자 가입신청</h1>
       <form onSubmit={formik.handleSubmit}>
         {/* 아이디 input */}
-        <div>
-          <input
-            type="text"
-            placeholder="아이디"
-            {...formik.getFieldProps("id")}
-            onChange={(event) => {
-              formik.handleChange(event);
-              setCheckId(false);
-            }}
-            autoComplete="id"
-          />
-          {/* 올바른 아이디 입력시 인증버튼 활성화 */}
-          {formik.values.id === "" || formik.errors.id ? (
-            <button type="button" disabled>
-              인증
-            </button>
-          ) : isCheckId ? (
-            <button disabled type="button" style={{ color: "green" }}>
-              완료
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                idcheck(formik.values.id);
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <InputContainer>
+            <StyledInput
+              type="text"
+              placeholder="아이디"
+              {...formik.getFieldProps("id")}
+              onChange={(event) => {
+                formik.handleChange(event);
+                setCheckId(false);
               }}
-            >
-              인증
-            </button>
-          )}
+              autoComplete="id"
+            />
+            {/* 올바른 아이디 입력시 인증버튼 활성화 */}
+            {formik.values.id === "" || formik.errors.id ? (
+              <button type="button" disabled>
+                인증
+              </button>
+            ) : isCheckId ? (
+              <button disabled type="button" style={{ color: "green" }}>
+                완료
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  idcheck(formik.values.id);
+                }}
+              >
+                인증
+              </button>
+            )}
+          </InputContainer>
         </div>
         <p style={{ fontSize: "8px", fontWeight: "bold" }}>
           {formik.values.id === "" ? (
@@ -144,12 +172,22 @@ const SignUp: React.FC = () => {
         </p>
 
         {/* 패스워드 input */}
-        <input
-          type="password"
-          placeholder="비밀번호"
-          {...formik.getFieldProps("password")}
-          autoComplete="new-password"
-        />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <InputContainer>
+            <StyledInput
+              type="password"
+              placeholder="비밀번호"
+              {...formik.getFieldProps("password")}
+              autoComplete="new-password"
+            />
+          </InputContainer>
+        </div>
         <p style={{ fontSize: "8px", fontWeight: "bold" }}>
           {formik.values.password === "" ? (
             <span> </span>
@@ -163,12 +201,22 @@ const SignUp: React.FC = () => {
         </p>
 
         {/* 패스워드 확인 input */}
-        <input
-          type="password"
-          placeholder="비밀번호 확인"
-          {...formik.getFieldProps("confirmPassword")}
-          autoComplete="new-password"
-        />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <InputContainer>
+            <StyledInput
+              type="password"
+              placeholder="비밀번호 확인"
+              {...formik.getFieldProps("confirmPassword")}
+              autoComplete="new-password"
+            />
+          </InputContainer>
+        </div>
         <p style={{ fontSize: "8px", fontWeight: "bold", color: "red" }}>
           {formik.values.confirmPassword === "" ? (
             <span> </span>
@@ -182,11 +230,21 @@ const SignUp: React.FC = () => {
         </p>
 
         {/* 기관 이름 input */}
-        <input
-          type="text"
-          placeholder="기관명"
-          {...formik.getFieldProps("organizationName")}
-        />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <InputContainer>
+            <StyledInput
+              type="text"
+              placeholder="기관명"
+              {...formik.getFieldProps("organizationName")}
+            />
+          </InputContainer>
+        </div>
         <p style={{ fontSize: "8px", fontWeight: "bold", color: "red" }}>
           {formik.values.organizationName === "" ? (
             <span></span>
@@ -224,9 +282,32 @@ const SignUp: React.FC = () => {
         !formik.errors.confirmPassword &&
         !formik.errors.organizationName &&
         file ? (
-          <button type="submit">가입신청</button>
+          <button
+            type="submit"
+            style={{
+              marginTop: "30px",
+              border: "none",
+              background: "#0057FF",
+              width: "25%",
+              height: "6vh",
+              borderRadius: "6px",
+              color: "white",
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+          >
+            가입신청
+          </button>
         ) : (
-          <button disabled>가입신청</button>
+          <button
+            style={{
+              width: "25%",
+              height: "6vh",
+            }}
+            disabled
+          >
+            가입신청
+          </button>
         )}
       </form>
     </div>

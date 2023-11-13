@@ -9,22 +9,19 @@ const InputContainer = styled.div`
   display: flex;
   align-items: center;
   width: 30%;
-  height: 10vh;
-  background-color: white;
-  border-radius: 6px;
+  height: 2.625rem;
+  color: #c6c5c5;
+  border: 1px solid #3d5cff;
+  border-radius: 5px;
 `;
 
 const StyledInput = styled.input`
-  background-color: white;
-  stroke-width: 3px;
-  stroke: #c6c5c5;
   flex-shrink: 0;
   padding-left: 2rem;
-  border: none; /* 입력란 테두리 제거 */
-  outline: none; /* 입력란 포커스 시 외곽선 제거 */
-  color: #7d7b7b;
+  border: none;
+  outline: none;
+  color: #525252;
   font-weight: bold;
-  width: 50%;
 `;
 
 const IconID = styled(AiOutlineUser)`
@@ -104,7 +101,7 @@ const Login: React.FC = () => {
       style={{
         width: "100%",
         // height: window.innerHeight - 80,
-        backgroundColor: "#E2F5FF",
+        // backgroundColor: "#E2F5FF",
         padding: "3% 10%",
         boxSizing: "border-box",
       }}
