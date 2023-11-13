@@ -4,10 +4,18 @@ import shuffle from "lodash.shuffle";
 import data from "./DataList";
 import styles from "./ThirdPage.module.css";
 import Marquee from "react-fast-marquee";
+import { useSpring } from "react-spring";
 
-const Images = [
-  "public/assets/MarqueeImg/대전.png",
-  "public/assets/MarqueeImg/서울.png",
+const imagePaths = [
+  "assets/MarqueeImg/서울.svg",
+  "assets/MarqueeImg/부산.svg",
+  "assets/MarqueeImg/대전.svg",
+  "assets/MarqueeImg/광주.svg",
+  "assets/MarqueeImg/제주.svg",
+  "assets/MarqueeImg/경주.svg",
+  "assets/MarqueeImg/인천.svg",
+  "assets/MarqueeImg/대구.svg",
+  "assets/MarqueeImg/강릉.svg",
 ];
 
 interface ThirdPageProps {
@@ -38,6 +46,25 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
     }
   );
 
+  const marqueeTransitions = useTransition(imagePaths, {});
+
+  const springConfigs = {
+    from: { transform: "scale(1)" },
+    to: { transform: "scale(0.7)" },
+    config: { duration: 300, tension: 100, friction: 10 },
+    reset: true,
+    reverse: true,
+  };
+
+  const springStyles = imagePaths.map((_, index) =>
+    useSpring({ ...springConfigs, delay: index * 350 })
+  );
+
+  useEffect(() => {
+    const t = setInterval(() => set(shuffle), 3000);
+    return () => clearInterval(t);
+  }, []);
+
   return (
     <div>
       <div className={styles.Page}>
@@ -45,11 +72,11 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
           className={styles.Percent}
           style={{
             position: "absolute",
-            transform: visible ? "tranlateX(-50%)" : "tranlateX(100%)",
             transition: "0.7s",
             opacity: visible ? "1" : "0",
             fontSize: "30px",
             color: "#1daeff",
+            marginTop: "3%",
           }}
         >
           방랑 명예의 전당
@@ -71,7 +98,7 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
             transition: "1s",
           }}
         >
-          <div className={styles.list}>
+          <div className={styles.list} style={{ top: "5%" }}>
             {transitions((style, item, t, index) => (
               <animated.div
                 className={styles.card}
@@ -134,25 +161,24 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
         loop={300000}
         style={{
           height: "auto",
-          paddingBottom: "20px",
-          // marginBottom: "50px",
+          paddingBottom: "10px",
           overflow: "hidden",
+          justifyContent: "space-between",
         }}
         direction="left"
         speed={300}
       >
-        <img className={styles.image} src="assets/MarqueeImg/서울.png" alt="" />
-        <img className={styles.image} src="assets/MarqueeImg/대전.png" alt="" />
-        <img className={styles.image} src="assets/MarqueeImg/대구.png" alt="" />
-        <img className={styles.image} src="assets/MarqueeImg/부산.png" alt="" />
-        <img className={styles.image} src="assets/MarqueeImg/제주.png" alt="" />
-        <img className={styles.image} src="assets/MarqueeImg/경주.png" alt="" />
-        <img className={styles.image} src="assets/MarqueeImg/서울.png" alt="" />
-        <img className={styles.image} src="assets/MarqueeImg/대전.png" alt="" />
-        <img className={styles.image} src="assets/MarqueeImg/대구.png" alt="" />
-        <img className={styles.image} src="assets/MarqueeImg/부산.png" alt="" />
-        <img className={styles.image} src="assets/MarqueeImg/제주.png" alt="" />
-        <img className={styles.image} src="assets/MarqueeImg/경주.png" alt="" />
+        {marqueeTransitions((_, item, t, index) => (
+          <animated.img
+            key={index}
+            className={styles.image}
+            src={item}
+            alt={`Marquee Image ${index}`}
+            style={{
+              ...springStyles[index],
+            }}
+          />
+        ))}
       </Marquee>
     </div>
   );
