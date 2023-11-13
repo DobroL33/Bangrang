@@ -257,6 +257,7 @@ const EventUpdate: React.FC = () => {
               label="시작 날짜"
               sx={{ width: "100%" }}
               value={updateStartDate}
+              defaultValue={dayjs("2022-04-17T15:30").toString()}
               onChange={startDateChange}
               format="YYYY-MM-DDTHH:mm:ss"
             />

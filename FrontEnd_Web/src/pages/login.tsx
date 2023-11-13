@@ -1,6 +1,50 @@
+import styled from "@emotion/styled";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { AiOutlineUser } from "react-icons/ai";
+import { BiLockAlt } from "react-icons/bi";
+
+const InputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: 30%;
+  height: 10vh;
+  background-color: white;
+  border-radius: 6px;
+`;
+
+const StyledInput = styled.input`
+  background-color: white;
+  stroke-width: 3px;
+  stroke: #c6c5c5;
+  flex-shrink: 0;
+  padding-left: 2rem;
+  border: none; /* 입력란 테두리 제거 */
+  outline: none; /* 입력란 포커스 시 외곽선 제거 */
+  color: #7d7b7b;
+  font-weight: bold;
+  width: 50%;
+`;
+
+const IconID = styled(AiOutlineUser)`
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  color: #7d7b7b;
+  margin-left: 10px;
+  height: 100%;
+  weight: 7rem;
+`;
+
+const IconPW = styled(BiLockAlt)`
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  color: #7d7b7b;
+  margin-left: 10px;
+  height: 100%;
+  weight: 7rem;
+`;
+
 const Login: React.FC = () => {
   const [isId, setId] = useState("");
   const [isPw, setPw] = useState("");
@@ -33,9 +77,13 @@ const Login: React.FC = () => {
         id: isId,
         password: isPw,
       },
-    }).then((res) => {
+    })
+      .then((res) => {
         localStorage.setItem("AccessToken", res.headers["authorization"]);
-        localStorage.setItem("RefreshToken",res.headers["authorization-refresh"]);
+        localStorage.setItem(
+          "RefreshToken",
+          res.headers["authorization-refresh"]
+        );
 
         const UserName = res.data.OrganizationName;
         localStorage.setItem("UserName", UserName);
@@ -52,33 +100,84 @@ const Login: React.FC = () => {
       });
   };
   return (
-    <div>
+    <div
+      style={{
+        width: "100%",
+        // height: window.innerHeight - 80,
+        backgroundColor: "#E2F5FF",
+        padding: "3% 10%",
+        boxSizing: "border-box",
+      }}
+    >
       <img src="assets/logo.png" alt="" />
-      <h1>관리자 로그인</h1>
+      <h1 style={{ color: "gray" }}>관리자 로그인</h1>
+
       <form onSubmit={login}>
-        <label>아이디</label>
-        <input
-          type="text"
-          value={isId}
-          onChange={(e) => {
-            setId(e.target.value);
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
-          autoComplete="username"
-        />
-        <br />
-        <label>비밀번호</label>
-        <input
-          type="password"
-          value={isPw}
-          onChange={(e) => {
-            setPw(e.target.value);
+        >
+          <InputContainer>
+            <IconID />
+            <StyledInput
+              type="text"
+              // className={className}
+              placeholder="아이디"
+              value={isId}
+              onChange={(e) => {
+                setId(e.target.value);
+              }}
+              autoComplete="username"
+            />
+          </InputContainer>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "10px",
           }}
-          autoComplete="current-password"
-        />
-        <br />
-        <button type="submit">로그인</button>
+        >
+          <InputContainer>
+            <IconPW />
+            <StyledInput
+              type="password"
+              // className={className}
+              placeholder="비밀번호"
+              value={isPw}
+              onChange={(e) => {
+                setPw(e.target.value);
+              }}
+              autoComplete="current-password"
+            />
+          </InputContainer>
+        </div>
+        <button
+          type="submit"
+          style={{
+            marginTop: "30px",
+            border: "none",
+            background: "#0057FF",
+            width: "30%",
+            height: "6vh",
+            borderRadius: "6px",
+            color: "white",
+            fontWeight: "bold",
+            fontSize: "18px",
+          }}
+        >
+          로그인
+        </button>
       </form>
-      <Link to={"/signup"}>가입신청</Link>
+
+      <br />
+      <Link to={"/signup"} style={{ textDecoration: "none", color: "#0057FF" }}>
+        가입신청
+      </Link>
     </div>
   );
 };
