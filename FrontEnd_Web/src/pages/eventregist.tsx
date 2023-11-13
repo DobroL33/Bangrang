@@ -58,14 +58,12 @@ const EventRegist: React.FC = () => {
       ...prevEvent,
       content: e.target.value,
     }));
-    console.log(event);
   };
   const handleAddressChange = (addressValue: string) => {
     setEvent((prevEvent) => ({
       ...prevEvent,
       address: addressValue,
     }));
-    console.log(event);
   };
 
   const datePickerFormat = "YYYY-MM-DDTHH:mm:ss";
