@@ -23,9 +23,10 @@ public class GetEventDetailResponseDto {
     private Double longitude;
     private Long likeCount;
     private String eventUrl;
-
+    private Boolean isLiked;
     @Builder
-    public GetEventDetailResponseDto(String image, String subImage, String title, String subtitle, String content, String startDate, String endDate, String pageURL, String subEventIdx, String address, Double latitude, Double longitude, String eventUrl, Long likeCount){
+    public GetEventDetailResponseDto(String image, String subImage, String title, String subtitle, String content, String startDate, String endDate, String pageURL, String subEventIdx, String address, Double latitude, Double longitude, String eventUrl, Long likeCount,
+                                     Boolean isLiked){
         this.image = image;
         this.subImage = subImage;
         this.title = title;
@@ -40,5 +41,6 @@ public class GetEventDetailResponseDto {
         this.longitude = longitude;
         this.eventUrl = eventUrl;
         this.likeCount = likeCount;
+        this.isLiked = isLiked;
     }
 }

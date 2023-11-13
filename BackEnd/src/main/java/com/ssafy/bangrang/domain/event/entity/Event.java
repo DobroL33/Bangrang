@@ -95,7 +95,6 @@ public class Event extends CommonEntity {
         this.latitude = latitude;
         this.longitude = longitude;
         this.eventUrl = eventUrl;
-        this.eventUrl = eventUrl;
 
         this.changeWebMember(webMember);
     }

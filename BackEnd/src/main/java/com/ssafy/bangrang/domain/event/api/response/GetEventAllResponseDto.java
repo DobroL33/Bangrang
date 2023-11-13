@@ -20,9 +20,11 @@ public class GetEventAllResponseDto {
     private Double latitude;
     private Double longitude;
     private Long likeCount;
+    private Boolean isLiked;
 
     @Builder
-    public GetEventAllResponseDto(Long eventIdx, String image, String title, String subtitle, String startDate, String endDate, String address, Double latitude, Double longitude, Long likeCount){
+    public GetEventAllResponseDto(Long eventIdx, String image, String title, String subtitle, String startDate, String endDate, String address, Double latitude, Double longitude, Long likeCount,
+                                  Boolean isLiked){
         this.eventIdx = eventIdx;
         this.image = image;
         this.title = title;
@@ -33,5 +35,6 @@ public class GetEventAllResponseDto {
         this.latitude = latitude;
         this.longitude = longitude;
         this.likeCount = likeCount;
+        this.isLiked = isLiked;
     }
 }
