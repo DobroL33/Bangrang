@@ -4,6 +4,7 @@ import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.domain.member.service.AppMemberService;
 import com.ssafy.bangrang.domain.member.service.FriendshipService;
 import com.ssafy.bangrang.global.security.jwt.JwtService;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,11 @@ public class FriendshipApi {
     private final AppMemberService appMemberService;
     private final FriendshipService friendshipService;
     private final JwtService jwtService;
+    @ApiOperation("친구 목록 불러오기")
+    @GetMapping
+    public  ResponseEntity getFriendList(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok().body(friendshipService.getFriendList(userDetails));
+    }
 
     // 친구 추가
     @PostMapping("/{nickname}")
