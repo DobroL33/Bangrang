@@ -5,6 +5,7 @@ import com.ssafy.bangrang.domain.map.entity.MemberMapArea;
 import com.ssafy.bangrang.domain.map.model.vo.RegionType;
 import com.ssafy.bangrang.domain.map.repository.KoreaBorderAreaRepository;
 import com.ssafy.bangrang.domain.map.repository.MemberMapAreaRepository;
+import com.ssafy.bangrang.domain.rank.entity.Ranking;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,8 @@ public class BatchConfig {
     private final KoreaBorderAreaRepository koreaBorderAreaRepository;
     private final MemberMapAreaRepository memberMapAreaRepository;
 
+    private static Map<RegionType, Long> curRank;
+
 
     @Bean
     public Job myJob() {
@@ -59,7 +62,7 @@ public class BatchConfig {
         return new JobBuilder("my_job", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(getRegionMapAreaStep())
-//                .start(getMemberRankingStep())
+                .next(getMemberRankingStep())
 //                .next(postFCMStep())
                 .build();
     }
@@ -75,15 +78,26 @@ public class BatchConfig {
                 .build();
     }
 
-//    @Bean
-//    public Step getMemberRankingStep(){
-//        log.info("[ STEP 02 ] 랭킹 계산");
-//        return new StepBuilder("member_ranking_step", jobRepository)
-//                .<String, String>chunk(BATCH_SIZE, batchTransactionManager)
-//                .reader(regionMapAreaReader())
-//                .writer(writer())
-//                .build();
-//    }
+    @Bean
+    public Step getMemberRankingStep(){
+        log.info("[ STEP 02 ] 랭킹 계산");
+        initCurRank();
+
+        return new StepBuilder("member_ranking_step", jobRepository)
+                .<String, String>chunk(BATCH_SIZE, batchTransactionManager)
+                .reader(regionMapAreaReaderForRanking())
+                .processor(rankMapAreaProcessor())
+                .writer(rankingWriter())
+                .build();
+    }
+
+    private void initCurRank() {
+        curRank = new HashMap<RegionType, Long>();
+
+//        for(RegionType region : RegionType.values()){
+//            curRank.put(region, (long)1);
+//        }
+    }
 
 //    @Bean
 //    public Step postFCMStep(){
@@ -112,6 +126,8 @@ public class BatchConfig {
     @Bean
     public ItemProcessor<MemberMapArea, List<MemberMapArea>> memberMapAreaProcessor() {
         log.info("[ STPE 01 - PROCESSOR ] mapArea 데이터 가공 중... ");
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1); // 어제 날짜를 구함
+
         return item -> {
             return koreaBorderAreaRepository.findAll()
                     .stream()
@@ -123,6 +139,7 @@ public class BatchConfig {
                                     .dimension(shape.getArea())
                                     .appMember(item.getAppMember())
                                     .regionType(convertRegionType(koreaBorderArea.getIdx()))
+                                    .customDate(yesterday)
                                     .build();
                         }else{
                             return null;
@@ -187,6 +204,47 @@ public class BatchConfig {
             default:
                 return RegionType.KOREA;
         }
+    }
+
+    @Bean
+    public JpaPagingItemReader regionMapAreaReaderForRanking() {
+        log.info("[ STPE 02 - READER ] mapArea 데이터 읽는 중... ");
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1); // 어제 날짜 계산
+
+        return new JpaPagingItemReaderBuilder<MemberMapArea>()
+                .name("memberMapAreaReaderForRanking")
+                .entityManagerFactory(entityManagerFactory)
+                .queryString("select m from MemberMapArea m where m.createdAt >= :yesterday and m.createdAt < :today order by m.regionType, m.dimension desc")
+                .parameterValues(Map.of("yesterday", yesterday, "today", LocalDateTime.now()))
+                .pageSize(1000)
+                .build();
+    }
+    
+    @Bean
+    public ItemProcessor<List<MemberMapArea>, List<Ranking>> rankMapAreaProcessor(){
+        log.info("[ STPE 02 - PROCESSOR ] mapArea 데이터를 등수 매기는 중... ");
+
+        return items -> {
+            return items.stream().map(memberMapArea -> {
+                Long rank = curRank.getOrDefault(memberMapArea.getRegionType(), (long) 1);
+                curRank.put(memberMapArea.getRegionType(), rank+1);
+
+                return Ranking.builder()
+                        .regionType(memberMapArea.getRegionType())
+                        .rank(rank)
+                        .appMember(memberMapArea.getAppMember())
+                        .build();
+            }).collect(Collectors.toList());
+        };
+    }
+
+    @Bean
+    public ItemWriter<Ranking> rankingWriter(){
+        log.info("[ STPE 02 - WRITER ] 등수 데이터 저장 중... ");
+//        return item -> rankingRepository.save(item);
+        return item -> {
+            System.out.println("item = " + item);
+        };
     }
 }
 

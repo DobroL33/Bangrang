@@ -29,10 +29,10 @@ public class Ranking extends CommonEntity {
     private Long appMember;
 
     @Builder
-    public Ranking(RegionType regionType, Long rank, Long appMember){
+    public Ranking(RegionType regionType, Long rank, AppMember appMember){
         this.regionType = regionType;
         this.rank = rank;
-        this.appMember = appMember;
+        this.appMember = appMember.getIdx();
     }
 
 }

@@ -23,4 +23,8 @@ public class CommonEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    protected void setCustomCreationDate(LocalDateTime customDate) {
+        this.createdAt = customDate;
+    }
+
 }

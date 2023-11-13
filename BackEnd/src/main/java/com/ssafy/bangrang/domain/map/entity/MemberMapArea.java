@@ -8,6 +8,8 @@ import lombok.*;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,11 +37,12 @@ public class MemberMapArea extends CommonEntity {
     private AppMember appMember;
 
     @Builder
-    public MemberMapArea(RegionType regionType, Geometry shape, Double dimension, AppMember appMember){
+    public MemberMapArea(RegionType regionType, Geometry shape, Double dimension, AppMember appMember, LocalDateTime customDate){
         this.regionType = regionType;
         this.shape = shape;
         this.dimension = dimension;
         this.changeAppMember(appMember);
+        super.setCustomCreationDate(customDate);
     }
 
     private void changeAppMember(AppMember appMember) {
