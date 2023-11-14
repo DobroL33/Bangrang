@@ -1,6 +1,7 @@
 package com.ssafy.bangrang.domain.map.api;
 
 import com.ssafy.bangrang.domain.map.api.request.AddMarkersRequestDto;
+import com.ssafy.bangrang.domain.map.api.response.GeometryBorderCoordinate;
 import com.ssafy.bangrang.domain.map.entity.MemberMapArea;
 import com.ssafy.bangrang.domain.map.service.MemberMapAreaService;
 import com.ssafy.bangrang.domain.map.service.MemberMarkerService;
@@ -37,7 +38,7 @@ public class MapApi {
         log.info("[마커 보내기 요청 시작]", LocalDateTime.now());
 
 //        memberMarkerService.addMemberMarkers(userDetails, addMarkersRequestDtoList);
-        List<List<Point>> pointListList = memberMapAreaService.addMeberMapArea(userDetails, addMarkersRequestDtoList);
+        List<List<GeometryBorderCoordinate>> pointListList = memberMapAreaService.addMeberMapArea(userDetails, addMarkersRequestDtoList);
         
         log.info("[마커 보내기 요청 끝]");
 

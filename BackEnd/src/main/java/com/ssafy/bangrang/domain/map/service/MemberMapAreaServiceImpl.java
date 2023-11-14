@@ -1,6 +1,7 @@
 package com.ssafy.bangrang.domain.map.service;
 
 import com.ssafy.bangrang.domain.map.api.request.AddMarkersRequestDto;
+import com.ssafy.bangrang.domain.map.api.response.GeometryBorderCoordinate;
 import com.ssafy.bangrang.domain.map.entity.MemberMapArea;
 import com.ssafy.bangrang.domain.map.model.vo.RegionType;
 import com.ssafy.bangrang.domain.map.repository.MemberMapAreaRepository;
@@ -36,7 +37,7 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
 
     @Transactional
     @Override
-    public List<List<Point>> addMeberMapArea(UserDetails userDetails, List<AddMarkersRequestDto> addMarkersRequestDtoList){
+    public List<List<GeometryBorderCoordinate>> addMeberMapArea(UserDetails userDetails, List<AddMarkersRequestDto> addMarkersRequestDtoList){
         AppMember appMember = appMemberRepository.findById(userDetails.getUsername()).orElseThrow();
 
         List<Geometry> geometryList = addMarkersRequestDtoList.stream().map(res -> {
@@ -90,20 +91,20 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
         }
 
     }
-    private List<List<Point>> getBorderPointListOuter(Geometry geometry){
-        List<List<Point>> result = new ArrayList<>();
+    private List<List<GeometryBorderCoordinate>> getBorderPointListOuter(Geometry geometry){
+        List<List<GeometryBorderCoordinate>> result = new ArrayList<>();
 
         if(geometry instanceof MultiPolygon) return this.getBorderPointList((MultiPolygon) geometry);
         else if(geometry instanceof Polygon){
-            List<Point> points = this.getBorderPointList((Polygon) geometry);
+            List<GeometryBorderCoordinate> points = this.getBorderPointList((Polygon) geometry);
             result.add(points);
         }
 
         return result;
     }
 
-    private List<List<Point>> getBorderPointList(MultiPolygon multiPolygon) {
-        List<List<Point>> result = new ArrayList<>();
+    private List<List<GeometryBorderCoordinate>> getBorderPointList(MultiPolygon multiPolygon) {
+        List<List<GeometryBorderCoordinate>> result = new ArrayList<>();
 
         for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
             Polygon polygon = (Polygon) multiPolygon.getGeometryN(i);
@@ -113,10 +114,13 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
         return result;
     }
 
-    private List<Point> getBorderPointList(Polygon polygon){
-        List<Point> result = new ArrayList<>();
+    private List<GeometryBorderCoordinate> getBorderPointList(Polygon polygon){
+        List<GeometryBorderCoordinate> result = new ArrayList<>();
         for (Coordinate coordinate : polygon.getCoordinates()) {
-            result.add(geometryFactory.createPoint(coordinate));
+            result.add(GeometryBorderCoordinate.builder()
+                            .x(coordinate.getX())
+                            .y(coordinate.getY())
+                    .build());
         }
         return result;
     }
