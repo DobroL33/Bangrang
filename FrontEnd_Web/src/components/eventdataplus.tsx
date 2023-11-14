@@ -6,6 +6,7 @@ import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
+import 'dayjs/locale/de';
 
 interface Props {
   closeModal: () => void;
@@ -157,9 +158,11 @@ const EventDataPlus: React.FC<Props> = ({
   };
 
   return (
-    <div className={styles.modal_overlay} onClick={closeModal}>
+    <div className={styles.modal_overlay}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <span onClick={closeModal}>&times;</span>
+        <div style={{display:'flex', justifyContent:'flex-end'}}>
+            <span style={{cursor:'pointer'}} onClick={closeModal}>닫기</span>
+        </div>
         {/* 모달 내용 */}
         <h1 style={{ textAlign: "center" }}>
           이벤트 {modaltype ? "수정" : "등록"}하기
@@ -223,11 +226,12 @@ const EventDataPlus: React.FC<Props> = ({
         </div>
         <div className={styles.databox}>
           <label className={styles.data_type}>일정 : </label>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de" >
             <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
               <DateTimePicker
                 label="시작 날짜"
-                sx={{ width: "65%" }}
+                views={["year","month","day","hours","minutes"]}
+                sx={{ width: "40%" }}
                 value={startDate}
                 onChange={(date) => {
                   setEvent((prev) => ({
@@ -235,12 +239,15 @@ const EventDataPlus: React.FC<Props> = ({
                     startDate: dayjs(date).format("YYYY-MM-DDTHH:mm:ss"),
                   }));
                 }}
-                format="YYYY년 MM월 DD일 hh:mm A"
+                format="YYYY/MM/DD hh:mm A"
+                minDateTime={dayjs('2011-01-01T00:00:00')}
+                maxDateTime={dayjs('2030-12-31T23:59:59')}
               />
 
               <DateTimePicker
-                sx={{ width: "65%" }}
+                sx={{ width: "40%" }}
                 label="종료 날짜"
+                views={["year","month","day","hours","minutes"]}
                 value={endDate}
                 onChange={(date) => {
                   setEvent((prev) => ({
@@ -248,7 +255,9 @@ const EventDataPlus: React.FC<Props> = ({
                     endDate: dayjs(date).format("YYYY-MM-DDTHH:mm:ss"),
                   }));
                 }}
-                format="YYYY년 MM월 DD일 hh:mm A"
+                format="YYYY/MM/DD hh:mm A"
+                minDateTime={dayjs('2011-01-01T00:00:00')}
+                maxDateTime={dayjs('2030-12-31T23:59:59')}
               />
             </DemoContainer>
           </LocalizationProvider>
@@ -270,14 +279,14 @@ const EventDataPlus: React.FC<Props> = ({
 
         <div className={styles.databox}>
           <label className={styles.data_type}>
-            <br />
             메인 이미지 : <br />
             {isEvent.image || ImagePreview ? (
-              <label htmlFor="imageInput">수정하기</label>
+                <button  className={styles.img_btn} onClick={()=>{
+                    const imageInput = document.getElementById('imageInput');
+                    imageInput?.click();}}>수정하기</button>
             ) : null}
-            <br />
             {isEvent.image || ImagePreview ? (
-              <button
+              <button  className={styles.img_btn} style={{backgroundColor:'red'}}
                 onClick={() => {
                   setImage(null);
                   setImagePreview(null);
@@ -306,15 +315,21 @@ const EventDataPlus: React.FC<Props> = ({
                 alignItems: "center",
                 display: "flex",
                 justifyContent: "center",
+                minHeight:'150px',
+                cursor:'pointer'
               }}
-            >
-              <label htmlFor="imageInput">이미지 등록하기</label>
+              onClick={()=>{
+                const imageInput = document.getElementById('imageInput');
+                imageInput?.click();
+              }}
+            >이미지 등록하기
             </div>
           )}
           <input
             type="file"
             id="imageInput"
             style={{ display: "none" }}
+            accept="image/*" 
             onChange={({ target: { files } }) => {
               if (files && files[0]) {
                 setImage(files);
@@ -335,16 +350,16 @@ const EventDataPlus: React.FC<Props> = ({
 
         <div className={styles.databox}>
           <label className={styles.data_type}>
-            <br />
             서브 이미지 : <br />
             {isEvent.subImage ||
               (SubImagePreview && (
-                <label htmlFor="subimageInput">수정하기</label>
+                <button className={styles.img_btn} onClick={()=>{
+                    const subimageInput = document.getElementById('subimageInput');
+                    subimageInput?.click();}}>수정하기</button>
               ))}
-            <br />
             {isEvent.subImage ||
               (SubImagePreview && (
-                <button
+                <button  className={styles.img_btn} style={{backgroundColor:'red'}}
                   onClick={() => {
                     setSubImage(null);
                     setSubImagePreview(null);
@@ -373,14 +388,21 @@ const EventDataPlus: React.FC<Props> = ({
                 alignItems: "center",
                 display: "flex",
                 justifyContent: "center",
+                minHeight:'150px',
+                cursor:'pointer'
+              }}
+              onClick={()=>{
+                const subimageInput = document.getElementById('subimageInput');
+                subimageInput?.click();
               }}
             >
-              <label htmlFor="subimageInput">서브 이미지 등록하기</label>
+                서브 이미지 등록하기
             </div>
           )}
           <input
             type="file"
             id="subimageInput"
+            accept="image/*" 
             style={{ display: "none" }}
             onChange={({ target: { files } }) => {
               if (files && files[0]) {
@@ -408,9 +430,25 @@ const EventDataPlus: React.FC<Props> = ({
             isEvent.endDate &&
             isEvent.content &&
             isEvent.address ? (
-              <button onClick={() => modifyEvent()}>이벤트 수정하기</button>
+              <button style={{
+                background: "#1DAEFF",
+                border: "none",
+                borderRadius: "3px",
+                width: "20%",
+                padding: "6px",
+                color: "white",
+                fontWeight: "bold",
+              }} onClick={() => modifyEvent()}>이벤트 수정하기</button>
             ) : (
-              <button disabled>이벤트 수정하기</button>
+              <button style={{
+                background: "#1DAEFF",
+                border: "none",
+                borderRadius: "3px",
+                width: "20%",
+                padding: "6px",
+                color: "white",
+                fontWeight: "bold",
+              }} disabled>이벤트 수정하기</button>
             )}
           </div>
         ) : (
@@ -422,9 +460,25 @@ const EventDataPlus: React.FC<Props> = ({
             isEvent.content &&
             isEvent.address &&
             image ? (
-              <button onClick={() => registEvent()}>이벤트 등록하기</button>
+              <button style={{
+                background: "#1DAEFF",
+                border: "none",
+                borderRadius: "3px",
+                width: "20%",
+                padding: "6px",
+                color: "white",
+                fontWeight: "bold",
+              }} onClick={() => registEvent()}>이벤트 등록하기</button>
             ) : (
-              <button disabled>이벤트 등록하기</button>
+              <button style={{
+                background: "#1DAEFF",
+                border: "none",
+                borderRadius: "3px",
+                width: "20%",
+                padding: "6px",
+                color: "white",
+                fontWeight: "bold",
+              }} disabled>이벤트 등록하기</button>
             )}
           </div>
         )}

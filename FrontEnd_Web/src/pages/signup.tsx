@@ -266,6 +266,7 @@ const SignUp: React.FC = () => {
         <input
           type="file"
           placeholder="인증파일"
+          accept=".pdf, .doc, .docx, .hwp, .hwpx"
           onChange={({ target: { files } }) => {
             if (files && files[0]) {
               setFile(files);

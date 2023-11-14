@@ -69,10 +69,11 @@ const Event: React.FC = () => {
                 background: "#1DAEFF",
                 border: "none",
                 borderRadius: "3px",
-                width: "20%",
-                padding: "6px",
+                width: "15%",
+                padding: "3px",
                 color: "white",
                 fontWeight: "bold",
+                cursor:"pointer"
               }}
               onClick={() => {
                 setModaloption(false);
@@ -95,29 +96,32 @@ const Event: React.FC = () => {
                   }}
                 >
                   <div className={styles.data_idx}>{idx + 1}</div>
+                  <img src={item.eventImg!} alt="이벤트 포스터" className={styles.data_img} />
                   <div className={styles.data_info}>
                     <span style={{ fontSize: "20px" }}>
                       {item.title.split("t")} : {item.subTitle}
                     </span>
-                    <span style={{ fontSize: "12px", color: "gray" }}>
-                      {item.address}
+                    <span style={{ fontSize: "14px", color: "gray",marginBottom:'5px' }}>
+                      장소 : {item.address}
                     </span>
                     <span style={{ fontSize: "12px", color: "gray" }}>
-                      {item.startDate.toString().split("T")[0]} ~{" "}
-                      {item.endDate.toString().split("T")[0]}
+                      {item.startDate.toString().split("T")[0]} {item.startDate.toString().split("T")[1]} ({days[new Date(item.startDate).getDay()]}) <br />
+                      ~ {item.endDate.toString().split("T")[0]} {item.endDate.toString().split("T")[1]} ({days[new Date(item.endDate).getDay()]})
                     </span>
                   </div>
-                  <div className={styles.data_date}>
+                  <div className={styles.data_btn}>
                     <button
                       style={{
-                        background: "#1DAEFF",
+                        background: "rgb(7, 199, 7)",
                         border: "none",
                         borderRadius: "3px",
                         width: "50%",
                         height: "25px",
                         marginTop: "5px",
+                        padding:"3px",
                         color: "white",
                         fontWeight: "bold",
+                        cursor:"pointer"
                       }}
                       onClick={() => {
                         setModaloption(true);
@@ -128,13 +132,15 @@ const Event: React.FC = () => {
                     </button>
                     <button
                       style={{
-                        background: "#1DAEFF",
+                        background: "red",
                         border: "none",
                         borderRadius: "3px",
                         width: "50%",
                         marginTop: "5px",
+                        padding:"3px",
                         color: "white",
                         fontWeight: "bold",
+                        cursor:"pointer"
                       }}
                       onClick={() => {
                         axiosInstance

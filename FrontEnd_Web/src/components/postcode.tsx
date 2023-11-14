@@ -69,10 +69,10 @@ const PostCode: React.FC<Props> = ({ setAddress, address }) => {
         value={address}
         readOnly
         placeholder="도로명 주소"
-        style={{ width: "85%" }}
+        style={{ width: "85%",minHeight:'30px',borderRadius:'5px', border:'1px solid black' }}
       />
   
-      <button type="button" onClick={toggle} style={{ width:'12%' }}>
+      <button type="button" onClick={toggle} style={{ width:'12%',borderRadius:'5px', border:'1px solid black'}}>
         찾기
       </button>
       <ReactModal isOpen={isOpen} ariaHideApp={false} style={customStyles}>

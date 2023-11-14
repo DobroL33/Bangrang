@@ -43,6 +43,7 @@
     text-align: center;
     display: flex;
     flex-direction: column;
+    margin-top: 7px;
 
 }
 
@@ -52,4 +53,15 @@
     border-radius: 5px;
     border : 1px solid black;
 
+}
+
+.img_btn {
+    background-color: rgb(7, 199, 7);
+    border:none;
+    border-radius: 3px;
+    margin:0 5%;
+    padding: 6px;
+    color: white;
+    font-weight: bold;
+    margin-top: 10px;
 }

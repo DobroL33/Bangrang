@@ -103,12 +103,11 @@ const EventPhone: React.FC<Props> = ({selEventIdx}) => {
         </p>
         <p
             style={{
-                color: "#949494",
-                fontSize: "10px",
+                color: "black",
+                fontSize: "14px",
                 textAlign: "left", // Add this line to make the content left-aligned
-                paddingLeft: "10px",
-            }}
-            >
+                margin:"10px"
+            }}>
             {isDetail.content}
         </p>
         {isDetail.subImage ? (
@@ -120,17 +119,26 @@ const EventPhone: React.FC<Props> = ({selEventIdx}) => {
             ) : null}
         </div>
 
+        {!isDetail.eventUrl ? null:(isDetail.eventUrl?.includes('http://') || isDetail.eventUrl?.includes('https://')) ?
+        <button style={{margin:'10px 30%', width:'40%',
+        background: "#1DAEFF",border: "none",borderRadius: "3px",padding: "6px",color: "white",fontWeight: "bold",}}
+        onClick={()=>{window.open(isDetail.eventUrl!, '_blank')}}>이벤트 페이지</button>
+        :<button style={{margin:'10px 30%', width:'40%',
+        background: "gray",border: "none",borderRadius: "3px",padding: "6px",color: "white",fontWeight: "bold",}}
+        disabled>이벤트 페이지</button>}
+
         <MapNaverDefault
-        latitude={isDetail.latitude}
-        longtitude={isDetail.longitude}
-        />
-        <div
-        style={{
-            display: "flex",
-            justifyContent: "space-between",
-        }}
-        >
+            latitude={isDetail.latitude}
+            longtitude={isDetail.longitude}
+            />
+            <div
+            style={{
+                display: "flex",
+                justifyContent: "space-between",
+            }}
+            >
         </div>
+
         </div>
         :
         <div>

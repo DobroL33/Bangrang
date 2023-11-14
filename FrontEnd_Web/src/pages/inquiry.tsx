@@ -205,7 +205,8 @@ const Inquiry: React.FC = () => {
       <div className={styles.funcbox}>
         <div style={{width: "30%"}}>
           <div className={styles.filterbar}>
-            필터 : 
+            {/* 필터 :  */}
+            문의 리스트
           </div>
           {isInquiry.length > 0 ?
           <div className={styles.databox}>

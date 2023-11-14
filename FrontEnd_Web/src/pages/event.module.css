@@ -46,11 +46,11 @@
 }
 
 .data:hover {
-  background-color: gray;
+  background-color: lightblue;
 }
 
 .data_idx {
-  width: 20%;
+  width: 10%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -59,7 +59,7 @@
 }
 
 .data_info {
-  width: 55%;
+  width: 50%;
   display: flex;
   flex-direction: column;
   text-align: start;
@@ -69,7 +69,16 @@
   text-overflow: ellipsis; /* 텍스트가 가로 한 줄을 초과할 경우 생략 기호(...)를 표시합니다. */
 }
 
-.data_date {
+.data_img {
+  width: 15%;
+  height: auto;
+  border: 1px solid black;
+  margin: 0.5% 2%;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
+.data_btn {
   width: 25%;
   font-size: 12px;
   display: flex;
@@ -79,7 +88,7 @@
 }
 
 .sel_data {
-  background-color: #84cff8;
+  background-color: lightblue;
 }
 
 .detailbox {

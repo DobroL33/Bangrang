@@ -11,7 +11,7 @@ const ManageHome: React.FC = () => {
         navigate("/admin");
       }
     } else {
-      navigate("");
+      navigate("/login");
     }
   }, [navigate]);
 
