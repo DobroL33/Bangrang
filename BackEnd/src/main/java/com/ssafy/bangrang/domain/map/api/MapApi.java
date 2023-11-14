@@ -1,11 +1,14 @@
 package com.ssafy.bangrang.domain.map.api;
 
 import com.ssafy.bangrang.domain.map.api.request.AddMarkersRequestDto;
+import com.ssafy.bangrang.domain.map.entity.MemberMapArea;
+import com.ssafy.bangrang.domain.map.service.MemberMapAreaService;
 import com.ssafy.bangrang.domain.map.service.MemberMarkerService;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.domain.member.service.AppMemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Point;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +28,7 @@ public class MapApi {
 
     private final AppMemberService appMemberService;
     private final MemberMarkerService memberMarkerService;
+    private final MemberMapAreaService memberMapAreaService;
 
     // 마커 보내기
     @PostMapping("/marker")
@@ -32,10 +36,11 @@ public class MapApi {
 
         log.info("[마커 보내기 요청 시작]", LocalDateTime.now());
 
-        memberMarkerService.addMemberMarkers(userDetails, addMarkersRequestDtoList);
-
+//        memberMarkerService.addMemberMarkers(userDetails, addMarkersRequestDtoList);
+        List<List<Point>> pointListList = memberMapAreaService.addMeberMapArea(userDetails, addMarkersRequestDtoList);
+        
         log.info("[마커 보내기 요청 끝]");
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(pointListList);
     }
 }

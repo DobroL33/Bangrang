@@ -50,7 +50,7 @@ public class MemberMapArea extends CommonEntity {
         appMember.getMemberMapAreas().add(this);
     }
 
-    public void changeShapeAndDimension(MultiPolygon shape, Double dimension){
+    public void changeShapeAndDimension(Geometry shape, Double dimension){
         this.shape = shape;
         this.dimension = dimension;
     }

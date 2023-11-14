@@ -36,7 +36,7 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
 
     @Transactional
     @Override
-    public void addMeberMapArea(UserDetails userDetails, List<AddMarkersRequestDto> addMarkersRequestDtoList){
+    public List<List<Point>> addMeberMapArea(UserDetails userDetails, List<AddMarkersRequestDto> addMarkersRequestDtoList){
         AppMember appMember = appMemberRepository.findById(userDetails.getUsername()).orElseThrow();
 
         List<Geometry> geometryList = addMarkersRequestDtoList.stream().map(res -> {
@@ -68,31 +68,62 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
             LocalDate createdAtDate = befoMemberMapArea.getCreatedAt().toLocalDate(); // 'createdAt'의 날짜 부분을 추출합니다.
 
             if (createdAtDate.isEqual(currentDate)) {
-                // 'createdAt'의 날짜가 현재 날짜와 같은 경우
+                // 'createdAt'의 날짜가 현재 날짜와 같은 경우, 객체 union
                 Geometry befoPolygon = befoMemberMapArea.getShape();
 
                 GeometryCollection geometryCollection = new GeometryCollection(new Geometry[] {curUnionResult, befoPolygon}, new GeometryFactory());
                 Geometry unionResult = geometryCollection.union();
 
-                MultiPolygon multiPolygonResult = (MultiPolygon) unionResult;
-                befoMemberMapArea.changeShapeAndDimension(multiPolygonResult, multiPolygonResult.getArea());
+                befoMemberMapArea.changeShapeAndDimension(unionResult, unionResult.getArea());
+
+                return getBorderPointListOuter(unionResult);
 
             } else {
                 // 'createdAt'의 날짜가 현재 날짜와 다른 경우, 객체 생성
-                MultiPolygon newShape = (MultiPolygon) curUnionResult;
-                saveMemberMapArea(RegionType.KOREA, newShape, appMember);
+                saveMemberMapArea(RegionType.KOREA, curUnionResult, appMember);
+                return getBorderPointListOuter(curUnionResult);
             }
         }else{
-            MultiPolygon newShape = (MultiPolygon) curUnionResult;
-            saveMemberMapArea(RegionType.KOREA, newShape, appMember);
-
+            // 새 데이터를 넣는 경우
+            saveMemberMapArea(RegionType.KOREA, curUnionResult, appMember);
+            return getBorderPointListOuter(curUnionResult);
         }
 
+    }
+    private List<List<Point>> getBorderPointListOuter(Geometry geometry){
+        List<List<Point>> result = new ArrayList<>();
+
+        if(geometry instanceof MultiPolygon) return this.getBorderPointList((MultiPolygon) geometry);
+        else if(geometry instanceof Polygon){
+            List<Point> points = this.getBorderPointList((Polygon) geometry);
+            result.add(points);
+        }
+
+        return result;
+    }
+
+    private List<List<Point>> getBorderPointList(MultiPolygon multiPolygon) {
+        List<List<Point>> result = new ArrayList<>();
+
+        for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
+            Polygon polygon = (Polygon) multiPolygon.getGeometryN(i);
+            result.add(this.getBorderPointList(polygon));
+        }
+
+        return result;
+    }
+
+    private List<Point> getBorderPointList(Polygon polygon){
+        List<Point> result = new ArrayList<>();
+        for (Coordinate coordinate : polygon.getCoordinates()) {
+            result.add(geometryFactory.createPoint(coordinate));
+        }
+        return result;
     }
 
     // saveMemberMapArea에서 error가 생기면 이 메서드를 사용하는 모든 메서드 rollback
     @Transactional(propagation = Propagation.REQUIRED)
-    void saveMemberMapArea(RegionType regionType, MultiPolygon shape, AppMember appMember){
+    MemberMapArea saveMemberMapArea(RegionType regionType, Geometry shape, AppMember appMember){
         MemberMapArea newMemberMapArea = MemberMapArea.builder()
                 .regionType(regionType)
                 .shape(shape)
@@ -100,7 +131,7 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
                 .appMember(appMember)
                 .build();
 
-        memberMapAreaRepository.save(newMemberMapArea);
+        return memberMapAreaRepository.save(newMemberMapArea);
     }
 
 

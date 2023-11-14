@@ -39,6 +39,8 @@ public class MemberMarkerServiceImpl implements MemberMarkerService{
                                 .build())
                 .collect(Collectors.toList()));
 
+
+
     }
 
 }
