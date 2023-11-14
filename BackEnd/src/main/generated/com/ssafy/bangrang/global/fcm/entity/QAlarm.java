@@ -37,7 +37,7 @@ public class QAlarm extends EntityPathBase<Alarm> {
 
     public final NumberPath<Long> idx = createNumber("idx", Long.class);
 
-    public final SimplePath<Number> status = createSimple("status", Number.class);
+    public final NumberPath<Integer> status = createNumber("status", Integer.class);
 
     public final EnumPath<com.ssafy.bangrang.global.fcm.model.vo.AlarmType> type = createEnum("type", com.ssafy.bangrang.global.fcm.model.vo.AlarmType.class);
 

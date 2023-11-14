@@ -14,7 +14,7 @@ import lombok.*;
 public class Ranking extends CommonEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ranking_idx")
     private Long idx;
 
@@ -25,14 +25,29 @@ public class Ranking extends CommonEntity {
     @Column(name = "ranking_rank", nullable = false)
     private Long rank;
 
-    @Column(name = "member_idx", nullable = false)
-    private Long appMember;
+    @Column(name = "ranking_rating", nullable = false)
+    private Double rating;
+
+    @Column(name = "ranking_percent", nullable = false)
+    private Double percent;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_idx")
+    private AppMember appMember;
+
+
 
     @Builder
-    public Ranking(RegionType regionType, Long rank, AppMember appMember){
+    public Ranking(RegionType regionType, Long rank, Double rating, Double percent, AppMember appMember){
         this.regionType = regionType;
         this.rank = rank;
-        this.appMember = appMember.getIdx();
+        this.rating = rating;
+        this.percent = percent;
+        this.changeAppMember(appMember);
+    }
+
+    private void changeAppMember(AppMember appMember) {
+        this.appMember = appMember;
     }
 
 }

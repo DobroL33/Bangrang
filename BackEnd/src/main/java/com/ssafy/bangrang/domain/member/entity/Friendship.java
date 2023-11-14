@@ -11,7 +11,7 @@ import lombok.*;
 public class Friendship {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "friendship_idx")
     private Long idx;
 

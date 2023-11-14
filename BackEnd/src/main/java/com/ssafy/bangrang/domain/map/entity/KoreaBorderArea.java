@@ -13,7 +13,7 @@ import org.locationtech.jts.geom.MultiPolygon;
 public class KoreaBorderArea {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "korea_border_area_idx")
     private Long idx;
 

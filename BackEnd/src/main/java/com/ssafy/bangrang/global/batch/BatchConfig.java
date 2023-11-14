@@ -6,6 +6,7 @@ import com.ssafy.bangrang.domain.map.model.vo.RegionType;
 import com.ssafy.bangrang.domain.map.repository.KoreaBorderAreaRepository;
 import com.ssafy.bangrang.domain.map.repository.MemberMapAreaRepository;
 import com.ssafy.bangrang.domain.rank.entity.Ranking;
+import com.ssafy.bangrang.domain.rank.repository.RankingRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +49,10 @@ public class BatchConfig {
     private final EntityManagerFactory entityManagerFactory; // EntityManagerFactory 주입
     private final KoreaBorderAreaRepository koreaBorderAreaRepository;
     private final MemberMapAreaRepository memberMapAreaRepository;
+    private final RankingRepository rankingRepository;
 
     private static Map<RegionType, Long> curRank;
+    private static List<KoreaBorderArea> koreaBorderAreas;
 
 
     @Bean
@@ -70,12 +73,18 @@ public class BatchConfig {
     @Bean
     public Step getRegionMapAreaStep() {
         log.info("[ STEP 01 ] 지역별 사용자 면적 계산");
+        initKoreaBorderAreas();
+        
         return new StepBuilder("region_map_area_step", jobRepository)
                 .<String, String>chunk(BATCH_SIZE, batchTransactionManager)
                 .reader(regionMapAreaReader())
                 .processor(memberMapAreaProcessor())
                 .writer(memberMapAreaWriter())
                 .build();
+    }
+
+    private void initKoreaBorderAreas() {
+        koreaBorderAreas = koreaBorderAreaRepository.findAll();
     }
 
     @Bean
@@ -124,30 +133,31 @@ public class BatchConfig {
     }
 
     @Bean
-    public ItemProcessor<MemberMapArea, List<MemberMapArea>> memberMapAreaProcessor() {
+    public ItemProcessor<List<MemberMapArea>, List<MemberMapArea>> memberMapAreaProcessor() {
         log.info("[ STPE 01 - PROCESSOR ] mapArea 데이터 가공 중... ");
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1); // 어제 날짜를 구함
 
-        return item -> {
-            return koreaBorderAreaRepository.findAll()
-                    .stream()
-                    .map(koreaBorderArea -> {
-                        if(koreaBorderArea.getShape().intersects(item.getShape())){
-                            Geometry shape = koreaBorderArea.getShape().intersection(item.getShape());
-                            return MemberMapArea.builder()
-                                    .shape(shape)
-                                    .dimension(shape.getArea())
-                                    .appMember(item.getAppMember())
-                                    .regionType(convertRegionType(koreaBorderArea.getIdx()))
-                                    .customDate(yesterday)
-                                    .build();
-                        }else{
-                            return null;
-                        }
-                    })
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-        };
+        return items ->
+                items
+                        .stream()
+                        .map(memberMapArea ->
+                            koreaBorderAreas.stream().map(koreaBorderArea -> {
+                                if(koreaBorderArea.getShape().intersects(memberMapArea.getShape())){
+                                    Geometry shape = koreaBorderArea.getShape().intersection(memberMapArea.getShape());
+                                    return MemberMapArea.builder()
+                                            .shape(shape)
+                                            .dimension(shape.getArea())
+                                            .appMember(memberMapArea.getAppMember())
+                                            .regionType(convertRegionType(koreaBorderArea.getIdx()))
+                                            .customDate(yesterday)
+                                            .build();
+                                }else{
+                                    return null;
+                                }
+                            }).filter(Objects::nonNull).collect(Collectors.toList())
+                        )
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList());
     }
 
 
@@ -239,11 +249,15 @@ public class BatchConfig {
     }
 
     @Bean
-    public ItemWriter<Ranking> rankingWriter(){
+    public ItemWriter<List<Ranking>> rankingWriter(){
         log.info("[ STPE 02 - WRITER ] 등수 데이터 저장 중... ");
-//        return item -> rankingRepository.save(item);
-        return item -> {
-            System.out.println("item = " + item);
+        return items -> {
+            for (var item : items) {
+                log.info("Writing items: {}", item);
+                if(item instanceof Ranking){
+                    rankingRepository.save((Ranking) item);
+                }
+            }
         };
     }
 }

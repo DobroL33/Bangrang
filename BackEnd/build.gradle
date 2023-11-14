@@ -72,6 +72,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-batch'
     testImplementation 'org.springframework.batch:spring-batch-test'
 
+    // batch scheduler를 위한 설정
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+
 
 }
 

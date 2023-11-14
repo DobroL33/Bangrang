@@ -13,7 +13,7 @@ import lombok.*;
 public class Comment extends CommonEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "comment_idx")
     private Long idx;
 

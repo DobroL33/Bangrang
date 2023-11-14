@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class MemberMapArea extends CommonEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "member_map_area_idx")
     private Long idx;
 

@@ -14,7 +14,7 @@ import org.locationtech.jts.geom.Point;
 public class MemberMarker extends CommonEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "member_marker_idx")
     private Long idx;
 

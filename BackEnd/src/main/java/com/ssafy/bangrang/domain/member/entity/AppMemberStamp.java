@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 public class AppMemberStamp extends CommonEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "app_member_stamp_idx")
     private Long appMemberStampIdx;
 

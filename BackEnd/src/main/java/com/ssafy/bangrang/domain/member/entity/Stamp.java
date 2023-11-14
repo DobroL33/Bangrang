@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Stamp{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "stamp_idx")
     private Long idx;
 

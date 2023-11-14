@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public abstract class Member {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "member_idx")
     Long idx;
 

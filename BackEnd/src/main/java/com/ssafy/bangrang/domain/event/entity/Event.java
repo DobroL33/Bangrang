@@ -25,7 +25,7 @@ import java.util.List;
 public class Event extends CommonEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "event_idx")
     private Long idx;
 

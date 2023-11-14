@@ -109,6 +109,12 @@ spring:
       initialize-schema: always
       schema: classpath:org/springframework/batch/core/schema-postgresql.sql
 
+  quartz:
+    jdbc:
+      initialize-schema: always
+
+
+
 # jwt 설정
 jwt:
   # 시크릿키 나중에 바꾸자
