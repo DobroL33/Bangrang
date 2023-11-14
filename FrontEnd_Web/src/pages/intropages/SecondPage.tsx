@@ -99,19 +99,76 @@ export default function SecondPage() {
   return (
     <div className={styles.Page}>
       <div className={styles.InfoContainer}>
-        <img
-          src="assets/images/Phone.svg"
+        <div
+          className={styles.phone}
           style={{
-            // backgroundColor: "white",
-            position: "absolute",
-            width: "20vw",
-            height: "30vw",
-            left: "10%",
-            marginTop: "5%",
+            width: "70%",
+            height: "70%",
+            marginTop: "10%",
+            display: "flex",
+            justifyContent: "end",
+            flexDirection: "row",
           }}
-          alt=""
-        />
-        <div className={styles.infos}></div>
+        >
+          <img
+            src="assets/images/Phone.svg"
+            alt=""
+            style={{
+              width: "100%",
+              height: "100%",
+              transform: "translateX(25%)",
+            }}
+          />
+          <div
+            style={{
+              opacity: stack < 0 ? "0" : "1",
+              transition: "0.8s",
+              position: "absolute",
+              zIndex: "3",
+              justifyContent: "center",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                opacity: stack < 0 ? "0" : "1",
+                transition: "0.8s",
+                justifyContent: "center",
+                display: "flex",
+                flexDirection: "column",
+                transform: "translateX(-25%) translateY(15%)",
+                scale: "0.8",
+              }}
+            >
+              <div
+                style={{
+                  opacity: stack < 4 ? "1" : "0",
+                  transition: stack < 4 ? "0.6s" : "0s",
+                }}
+              >
+                <img src="assets/MarqueeImg/부산.svg" alt="" />
+              </div>
+              <div
+                style={{
+                  opacity: stack < 3 ? "1" : "0",
+                  transition: stack < 3 ? "0.6s" : "0s",
+                }}
+              >
+                <img src="assets/MarqueeImg/경주.svg" alt="" />
+              </div>
+              <div
+                style={{
+                  opacity: stack < 1 ? "1" : "0",
+                  transition: stack < 1 ? "0.6s" : "0s",
+                }}
+              >
+                <img src="assets/MarqueeImg/대전.svg" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div className={styles.CommentContainer}>
         <h1
@@ -119,16 +176,16 @@ export default function SecondPage() {
           style={{
             animationName: "stamp",
             color: "#78ceff",
-            fontSize: "30px",
+            fontSize: "35px",
             animationDuration: "1s",
             animationIterationCount: "9999",
           }}
         >
-          남는건 결국{" "}
+          남는건 결국 &nbsp;&nbsp;&nbsp;
           <span
             className={styles.stampComment}
             style={{
-              fontSize: "45px",
+              fontSize: "50px",
               color: "#1daeff",
               fontWeight: "bold",
               textShadow: "3px 3px 3px #78ceff",
@@ -145,7 +202,7 @@ export default function SecondPage() {
               transition: stack < 5 ? "0.6s" : "0s",
             }}
           >
-            <h1>기록을 남기고</h1>
+            <h1>사진을 남기고</h1>
           </div>
           <div
             style={{
@@ -161,7 +218,7 @@ export default function SecondPage() {
               transition: stack < 1 ? "0.6s" : "0s",
             }}
           >
-            <h1>당신의 추억이 됩니다</h1>
+            <h1>추억을 도장으로 !</h1>
           </div>
         </div>
       </div>

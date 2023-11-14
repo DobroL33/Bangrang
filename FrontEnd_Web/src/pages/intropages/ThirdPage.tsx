@@ -24,7 +24,6 @@ interface ThirdPageProps {
 
 const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
   const [rows, set] = useState(data);
-  const [character, setCharacter] = useState("");
 
   useEffect(() => {
     const t = setInterval(() => set(shuffle), 3000);
@@ -47,18 +46,6 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
   );
 
   const marqueeTransitions = useTransition(imagePaths, {});
-
-  const springConfigs = {
-    from: { transform: "scale(1)" },
-    to: { transform: "scale(0.85)" },
-    config: { duration: 1000, tension: 100, friction: 10 },
-    reset: true,
-    reverse: true,
-  };
-
-  const springStyles = imagePaths.map((_, index) =>
-    useSpring({ ...springConfigs, delay: index * 345 })
-  );
 
   useEffect(() => {
     const t = setInterval(() => set(shuffle), 3000);
@@ -89,10 +76,11 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
           }}
         >
           <div className={styles.frontpage1}></div>
+          <div className={styles.sidepage1}></div>
           <div className={styles.messageStyle}>
-            <p>매일 업데이트 되는</p>
-            <p>방랑 랭킹을 확인하며</p>
-            <p>최고 방랑자를 노리세요 !</p>
+            <p>전국 방랑 랭킹은 </p>
+            <p>매일 12시 업데이트</p>
+            <p>노려라 방랑 1위 !</p>
           </div>
           <div className={styles.backpage1}></div>
         </div>
@@ -127,7 +115,9 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
                     <p
                       style={{
                         textAlign: "start",
-                        padding: "20px",
+                        paddingTop: "10px",
+                        paddingLeft: "15px",
+                        paddingBottom: "20px",
                         fontFamily: "bold",
                       }}
                     >
@@ -159,7 +149,7 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
         style={{
           fontSize: "25px",
           color: "skyblue",
-          fontWeight: "bold",
+          // fontWeight: "bold",
           textShadow: "#00d0ff71 1px 0 10px",
         }}
       >
@@ -184,9 +174,7 @@ const ThirdPage: React.FC<ThirdPageProps> = ({ visible }) => {
             className={styles.image}
             src={item}
             alt={`Marquee Image ${index}`}
-            style={{
-              ...springStyles[index],
-            }}
+            style={{ animationDelay: `${index * 300}ms` }}
           />
         ))}
       </Marquee>

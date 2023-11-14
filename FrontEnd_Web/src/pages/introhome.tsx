@@ -16,7 +16,7 @@ const IntroHome: React.FC = () => {
     const percentage = (scrollTop / scrollHeight) * 100;
     setScrollPercent(percentage);
 
-    if (percentage >= 99) {
+    if (percentage >= 93) {
       setVisible(true);
     } else {
       setVisible(false);

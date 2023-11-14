@@ -12,7 +12,7 @@
   /* background-color: #f8f1f1; */
   justify-content: center;
   position: relative;
-  width: 20vw;
+  width: 25vw;
   height: 25vw;
   display: flex;
   direction: column;
@@ -29,7 +29,7 @@
   position: absolute;
   width: 15vw;
   height: 20vw;
-  background-color: rgba(130, 255, 253, 0.753);
+  background-color: rgb(70, 221, 251);
   border-radius: 20px;
 }
 .backpage1 {
@@ -38,7 +38,7 @@
   margin-left: -1.5%;
   width: 15vw;
   height: 20vw;
-  background-color: rgba(99, 138, 255, 0.823);
+  background-color: rgb(43, 49, 211);
   opacity: 0.3;
   border-radius: 20px;
 }
@@ -69,7 +69,8 @@
   position: absolute;
   width: 15vw;
   height: 15vw;
-  background-color: rgba(130, 255, 253, 0.753);
+  background-color: rgb(70, 221, 251);
+
   border-radius: 20px;
 }
 .backpage2 {
@@ -78,7 +79,7 @@
   margin-left: -1.5%;
   width: 15vw;
   height: 15vw;
-  background-color: rgba(99, 138, 255, 0.823);
+  background-color: rgb(43, 49, 211);
   opacity: 0.3;
   border-radius: 20px;
 }
@@ -121,6 +122,23 @@
 }
 
 .messageStyle > p {
+  z-index: 1;
   font-size: 20px;
-  color: blueviolet;
+  color: rgb(255, 255, 255);
+}
+
+@keyframes sizing {
+  from {
+    scale: 0.7;
+  }
+  to {
+    scale: 1;
+  }
+}
+
+.image {
+  animation-name: sizing;
+  animation-iteration-count: infinite;
+  animation-duration: 1.4s;
+  animation-direction: alternate;
 }
