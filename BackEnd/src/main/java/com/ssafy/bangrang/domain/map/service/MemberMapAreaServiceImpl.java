@@ -43,10 +43,10 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
         List<Geometry> geometryList = addMarkersRequestDtoList.stream().map(res -> {
             // 정사각형의 좌표 배열 (시계방향)
             Coordinate[] coordinates = new Coordinate[5];
-            coordinates[0] = new Coordinate(res.getX() - sideLength / 2, res.getY() - sideLength / 2);
-            coordinates[1] = new Coordinate(res.getX() + sideLength / 2, res.getY() - sideLength / 2);
-            coordinates[2] = new Coordinate(res.getX() + sideLength / 2, res.getY() + sideLength / 2);
-            coordinates[3] = new Coordinate(res.getX() - sideLength / 2, res.getY() + sideLength / 2);
+            coordinates[0] = new Coordinate(res.getLongitude() - sideLength / 2, res.getLatitude() - sideLength / 2);
+            coordinates[1] = new Coordinate(res.getLongitude() + sideLength / 2, res.getLatitude() - sideLength / 2);
+            coordinates[2] = new Coordinate(res.getLongitude() + sideLength / 2, res.getLatitude() + sideLength / 2);
+            coordinates[3] = new Coordinate(res.getLongitude() - sideLength / 2, res.getLatitude() + sideLength / 2);
             coordinates[4] = coordinates[0];
 
             // Polygon 생성

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddMarkersRequestDto {
-    private Double x;
-    private Double y;
+    private Double longitude;
+    private Double latitude;
 }

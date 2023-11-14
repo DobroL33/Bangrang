@@ -34,7 +34,7 @@ public class MemberMarkerServiceImpl implements MemberMarkerService{
 
         memberMarkerRepository.saveAll(addMarkersRequestDtoList.stream()
                         .map(addMarkersRequestDto -> MemberMarker.builder()
-                                .location(geometryFactory.createPoint(new Coordinate(addMarkersRequestDto.getX(), addMarkersRequestDto.getY())))
+                                .location(geometryFactory.createPoint(new Coordinate(addMarkersRequestDto.getLongitude(), addMarkersRequestDto.getLatitude())))
                                 .appMember(appMember)
                                 .build())
                 .collect(Collectors.toList()));

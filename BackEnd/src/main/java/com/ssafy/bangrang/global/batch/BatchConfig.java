@@ -56,9 +56,9 @@ public class BatchConfig {
 
 
     @Bean
-    public Job myJob() {
+    public Job myRegionRankingJob() {
 
-        log.info("[ JOB ] myJob 수행중 ");
+        log.info("[ JOB ] myRegionRankingJob 수행중 ");
         log.info("1. 지역별 사용자 면적 계산 -> ");
         log.info("2. 랭킹 계산 -> ");
         log.info("3. 랭킹 관련 알림 보내기 ");
