@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Service
@@ -122,6 +123,7 @@ public class WebMemberServiceImpl implements WebMemberService {
                                .title(inquiry.getTitle())
                                .event(event.getTitle())
                                .createdAt(inquiry.getCreatedAt())
+                               .comment(!Objects.isNull(inquiry.getComment()))
                        .build());
             });
         });
