@@ -34,6 +34,9 @@ dependencies {
 
     implementation 'net.minidev:json-smart:2.4.7'
 
+    // firebase
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
+
     // Swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'

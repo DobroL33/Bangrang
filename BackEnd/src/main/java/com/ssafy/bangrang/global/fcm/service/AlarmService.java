@@ -1,6 +1,7 @@
 package com.ssafy.bangrang.global.fcm.service;
 
 import com.ssafy.bangrang.global.fcm.api.request.AlarmStatusUpdateRequestDto;
+import com.ssafy.bangrang.global.fcm.api.request.SendAlarmRequestDto;
 import com.ssafy.bangrang.global.fcm.api.response.AlarmListResponseDto;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,4 +12,6 @@ public interface AlarmService {
 
     void alarmStatusUpdate(AlarmStatusUpdateRequestDto alarmStatusUpdateRequestDto, UserDetails userDetails) throws Exception;
     List<AlarmListResponseDto> getAlarmList(UserDetails userDetails) throws Exception;
+
+    void sendAlarm(Long userIdx, SendAlarmRequestDto sendAlarmRequestDto) throws Exception;
 }

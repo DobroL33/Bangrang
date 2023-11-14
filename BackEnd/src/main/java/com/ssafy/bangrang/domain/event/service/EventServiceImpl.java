@@ -36,6 +36,7 @@ public class EventServiceImpl implements EventService{
 
         List<GetEventAllResponseDto> eventList = eventRepository.findAll()
                 .stream()
+                .filter(e -> e.getIdx() != (long) 99999)
                 .map(e -> GetEventAllResponseDto.builder()
                         .eventIdx(e.getIdx())
                         .image(e.getImage())

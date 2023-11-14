@@ -21,7 +21,7 @@ public class CommentApi {
 
     @PostMapping
     public ResponseEntity<?> addComment(@AuthenticationPrincipal UserDetails userDetails,
-                                        @RequestBody AddCommentRequestDto request){
+                                        @RequestBody AddCommentRequestDto request) throws Exception{
         commentService.save(userDetails, request);
         return ResponseEntity.ok().body("");
     }

@@ -1,6 +1,7 @@
 package com.ssafy.bangrang.domain.member.api;
 
 import com.ssafy.bangrang.domain.member.api.request.AppMemberNicknameRequestDto;
+import com.ssafy.bangrang.domain.member.api.request.UpdateFirebaseRequestDto;
 import com.ssafy.bangrang.domain.member.api.response.StampResponseDto;
 import com.ssafy.bangrang.domain.member.service.AppMemberService;
 import com.ssafy.bangrang.global.security.jwt.JwtService;
@@ -73,6 +74,15 @@ public class AppMemberApi {
                 .orElseThrow(() -> new IllegalArgumentException("비정상적인 access token 입니다.")), userDetails);
 
         return ResponseEntity.ok().body(result);
+    }
+
+    @ApiOperation(value = "Firebase token 등록")
+    @PatchMapping("/firebase")
+    public ResponseEntity<?> updateFirebase(@RequestBody UpdateFirebaseRequestDto updateFirebaseRequestDto,
+                                  @AuthenticationPrincipal UserDetails userDetails) {
+
+        appMemberService.updateFirebase(updateFirebaseRequestDto,userDetails);
+        return ResponseEntity.ok().build();
     }
     // 멤버 도장 리스트 요청
     @GetMapping("/stamp")

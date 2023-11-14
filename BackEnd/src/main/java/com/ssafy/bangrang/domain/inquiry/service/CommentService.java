@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface CommentService {
 
-    void save(UserDetails userDetails, AddCommentRequestDto request);
+    void save(UserDetails userDetails, AddCommentRequestDto request) throws Exception;
 
     void deleteCommentV2(Long commentIdx,UserDetails userDetails);
 

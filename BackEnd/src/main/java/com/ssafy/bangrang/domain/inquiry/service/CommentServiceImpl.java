@@ -8,6 +8,9 @@ import com.ssafy.bangrang.domain.inquiry.repository.CommentRepository;
 import com.ssafy.bangrang.domain.inquiry.repository.InquiryRepository;
 import com.ssafy.bangrang.domain.member.entity.WebMember;
 import com.ssafy.bangrang.domain.member.repository.WebMemberRepository;
+import com.ssafy.bangrang.global.fcm.api.request.SendAlarmRequestDto;
+import com.ssafy.bangrang.global.fcm.model.vo.AlarmType;
+import com.ssafy.bangrang.global.fcm.service.AlarmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,11 +25,12 @@ public class CommentServiceImpl implements CommentService{
     private final CommentRepository commentRepository;
     private final InquiryRepository inquiryRepository;
     private final WebMemberRepository webMemberRepository;
+    private final AlarmService alarmService;
 
 
     @Override
     @Transactional
-    public void save(UserDetails userDetails, AddCommentRequestDto request) {
+    public void save(UserDetails userDetails, AddCommentRequestDto request) throws Exception {
         WebMember webMember = webMemberRepository.findById(userDetails.getUsername()).orElseThrow();
         Inquiry inquiry = inquiryRepository.findById(request.getInquiryIdx()).orElseThrow();
         Comment comment = Comment.builder()
@@ -35,6 +39,14 @@ public class CommentServiceImpl implements CommentService{
                 .inquiry(inquiry)
                 .build();
         commentRepository.save(comment);
+
+        SendAlarmRequestDto sendAlarmRequestDto = SendAlarmRequestDto.builder()
+                .eventIdx(inquiry.getEvent().getIdx())
+                .content(inquiry.getTitle()+" 문의에 답변이 도착했어요.")
+                .type(AlarmType.ANNOUNCEMENT)
+                .build();
+
+        alarmService.sendAlarm(inquiry.getAppMember().getIdx(),sendAlarmRequestDto);
     }
 
     @Override

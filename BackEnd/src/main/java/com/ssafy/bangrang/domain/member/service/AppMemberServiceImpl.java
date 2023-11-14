@@ -3,6 +3,7 @@ package com.ssafy.bangrang.domain.member.service;
 import com.ssafy.bangrang.domain.inquiry.api.response.GetInquiryAllResponseDto;
 import com.ssafy.bangrang.domain.inquiry.entity.Comment;
 import com.ssafy.bangrang.domain.inquiry.entity.Inquiry;
+import com.ssafy.bangrang.domain.member.api.request.UpdateFirebaseRequestDto;
 import com.ssafy.bangrang.domain.member.api.response.StampDetailDto;
 import com.ssafy.bangrang.domain.member.api.response.StampResponseDto;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
@@ -145,6 +146,20 @@ public class AppMemberServiceImpl implements AppMemberService {
 
         return user.getIdx();
     }
+    
+    /**
+     * firebase token 업데이트
+     * */
+    @Override
+    @Transactional
+    public void updateFirebase(UpdateFirebaseRequestDto firebaseRequestDto, 
+                               UserDetails userDetails) {
+        AppMember user = appMemberRepository.findById(userDetails.getUsername())
+                .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
+        
+        user.updateFirebase(firebaseRequestDto.getToken());
+    }
+
     @Override
     @Transactional
     public String profileImgUpdate(MultipartFile multipartFile, UserDetails userDetails) throws Exception {

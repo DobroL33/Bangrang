@@ -93,4 +93,8 @@ public class AppMember extends Member{
     public void updateProfileImg(String imgPath) {
         this.imgUrl=imgPath;
     }
+
+    public void updateFirebase(String token) {
+        this.firebaseToken=token;
+    }
 }

@@ -2,6 +2,7 @@ package com.ssafy.bangrang.global.fcm.api;
 
 import com.ssafy.bangrang.global.fcm.api.request.AlarmOnOffRequestDto;
 import com.ssafy.bangrang.global.fcm.api.request.AlarmStatusUpdateRequestDto;
+import com.ssafy.bangrang.global.fcm.api.request.SendAlarmRequestDto;
 import com.ssafy.bangrang.global.fcm.service.AlarmService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -41,4 +42,11 @@ public class AlaramApi {
         return ResponseEntity.ok().body("");
     }
 
+    @ApiOperation(value = "userIdx에 알람 보내기")
+    @PatchMapping("/{user_idx}")
+    public ResponseEntity sendAlarm(@PathVariable("user_idx") Long userIdx,
+                                    @RequestBody SendAlarmRequestDto request) throws Exception {
+        alarmService.sendAlarm(userIdx,request);
+        return ResponseEntity.ok().build();
+    }
 }
