@@ -33,7 +33,7 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
     private final GeometryFactory geometryFactory;
 
     // 정사각형 한 변의 길이  (15cm를 메터로 변환)
-    private final double sideLength = 0.15;
+    private final double sideLength = 0.00015;
 
     @Transactional
     @Override
