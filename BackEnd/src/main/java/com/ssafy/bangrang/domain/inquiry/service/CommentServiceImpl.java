@@ -42,7 +42,7 @@ public class CommentServiceImpl implements CommentService{
 
         SendAlarmRequestDto sendAlarmRequestDto = SendAlarmRequestDto.builder()
                 .eventIdx(inquiry.getEvent().getIdx())
-                .content(inquiry.getTitle()+" 문의에 답변이 도착했어요.")
+                .content(inquiry.getTitle()+" 문의에 답변이 등록되었습니다.")
                 .type(AlarmType.ANNOUNCEMENT)
                 .build();
 
@@ -58,9 +58,17 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     @Transactional
-    public void updateCommentV2(UpdateCommentRequestDto request,UserDetails userDetails) {
+    public void updateCommentV2(UpdateCommentRequestDto request,UserDetails userDetails) throws Exception {
         WebMember webMember = webMemberRepository.findById(userDetails.getUsername()).orElseThrow();
         Comment comment = commentRepository.findByIdx(request.getCommentIdx()).orElseThrow();
         comment.changeContent(request.getContent());
+
+        SendAlarmRequestDto sendAlarmRequestDto = SendAlarmRequestDto.builder()
+                .eventIdx(comment.getInquiry().getEvent().getIdx())
+                .content(comment.getInquiry().getTitle()+" 문의에 답변이 수정되었습니다.")
+                .type(AlarmType.ANNOUNCEMENT)
+                .build();
+
+        alarmService.sendAlarm(comment.getInquiry().getAppMember().getIdx(),sendAlarmRequestDto);
     }
 }

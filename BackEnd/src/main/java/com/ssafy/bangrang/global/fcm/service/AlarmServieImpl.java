@@ -131,9 +131,11 @@ public class AlarmServieImpl implements AlarmService {
 
             if (appMember.getAlarms() && appMember.getFirebaseToken() != null) {
                 Notification notification = Notification.builder()
-                        .setTitle("알림")
+                        .setTitle("방랑")
                         .setBody(sendAlarmRequestDto.getContent())
+                        .setImage("알림")
                         .build();
+
 
                 Message message = Message.builder()
                         .setNotification(notification)
@@ -161,8 +163,9 @@ public class AlarmServieImpl implements AlarmService {
 
             if (appMember.getAlarms() && appMember.getFirebaseToken() != null) {
                 Notification notification = Notification.builder()
-                        .setTitle("공지사항")
+                        .setTitle("방랑")
                         .setBody(sendAlarmRequestDto.getContent())
+                        .setImage("공지사항")
                         .build();
 
                 Message message = Message.builder()

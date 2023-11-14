@@ -10,5 +10,5 @@ public interface CommentService {
 
     void deleteCommentV2(Long commentIdx,UserDetails userDetails);
 
-    void updateCommentV2(UpdateCommentRequestDto request,UserDetails userDetails);
+    void updateCommentV2(UpdateCommentRequestDto request,UserDetails userDetails) throws Exception;
 }
