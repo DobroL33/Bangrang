@@ -118,8 +118,8 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
         List<GeometryBorderCoordinate> result = new ArrayList<>();
         for (Coordinate coordinate : polygon.getCoordinates()) {
             result.add(GeometryBorderCoordinate.builder()
-                            .x(coordinate.getX())
-                            .y(coordinate.getY())
+                            .longitude(coordinate.getX())
+                            .latitude(coordinate.getY())
                     .build());
         }
         return result;

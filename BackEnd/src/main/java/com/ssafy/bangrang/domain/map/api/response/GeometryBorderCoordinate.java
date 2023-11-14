@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class GeometryBorderCoordinate {
-    private Double x;
-    private Double y;
+    private Double longitude;
+    private Double latitude;
 }
