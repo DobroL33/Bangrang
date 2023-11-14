@@ -100,13 +100,12 @@ const Login: React.FC = () => {
     <div
       style={{
         width: "100%",
-        // height: window.innerHeight - 80,
-        // backgroundColor: "#E2F5FF",
-        padding: "3% 10%",
+        height:'100%',
+        padding: "5% 10%",
         boxSizing: "border-box",
       }}
     >
-      <img src="assets/logo.png" alt="" />
+      <img src="assets/logo.png" alt="" style={{width:'300px'}}/>
       <h1 style={{ color: "gray" }}>관리자 로그인</h1>
 
       <form onSubmit={login}>

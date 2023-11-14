@@ -145,61 +145,14 @@ const Event: React.FC = () => {
                       onClick={() => {
                         axiosInstance
                           .delete(
-                            `${process.env.REACT_APP_API}/web/event/${selectedEventIdx}`
+                            `${process.env.REACT_APP_API}/web/event/${item.eventIdx}`
                           )
-                          .then((res) => loaddata())
+                          .then(() => loaddata())
                           .catch((err) => console.log(err));
                       }}
                     >
                       이벤트 삭제
                     </button>
-                    {/* {new Date(item.startDate).getFullYear() === new Date().getFullYear() ? (
-                    <span>
-                      {new Date(item.startDate).getMonth() + 1 < 10
-                        ? "0" + new Date(item.startDate).getMonth() + 1
-                        : new Date(item.startDate).getMonth() + 1}
-                      월{" "}
-                      {new Date(item.startDate).getDate() < 10
-                        ? "0" + new Date(item.startDate).getDate()
-                        : new Date(item.startDate).getDate()}
-                      일
-                    </span>
-                  ) : (
-                    <span>
-                      {new Date(item.startDate).getFullYear()}년{" "}
-                      {new Date(item.startDate).getMonth() + 1 < 10
-                        ? "0" + new Date(item.startDate).getMonth() + 1
-                        : new Date(item.startDate).getMonth() + 1}
-                      월{" "}
-                      {new Date(item.startDate).getDate() < 10
-                        ? "0" + new Date(item.startDate).getDate()
-                        : new Date(item.startDate).getDate()}
-                      일
-                    </span>
-                  )}
-                  {new Date(item.startDate).getHours() <= 12 ? (
-                    <span>
-                      {new Date(item.startDate).getHours() < 10
-                        ? "0" + new Date(item.startDate).getHours()
-                        : new Date(item.startDate).getHours()}{" "}
-                      :{" "}
-                      {new Date(item.startDate).getMinutes() < 10
-                        ? "0" + new Date(item.startDate).getMinutes()
-                        : new Date(item.startDate).getMinutes()}{" "}
-                      am
-                    </span>
-                  ) : (
-                    <span>
-                      {new Date(item.startDate).getHours() % 12 < 10
-                        ? "0" + (new Date(item.startDate).getHours() % 12)
-                        : new Date(item.startDate).getHours() % 12}{" "}
-                      :{" "}
-                      {new Date(item.startDate).getMinutes() < 10
-                        ? "0" + new Date(item.startDate).getMinutes()
-                        : new Date(item.startDate).getMinutes()}{" "}
-                      pm
-                    </span>
-                  )} */}
                   </div>
                 </div>
               ))}

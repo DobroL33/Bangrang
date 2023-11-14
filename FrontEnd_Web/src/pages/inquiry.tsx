@@ -8,6 +8,7 @@ interface inquiry {
   title: string;
   event: string;
   createdAt: string;
+  comment : boolean;
 }
 interface Detailinquiry {
   inquiryIdx: Number;
@@ -28,6 +29,7 @@ const Inquiry: React.FC = () => {
   const [isDetail, setDetail] = useState<Detailinquiry|null>(null)
   const [isEdit, setEdit] = useState(false); // comment 수정 on/off
   const [isComment, setComment] = useState(""); // 수정할 comment 내용 담아두는 변수
+  const [isAll, setAll] = useState(false); // 전체보기 여부 기본값 false
   const days = ["일", "월", "화", "수", "목", "금", "토"];
   const navigate = useNavigate();
 
@@ -205,12 +207,20 @@ const Inquiry: React.FC = () => {
       <div className={styles.funcbox}>
         <div style={{width: "30%"}}>
           <div className={styles.filterbar}>
-            {/* 필터 :  */}
-            문의 리스트
+            <div>
+              {isAll ? '전체'
+              :'미응답'} 문의
+              {isAll ? <button style={{marginLeft:'3px'}} onClick={()=>setAll(false)}>미응답 문의</button>
+              :<button style={{marginLeft:'3px'}} onClick={()=>setAll(true)}>전체 문의</button>}
+            </div>
+            <span onClick={()=>{loaddata();setDetail(null);}}
+              className={styles.cursor}>
+                🔁 새로고침
+              </span>
           </div>
-          {isInquiry.length > 0 ?
+          {isInquiry.filter(inq=>inq.comment===isAll).length > 0 ?
           <div className={styles.databox}>
-            {isInquiry.map((item, idx) => (
+            {isInquiry.filter(inq=>inq.comment===isAll).map((item, idx) => (
               <div key={idx} className={`${isDetail?.inquiryIdx===item.inquiryIdx ? styles.sel_data:''} ${styles.data}`} 
               onClick={()=>detaildata(item.inquiryIdx)}>
                 <div className={styles.data_idx}>{idx+1}</div>
@@ -272,7 +282,7 @@ const Inquiry: React.FC = () => {
           </div>
           : 
           <div style={{width:'100%', height:'95%',display:'flex',alignItems:'center',justifyContent:'center'}}>
-            <h1>등록된 문의가 없습니다 :)</h1>
+            <h1>등록된 문의가 <br />없습니다 :)</h1>
           </div>}
         </div>
         <div className={styles.detailbox}>
