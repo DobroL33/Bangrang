@@ -37,7 +37,6 @@ public class MapApi {
 
         log.info("[마커 보내기 요청 시작]", LocalDateTime.now());
 
-//        memberMarkerService.addMemberMarkers(userDetails, addMarkersRequestDtoList);
         List<List<GeometryBorderCoordinate>> pointListList = memberMapAreaService.addMeberMapArea(userDetails, addMarkersRequestDtoList);
         
         log.info("[마커 보내기 요청 끝]");

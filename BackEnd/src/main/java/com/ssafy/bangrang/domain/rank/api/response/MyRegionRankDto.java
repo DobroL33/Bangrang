@@ -8,16 +8,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MyRegionRankDto {
-    private String userNickName;
-    private String userImg;
     private String region;
     private Long rate;
     private Double percent;
 
     @Builder
-    public MyRegionRankDto(String userNickName, String userImg, RegionType region, Long rate, Double percent){
-        this.userNickName = userNickName;
-        this.userImg = userImg;
+    public MyRegionRankDto(RegionType region, Long rate, Double percent){
         this.region = region.name();
         this.rate = rate;
         this.percent = percent;

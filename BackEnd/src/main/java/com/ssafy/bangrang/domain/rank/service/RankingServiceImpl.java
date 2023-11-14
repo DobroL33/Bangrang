@@ -7,6 +7,7 @@ import com.ssafy.bangrang.domain.member.repository.FriendshipRepository;
 import com.ssafy.bangrang.domain.rank.api.response.*;
 import com.ssafy.bangrang.domain.rank.entity.Ranking;
 import com.ssafy.bangrang.domain.rank.repository.RankingRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +30,7 @@ public class RankingServiceImpl implements RankingService{
     private final AppMemberRepository appMemberRepository;
     private final FriendshipRepository friendshipRepository;
 
+
     @Override
     public TotalRegionDto getRankingAll(UserDetails userDetails) {
 
@@ -40,10 +42,9 @@ public class RankingServiceImpl implements RankingService{
 
         List<MyRegionRankDto> myRatings = myRankings
                 .stream()
+                .sorted((o1, o2) -> o1.getRegionType().ordinal() - o2.getRegionType().ordinal())
                 .map(ranking -> MyRegionRankDto
                         .builder()
-                        .userNickName(ranking.getAppMember().getNickname())
-                        .userImg(ranking.getAppMember().getImgUrl())
                         .region(ranking.getRegionType())
                         .rate(ranking.getRank())
                         .percent(ranking.getPercent())
