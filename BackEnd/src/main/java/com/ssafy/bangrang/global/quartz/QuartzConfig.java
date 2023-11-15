@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
 @Configuration
 public class QuartzConfig {
-
 
 }

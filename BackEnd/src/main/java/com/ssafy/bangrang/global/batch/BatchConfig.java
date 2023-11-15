@@ -44,16 +44,32 @@ public class BatchConfig {
     private final JobLauncher jobLauncher;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager batchTransactionManager;
-    private static final int BATCH_SIZE = 5;
-
     private final EntityManagerFactory entityManagerFactory; // EntityManagerFactory 주입
     private final KoreaBorderAreaRepository koreaBorderAreaRepository;
     private final MemberMapAreaRepository memberMapAreaRepository;
     private final RankingRepository rankingRepository;
+    private static final int BATCH_SIZE = 5;
 
     private static Map<RegionType, Long> curRank;
     private static List<KoreaBorderArea> koreaBorderAreas;
 
+    @PostConstruct
+    public void init(){
+        initKoreaBorderAreas();
+        initCurRank();
+    }
+
+    private void initKoreaBorderAreas() {
+        koreaBorderAreas = koreaBorderAreaRepository.findAll();
+    }
+
+    private void initCurRank() {
+        curRank = new HashMap<RegionType, Long>();
+
+        for(RegionType region : RegionType.values()){
+            curRank.put(region, (long)1);
+        }
+    }
 
     @Bean
     public Job myRegionRankingJob() {
@@ -73,8 +89,7 @@ public class BatchConfig {
     @Bean
     public Step getRegionMapAreaStep() {
         log.info("[ STEP 01 ] 지역별 사용자 면적 계산");
-        initKoreaBorderAreas();
-        
+
         return new StepBuilder("region_map_area_step", jobRepository)
                 .<String, String>chunk(BATCH_SIZE, batchTransactionManager)
                 .reader(regionMapAreaReader())
@@ -83,14 +98,11 @@ public class BatchConfig {
                 .build();
     }
 
-    private void initKoreaBorderAreas() {
-        koreaBorderAreas = koreaBorderAreaRepository.findAll();
-    }
+
 
     @Bean
     public Step getMemberRankingStep(){
         log.info("[ STEP 02 ] 랭킹 계산");
-        initCurRank();
 
         return new StepBuilder("member_ranking_step", jobRepository)
                 .<String, String>chunk(BATCH_SIZE, batchTransactionManager)
@@ -100,13 +112,7 @@ public class BatchConfig {
                 .build();
     }
 
-    private void initCurRank() {
-        curRank = new HashMap<RegionType, Long>();
 
-//        for(RegionType region : RegionType.values()){
-//            curRank.put(region, (long)1);
-//        }
-    }
 
 //    @Bean
 //    public Step postFCMStep(){

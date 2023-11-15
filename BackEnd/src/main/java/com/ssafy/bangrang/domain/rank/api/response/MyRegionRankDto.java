@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.swing.plaf.synth.Region;
+
 @Getter
 @NoArgsConstructor
 public class MyRegionRankDto {
@@ -14,8 +16,9 @@ public class MyRegionRankDto {
 
     @Builder
     public MyRegionRankDto(RegionType region, Long rate, Double percent){
-        this.region = region.name();
+        this.region = region.getKoreanName();
         this.rate = rate;
         this.percent = percent;
     }
+
 }

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -73,8 +74,9 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
                 // 'createdAt'의 날짜가 현재 날짜와 같은 경우, 객체 union
                 Geometry befoPolygon = befoMemberMapArea.getShape();
 
-                GeometryCollection geometryCollection = new GeometryCollection(new Geometry[] {curUnionResult, befoPolygon}, new GeometryFactory());
-                Geometry unionResult = geometryCollection.union();
+//                GeometryCollection geometryCollection = new GeometryCollection(new Geometry[] {curUnionResult, befoPolygon}, new GeometryFactory());
+//                Geometry unionResult = geometryCollection.union();
+                Geometry unionResult = CascadedPolygonUnion.union(Arrays.asList(new Geometry[] {curUnionResult, befoPolygon}));
 
                 befoMemberMapArea.changeShapeAndDimension(unionResult, unionResult.getArea());
 
