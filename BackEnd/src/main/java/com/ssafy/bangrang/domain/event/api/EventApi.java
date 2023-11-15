@@ -31,7 +31,7 @@ public class EventApi {
 
         log.info("[전체 행사 리스트 요청 시작]", LocalDateTime.now());
 
-        List<GetEventAllResponseDto> eventList = eventService.findAll(userDetails);
+        List<GetEventAllResponseDto> eventList = eventService.findAllLatest(userDetails);
 
         log.info("[전체 행사 리스트 요청 끝]");
 

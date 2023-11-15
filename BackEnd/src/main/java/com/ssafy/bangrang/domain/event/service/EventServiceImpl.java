@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,11 +31,11 @@ public class EventServiceImpl implements EventService{
 
     private final AppMemberRepository appMemberRepository;
     @Override
-    public List<GetEventAllResponseDto> findAll(UserDetails userDetails){
+    public List<GetEventAllResponseDto> findAllLatest(UserDetails userDetails){
         AppMember user = appMemberRepository.findById(userDetails.getUsername())
                 .orElseThrow(() -> new EmptyResultDataAccessException("해당 유저는 존재하지 않습니다.", 1));
 
-        List<GetEventAllResponseDto> eventList = eventRepository.findAll()
+        List<GetEventAllResponseDto> eventList = eventRepository.findAllLatest(LocalDate.now())
                 .stream()
                 .filter(e -> e.getIdx() != (long) 99999)
                 .map(e -> GetEventAllResponseDto.builder()
@@ -55,6 +56,8 @@ public class EventServiceImpl implements EventService{
 
         return eventList;
     }
+
+
 
     @Override
     public GetEventDetailResponseDto findByIdx(Long eventIdx, UserDetails userDetails) {

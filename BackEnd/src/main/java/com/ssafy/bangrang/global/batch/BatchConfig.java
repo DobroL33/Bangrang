@@ -165,12 +165,11 @@ public class BatchConfig {
     @Bean
     public ItemWriter<List<MemberMapArea>> memberMapAreaWriter() {
         log.info("[ STPE 01 - WRITER ] mapArea 데이터 저장 중... ");
-        return items -> {
-            for (var item : items) {
-                log.info("Writing items: {}", item);
-                if(item instanceof MemberMapArea){
-                    memberMapAreaRepository.save((MemberMapArea) item);
-                }
+        return itemLists -> {
+            for (List<MemberMapArea> itemList : itemLists) {
+                itemList.forEach(item -> {
+                    memberMapAreaRepository.save(item);
+                });
             }
         };
     }
@@ -251,12 +250,11 @@ public class BatchConfig {
     @Bean
     public ItemWriter<List<Ranking>> rankingWriter(){
         log.info("[ STPE 02 - WRITER ] 등수 데이터 저장 중... ");
-        return items -> {
-            for (var item : items) {
-                log.info("Writing items: {}", item);
-                if(item instanceof Ranking){
-                    rankingRepository.save((Ranking) item);
-                }
+        return itemLists  -> {
+            for(List<Ranking> itemList : itemLists){
+                itemList.forEach(ranking -> {
+                    rankingRepository.save(ranking);
+                });
             }
         };
     }
