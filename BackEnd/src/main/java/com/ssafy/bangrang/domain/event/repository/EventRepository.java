@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface EventRepository extends JpaRepository<Event, Long> {
 
 
-    @Query("SELECT e FROM Event e WHERE FUNCTION('DATE', e.endDate) < :givenDate ORDER BY e.startDate DESC")
+    @Query("SELECT e FROM Event e WHERE FUNCTION('DATE', e.endDate) >= :givenDate ORDER BY e.startDate DESC")
     List<Event> findAllLatest(@Param("givenDate") LocalDate givenDate);
 
     List<Event> findAllByWebMember(WebMember webMember);
