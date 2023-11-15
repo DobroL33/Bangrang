@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.operation.union.CascadedPolygonUnion;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -61,9 +62,9 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
         // 제일 최신의 MemberMapArea을 DB로부터 불러오는 로직
         // 만약 최신 MemberMapArea가 오늘 날짜(yyyymmdd)면 update, 아니면 create
         // 가장 최근에 생성된 엔티티를 불러오는 메서드
-        Optional<MemberMapArea> recent = memberMapAreaRepository.findTopByAppMemberIdxOrderByCreatedAtDesc(appMember.getIdx());
-        if(recent.isPresent()){
-            MemberMapArea befoMemberMapArea = recent.get();
+        List<MemberMapArea> recent = memberMapAreaRepository.findTopByAppMemberIdxOrderByCreatedAtDesc(appMember.getIdx(), PageRequest.of(0, 1));
+        if(recent.size() >= 1){
+            MemberMapArea befoMemberMapArea = recent.get(0);
 
             LocalDate currentDate = LocalDate.now(); // 현재 날짜를 가져옵니다.
             LocalDate createdAtDate = befoMemberMapArea.getCreatedAt().toLocalDate(); // 'createdAt'의 날짜 부분을 추출합니다.
