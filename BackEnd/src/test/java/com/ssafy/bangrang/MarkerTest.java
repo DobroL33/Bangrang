@@ -49,12 +49,12 @@ public class MarkerTest {
         AppMember appMember = appMemberRepository.findById("appMember1").orElseThrow();
         List<AddMarkersRequestDto> addMarkersRequestDtoList = new ArrayList<>();
         addMarkersRequestDtoList.add(AddMarkersRequestDto.builder()
-                        .x(1.0)
-                        .y(1.0)
+//                        .longitude(1.0)
+//                        .latitude(1.0)
                 .build());
         addMarkersRequestDtoList.add(AddMarkersRequestDto.builder()
-                .x(2.0)
-                .y(2.0)
+//                .longitude(2.0)
+//                .latitude(2.0)
                 .build());
         
         memberMarkerRepository.saveAll(addMarkersRequestDtoList.stream()

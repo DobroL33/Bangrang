@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 
-@Component
+//@Component
 @Slf4j
 public class FCMConfig {
 

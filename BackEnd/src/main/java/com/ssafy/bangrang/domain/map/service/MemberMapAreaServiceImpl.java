@@ -61,7 +61,7 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
         // 제일 최신의 MemberMapArea을 DB로부터 불러오는 로직
         // 만약 최신 MemberMapArea가 오늘 날짜(yyyymmdd)면 update, 아니면 create
         // 가장 최근에 생성된 엔티티를 불러오는 메서드
-        Optional<MemberMapArea> recent = memberMapAreaRepository.findTopByOrderByCreatedAtDesc();
+        Optional<MemberMapArea> recent = memberMapAreaRepository.findTopByAppMember_IdxOrderByCreatedAtDesc(appMember.getIdx());
         if(recent.isPresent()){
             MemberMapArea befoMemberMapArea = recent.get();
 

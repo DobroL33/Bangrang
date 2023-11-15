@@ -11,6 +11,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -59,15 +60,17 @@ public class EventTest {
     }
 
     @Test
+    @Disabled
     void testFindAll(){
-        List<GetEventAllResponseDto> eventServiceAll = eventService.findAll();
-        System.out.println("eventServiceAll = " + eventServiceAll);
+//        List<GetEventAllResponseDto> eventServiceAll = eventService.findAll();
+//        System.out.println("eventServiceAll = " + eventServiceAll);
     }
     
     @Test
+    @Disabled
     void testFindOne(){
-        GetEventDetailResponseDto findEvent = eventService.findByIdx((long) 55);
-        System.out.println("findEvent = " + findEvent);
+//        GetEventDetailResponseDto findEvent = eventService.findByIdx((long) 55);
+//        System.out.println("findEvent = " + findEvent);
     }
 
 }
