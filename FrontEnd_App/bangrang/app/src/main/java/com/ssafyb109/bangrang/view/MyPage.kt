@@ -59,7 +59,8 @@ fun MyPage(
 ) {
 
     val allRankResponse by rankViewModel.allRankResponse.collectAsState()
-    val bangrangPercent = allRankResponse?.korea?.get(0)?.percent
+//    val bangrangPercent = allRankResponse?.korea?.get(0)?.percent
+    val bangrangPercent = 1.1
 
     // 지금 유저 사진 url
     val userImg = sharedPreferencesUtil.getUserImage()

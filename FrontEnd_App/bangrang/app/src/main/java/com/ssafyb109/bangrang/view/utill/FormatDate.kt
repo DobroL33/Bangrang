@@ -2,7 +2,7 @@ package com.ssafyb109.bangrang.view.utill
 
 fun DateToKorean(input: String): String {
     if (input.length != 12) {
-        throw IllegalArgumentException("불명")
+        return ""
     }
 
     val year = input.substring(0, 4)

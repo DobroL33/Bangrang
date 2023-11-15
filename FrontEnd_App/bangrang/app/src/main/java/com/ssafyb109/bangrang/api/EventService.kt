@@ -1,7 +1,9 @@
 package com.ssafyb109.bangrang.api
 
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -19,9 +21,9 @@ interface EventService {
     ): Response<EventIndexListResponseDTO>
 
     // 이벤트 좋아요
-    @POST("api/event/likes/{index}")
+    @PATCH("api/event/likes")
     suspend fun likeEvent(
-        @Path("index") index: String
+        @Body request: EventLikeRequestDTO
     ): Response<Void>
 
 }
@@ -39,6 +41,7 @@ data class EventSelectListResponseDTO(
     val latitude: Double,
     val longitude: Double,
     val likeCount: Long, // 좋아요 수
+    val isLiked: Boolean // 이 유저가 좋아요를 했는지
 )
 
 // 이벤트 인덱스 선택 요청 DTO = Path 형식
@@ -56,4 +59,11 @@ data class EventIndexListResponseDTO(
     val latitude: Double,
     val longitude: Double,
     val likeCount: Long, // 좋아요 수
+    val isLiked: Boolean // 이 유저가 좋아요를 했는지
+)
+
+// 이벤트 좋아요 요청 DTO
+data class EventLikeRequestDTO(
+    val eventIdx: Long,
+    val likeSet: Boolean,
 )

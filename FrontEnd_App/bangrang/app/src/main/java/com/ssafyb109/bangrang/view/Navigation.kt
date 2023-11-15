@@ -22,11 +22,14 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -38,9 +41,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -101,28 +108,6 @@ fun TopBar(navController: NavHostController) {
 
 @Composable
 fun BottomBar(navController: NavHostController) {
-    val isMenuExpanded = remember { mutableStateOf(false) }
-
-    // 열렸을 때
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.Transparent)
-            .offset(y = (+150).dp)
-            .zIndex(1f),
-        contentAlignment = Alignment.Center
-    ) {
-        if (isMenuExpanded.value) {
-            ExpandingCenterMenu() { selectedLabel ->
-                isMenuExpanded.value = false
-                when (selectedLabel) {
-                    "마이룸" -> navController.navigate("MyPage")
-                    "랭킹" -> navController.navigate("RankPage")
-                    "행사" -> navController.navigate("EventPage")
-                }
-            }
-        }
-    }
 
     Box(
         modifier = Modifier
@@ -149,9 +134,7 @@ fun BottomBar(navController: NavHostController) {
                 navController.navigate("Home")
             }
 
-            CentralButton() {
-                isMenuExpanded.value = !isMenuExpanded.value
-            }
+            Spacer(modifier = Modifier.width(48.dp))
 
             BottomBarButton("지도") {
                 navController.navigate("MapPage")
@@ -162,22 +145,49 @@ fun BottomBar(navController: NavHostController) {
 }
 
 @Composable
-fun CentralButton(onClick: () -> Unit) {
+fun FloatingActionMenu(navController: NavHostController) {
+    val isMenuExpanded = remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
-            .size(120.dp)
-            .padding(8.dp)
-            .offset(y = (-30).dp),
-        contentAlignment = Alignment.Center
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.centralbutton),
-            contentDescription = null,
+        if (isMenuExpanded.value) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxSize()
+                    .offset(y = 86.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                ExpandingCenterMenu { selectedLabel ->
+                    // ExpandingCenterMenu에서 선택된 항목 처리
+                    isMenuExpanded.value = false
+                    when (selectedLabel) {
+                        "마이룸" -> navController.navigate("MyPage")
+                        "랭킹" -> navController.navigate("RankPage")
+                        "행사" -> navController.navigate("EventPage")
+                    }
+                }
+            }
+        }
+
+        FloatingActionButton(
+            onClick = { isMenuExpanded.value = !isMenuExpanded.value },
             modifier = Modifier
-                .scale(2f)
+                .size(100.dp)
+                .align(Alignment.BottomCenter)
                 .clip(CircleShape)
-                .clickable(onClick = onClick)
-        )
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.centralbutton),
+                contentDescription = "Toggle Menu",
+                modifier = Modifier
+                    .size(100.dp)
+                    .fillMaxSize()
+            )
+        }
     }
 }
 
@@ -198,20 +208,24 @@ fun ExpandingCenterMenu(onItemSelected: (String) -> Unit) {
             .background(Color.Transparent)
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
-            val topY = 0f
-            val bottomY = size.height
+            val arcDiameter = size.width  // 아크의 직경은 캔버스 너비와 같습니다.
+            val arcRadius = arcDiameter / 2
             val gradientBrush = Brush.verticalGradient(
                 colors = listOf(
                     Color(0xFF1DAEFF),  // 하늘색
                     Color(0xFFA776CD)   // 보라색
                 ),
-                startY = topY,
-                endY = bottomY
+                startY = arcRadius,
+                endY = 0f
             )
-            drawCircle(
+            drawArc(
                 brush = gradientBrush,
-                center = center,
-                radius = size.minDimension / 2f
+                startAngle = 0f,  // 시작하는 각도
+                sweepAngle = -180f,  // 끝나는 각도
+                useCenter = true,  // 센터 포인트
+                topLeft = Offset(0f, 0f),
+                size = Size(arcDiameter, arcDiameter),  // 크기
+                style = Fill  // 반원 내부를 채움
             )
         }
         val startDegree = 18f
@@ -262,7 +276,7 @@ fun BottomBarButton(label: String, onClick: () -> Unit) {
         val icon = when (label) {
             "홈" -> Icons.Default.Home
             "지도" -> Icons.Default.LocationOn
-            else -> Icons.Default.Home  // 기본값, 이 부분은 필요에 따라 변경 가능합니다.
+            else -> Icons.Default.Home  // 기본값
         }
 
         Icon(

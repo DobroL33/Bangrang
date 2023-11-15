@@ -27,7 +27,7 @@ fun LocationSelector(activeLocation: MutableState<String>) {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        items(items = listOf("전국", "서울", "부산", "인천", "대전", "대구", "광주", "울산", "세종", "제주", "경주")) { item ->
+        items(items = listOf("전국", "서울", "부산", "인천", "광주", "대전", "대구", "울산", "세종", "제주", "강원", "경기", "경남", "경북", "전남", "전북", "충남", "충북")) { item ->
             LocationButton(locationName = item, activeLocation = activeLocation) {
                 activeLocation.value = it
             }

@@ -37,6 +37,7 @@ import com.ssafyb109.bangrang.view.BottomBar
 import com.ssafyb109.bangrang.view.CollectionPage
 import com.ssafyb109.bangrang.view.EventDetailPage
 import com.ssafyb109.bangrang.view.EventPage
+import com.ssafyb109.bangrang.view.FloatingActionMenu
 import com.ssafyb109.bangrang.view.FriendPage
 import com.ssafyb109.bangrang.view.FullScreenImagePage
 import com.ssafyb109.bangrang.view.HomePage
@@ -53,6 +54,7 @@ import com.ssafyb109.bangrang.view.SignUpPage
 import com.ssafyb109.bangrang.view.StampPage
 import com.ssafyb109.bangrang.view.TopBar
 import com.ssafyb109.bangrang.viewmodel.InquiryViewModel
+import com.ssafyb109.bangrang.viewmodel.LocationViewModel
 import com.ssafyb109.bangrang.viewmodel.RankViewModel
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -129,6 +131,7 @@ fun AppNavigation(
 ) {
     val userViewModel: UserViewModel = hiltViewModel()
     val inquiryViewModel: InquiryViewModel = hiltViewModel()
+    val locationViewModel : LocationViewModel = hiltViewModel()
     val rankViewModel: RankViewModel = hiltViewModel()
     val context = LocalContext.current
 
@@ -154,58 +157,61 @@ fun AppNavigation(
     /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 
     Surface(modifier = Modifier.fillMaxSize(), color = Color.Transparent) {
-        Column {
-            val currentDestination =
-                navController.currentBackStackEntryAsState().value?.destination?.route
 
-            if (currentDestination != "Login" && currentDestination != "SignUp" &&
-                currentDestination != "Permission") {
-                TopBar(navController)
-            }
+        val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
+        val showNavBar = remember(currentDestination) {
+            currentDestination != "Login" && currentDestination != "SignUp" && currentDestination != "Permission"
+        }
+        Box {
+            Column {
+                if (showNavBar) {
+                    TopBar(navController)
+                }
+                Box(modifier = Modifier.weight(1f)) {
+                    NavHost(navController, startDestination = startDestination) {
+                        composable("Permission") { LocationPermissionPage(navController) }
+                        composable("Login") { LoginPage(navController, userViewModel) }
+                        composable("SignUp") { SignUpPage(navController, userViewModel) }
 
-            Box(modifier = Modifier.weight(1f)) {
-                NavHost(navController, startDestination = startDestination) {
-                    composable("Permission") { LocationPermissionPage(navController) }
-                    composable("Login") { LoginPage(navController, userViewModel) }
-                    composable("SignUp") { SignUpPage(navController, userViewModel) }
+                        composable("Home") { HomePage(navController, userViewModel, locationViewModel) }
+                        composable("MapPage") { MapPage(navController, userViewModel, locationViewModel) }
+                        composable("AlarmPage") { AlarmPage(navController, userViewModel) }
+                        composable("EventPage") { EventPage(navController, userViewModel) }
+                        composable("EventDetailPage/{index}") { backStackEntry ->
+                            val eventIdx = backStackEntry.arguments?.getString("index")
+                            EventDetailPage(navController,userViewModel, eventIdx!!)
+                        }
+                        composable("StampPage") { StampPage(navController, userViewModel) }
+                        composable("CollectionPage") { CollectionPage(navController, userViewModel) }
+                        composable("RankPage") { RankPage(navController, userViewModel, rankViewModel, sharedPreferencesUtil) }
+                        composable("MyPage") { MyPage(navController, userViewModel,context, sharedPreferencesUtil, rankViewModel) }
+                        composable("FriendPage") { FriendPage(navController, userViewModel) }
+                        composable("ProfileChangePage") { ProfileChangePage(navController, userViewModel,context, sharedPreferencesUtil) }
+                        composable("InquiryPage") { InquiryPage(navController, inquiryViewModel) }
+                        composable("InquiryResistPage/{index}") { backStackEntry ->
+                            val eventIdx = backStackEntry.arguments?.getString("index")
+                            InquiryResistPage(navController, eventIdx!!)
+                        }
+                        composable("InquiryDetailPage/{index}") { backStackEntry ->
+                            val eventIdx = backStackEntry.arguments?.getString("index")
+                            InquiryDetailPage(navController,inquiryViewModel, eventIdx!!)
+                        }
 
-                    composable("Home") { HomePage(navController, userViewModel) }
-                    composable("MapPage") { MapPage(navController, userViewModel) }
-                    composable("AlarmPage") { AlarmPage(navController, userViewModel) }
-                    composable("EventPage") { EventPage(navController, userViewModel) }
-                    composable("EventDetailPage/{index}") { backStackEntry ->
-                        val eventIdx = backStackEntry.arguments?.getString("index")
-                        EventDetailPage(navController,userViewModel, eventIdx!!)
-                    }
-                    composable("StampPage") { StampPage(navController, userViewModel) }
-                    composable("CollectionPage") { CollectionPage(navController, userViewModel) }
-                    composable("RankPage") { RankPage(navController, userViewModel, rankViewModel) }
-                    composable("MyPage") { MyPage(navController, userViewModel,context, sharedPreferencesUtil, rankViewModel) }
-                    composable("FriendPage") { FriendPage(navController, userViewModel) }
-                    composable("ProfileChangePage") { ProfileChangePage(navController, userViewModel,context, sharedPreferencesUtil) }
-                    composable("InquiryPage") { InquiryPage(navController, inquiryViewModel) }
-                    composable("InquiryResistPage/{index}") { backStackEntry ->
-                        val eventIdx = backStackEntry.arguments?.getString("index")
-                        InquiryResistPage(navController, eventIdx!!)
-                    }
-                    composable("InquiryDetailPage/{index}") { backStackEntry ->
-                        val eventIdx = backStackEntry.arguments?.getString("index")
-                        InquiryDetailPage(navController,inquiryViewModel, eventIdx!!)
-                    }
-
-                    composable("FullScreenImagePage/{imageUrl}") { backStackEntry ->
-                        val encodedImageUrl = backStackEntry.arguments?.getString("imageUrl")
-                        if (encodedImageUrl != null) {
-                            val decodedImageUrl = Uri.decode(encodedImageUrl)
-                            FullScreenImagePage(navController, decodedImageUrl)
+                        composable("FullScreenImagePage/{imageUrl}") { backStackEntry ->
+                            val encodedImageUrl = backStackEntry.arguments?.getString("imageUrl")
+                            if (encodedImageUrl != null) {
+                                val decodedImageUrl = Uri.decode(encodedImageUrl)
+                                FullScreenImagePage(navController, decodedImageUrl)
+                            }
                         }
                     }
                 }
+                if (showNavBar) {
+                    BottomBar(navController)
+                }
             }
-
-            if (currentDestination != "Login" && currentDestination != "SignUp" &&
-                currentDestination != "Permission") {
-                BottomBar(navController)
+            if(showNavBar){
+                FloatingActionMenu(navController)
             }
         }
     }

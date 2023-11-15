@@ -26,7 +26,7 @@ import coil.request.ImageRequest
 import com.ssafyb109.bangrang.R
 
 @Composable
-fun RankProfile(image: String?, percentage: Int, userId: String, modifier: Modifier = Modifier, rank: Int) {
+fun RankProfile(image: String?, percentage: Double, userId: String, modifier: Modifier = Modifier, rank: Int) {
     val medal = when(rank) {
         1 -> painterResource(id = R.drawable.first)
         2 -> painterResource(id = R.drawable.second)

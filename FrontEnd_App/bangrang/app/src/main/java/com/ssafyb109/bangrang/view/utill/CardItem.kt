@@ -34,10 +34,15 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.ssafyb109.bangrang.api.EventSelectListResponseDTO
+import com.ssafyb109.bangrang.viewmodel.EventViewModel
 
 @Composable
-fun CardItem(event: EventSelectListResponseDTO, navController: NavHostController) {
-    var isHeartFilled by remember { mutableStateOf(false) }
+fun CardItem(
+    event: EventSelectListResponseDTO,
+    navController: NavHostController,
+    eventViewModel: EventViewModel
+) {
+    var isHeartFilled by remember { mutableStateOf(event.isLiked) }
 
     Card(
         modifier = Modifier
@@ -67,6 +72,7 @@ fun CardItem(event: EventSelectListResponseDTO, navController: NavHostController
                 // 하트 아이콘을 오른쪽 상단에 위치시키기 위한 정렬
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopEnd) {
                     IconButton(onClick = {
+                        eventViewModel.likeEvent(event.eventIdx,isHeartFilled)
                         isHeartFilled = !isHeartFilled
                     }) {
                         Icon(

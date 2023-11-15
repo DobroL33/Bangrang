@@ -1,7 +1,8 @@
 package com.ssafyb109.bangrang.repository
 
+import com.ssafyb109.bangrang.api.MyRankDTO
 import com.ssafyb109.bangrang.api.RankService
-import com.ssafyb109.bangrang.api.RegionDTO
+import com.ssafyb109.bangrang.api.TotalRegionDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
@@ -14,7 +15,7 @@ class RankRepository @Inject constructor(
 ) : BaseRepository() {
 
     // 전체 랭킹 불러오기
-    suspend fun fetchAllRank(): Flow<Response<RegionDTO>> = flow {
+    suspend fun fetchAllRank(): Flow<Response<TotalRegionDTO>> = flow {
         try {
             val response = rankService.fetchAllRank()
             if (response.isSuccessful) {
@@ -28,7 +29,7 @@ class RankRepository @Inject constructor(
     }
 
     // 친구 랭킹 불러오기
-    suspend fun fetchFriendRank(): Flow<Response<List<RegionDTO>>> = flow {
+    suspend fun fetchFriendRank(): Flow<Response<MyRankDTO>> = flow {
         try {
             val response = rankService.fetchFriendRank()
             if (response.isSuccessful) {

@@ -1,6 +1,8 @@
 package com.ssafyb109.bangrang.repository
 
+import com.ssafyb109.bangrang.api.AlarmSettingRequestDTO
 import com.ssafyb109.bangrang.api.EventIndexListResponseDTO
+import com.ssafyb109.bangrang.api.EventLikeRequestDTO
 import com.ssafyb109.bangrang.api.EventSelectListResponseDTO
 import com.ssafyb109.bangrang.api.EventService
 import com.ssafyb109.bangrang.api.InquiryResistRequestDTO
@@ -38,19 +40,22 @@ class EventRepository @Inject constructor(
             lastError = handleNetworkException(e)
         }
     }
-//
-//    fun inquiryResist(request: InquiryResistRequestDTO): Boolean {
-//        return try {
-//            val response = inquiryService.inquiryResist(request)
-//            if (response.isSuccessful) {
-//                true
-//            } else {
-//                lastError = handleNetworkException(response = response)
-//                false
-//            }
-//        } catch (e: Exception) {
-//            lastError = handleNetworkException(e)
-//            false
-//        }
-//    }
+
+    // 이벤트 좋아요 설정
+    suspend fun likeEvent(eventIdx: Long, select: Boolean): Boolean {
+        val request = EventLikeRequestDTO(eventIdx, select)
+        return try {
+            val response = eventService.likeEvent(request)
+            if(response.isSuccessful) {
+                true
+            } else {
+                lastError = handleNetworkException(response = response)
+                false
+            }
+        } catch (e: Exception) {
+            lastError = handleNetworkException(e)
+            false
+        }
+    }
+
 }

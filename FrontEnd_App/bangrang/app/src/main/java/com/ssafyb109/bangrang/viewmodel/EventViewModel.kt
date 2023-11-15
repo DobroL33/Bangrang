@@ -16,15 +16,21 @@ class EventViewModel @Inject constructor(
     private val eventRepository: EventRepository
 ) : ViewModel() {
 
-    private val _selectEvents = MutableStateFlow(getSampleData())
+    private val _selectEvents = MutableStateFlow<List<EventSelectListResponseDTO>>(emptyList())
     val selectEvents: StateFlow<List<EventSelectListResponseDTO>> = _selectEvents
 
-    private val _eventDetail = MutableStateFlow(getSampleEventData())
+    private val _eventDetail = MutableStateFlow(getDefaultEventDetailData())
     val eventDetail: StateFlow<EventIndexListResponseDTO> = _eventDetail
 
+
     // 에러
-    private val _errorMessage = MutableStateFlow<String>("")
-    val errorMessage: StateFlow<String> = _errorMessage
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage
+
+    // 에러 메시지 리셋
+    fun clearErrorMessage() {
+        _errorMessage.value = null
+    }
 
     // 이벤트 지역기준 불러오기
     fun selectEvent() {
@@ -34,7 +40,6 @@ class EventViewModel @Inject constructor(
                     _selectEvents.emit(response.body()!!)
                 } else {
                     _errorMessage.emit(eventRepository.lastError ?: "알 수 없는 에러")
-                    _selectEvents.emit(getSampleData())  // 샘플 데이터 적용
                 }
             }
         }
@@ -47,95 +52,38 @@ class EventViewModel @Inject constructor(
                     _eventDetail.emit(response.body()!!)
                 } else {
                     _errorMessage.emit(eventRepository.lastError ?: "알 수 없는 에러")
-                    _eventDetail.emit(getSampleEventData())  // 샘플 데이터 적용
                 }
+            }
+        }
+    }
+
+    // 유저 알람 설정
+    fun likeEvent(eventIdx:Long, select:Boolean) {
+        viewModelScope.launch {
+            val response = eventRepository.likeEvent(eventIdx, select)
+
+            if (!response) {
+                _errorMessage.emit(eventRepository.lastError ?: "알 수 없는 에러")
             }
         }
     }
 }
 
-
-
-
-
-// 발표용 샘플데이터
-private fun getSampleData(): List<EventSelectListResponseDTO> {
-    val event1 = EventSelectListResponseDTO(
-        eventIdx = 1,
-        image = "https://blog.kakaocdn.net/dn/P4yY0/btsrH678WcJ/HZidnrkBQUrYippmfBLrT0/img.png",
-        title = "제 18회 부산 불꽃 축제",
-        subtitle = "2023.11.4.(토) 광안리 해수욕장에서 제 18회 부산 불꽃 축제가 개최됩니다!",
-        startDate = "202311041900",
-        endDate = "202311042100",
-        address = "부산광역시 수영구 광안해변로 219",
-        latitude = 35.15373,
-        longitude = 129.1192,
-        likeCount = 5,
-    )
-
-    val event2 = EventSelectListResponseDTO(
-        eventIdx = 2,
-        image = "https://i.namu.wiki/i/4bdAxK4nXadGa2E8zeGNu1qB6EIVcR5dFPelmzsvmz84N8p_hLEzByzO6CukeDJlO6uM1QU6ciez1Mm8HkMPnQ.webp",
-        title = "2023 대전 빵 축제",
-        subtitle = "2023.10.28.(토)~2023.10.29(일) 서대전 공원에서 2023 대전 빵 축제가 개최됩니다!",
-        startDate = "202310280000",
-        endDate = "202310292359",
-        address = "대전 중구 계룡로904번길 30",
-        latitude = 36.32139,
-        longitude = 127.4118,
-        likeCount = 5,
-    )
-
-    return listOf(event1, event2)
-}
-private fun getSampleEventData(): EventIndexListResponseDTO {
-    return EventIndexListResponseDTO(
-        image = "https://blog.kakaocdn.net/dn/P4yY0/btsrH678WcJ/HZidnrkBQUrYippmfBLrT0/img.png",
-        subImage = "https://postfiles.pstatic.net/MjAyMzEwMTlfNDkg/MDAxNjk3NzE0ODU0NTM3.k3t1t17eJ7ZMXO4L-ybdFcCnaIEWihURlQdaODxmDsUg.aIzvKfhu-mmtDiaI56Lj6j06Tgqgf-JpYV9AZHc2440g.PNG.miata94/%EC%B6%95%EC%A0%9C.png?type=w966",
-        title = "제 18회 부산 불꽃 축제",
-        content = "\"세계 속 빛으로 물들인 부산의 가을\"\n2023.11.4.(토) 광안리 해수욕장에서 제 18회 부산 불꽃 축제가 개최됩니다!",
-        startDate = "202311041900",
-        endDate = "202311042100",
-        pageURL = "http://www.bfo.or.kr/festival/info/01.asp?MENUDIV=1",
-        subEventIdx = 1,
-        address = "부산광역시 수영구 광안해변로 219",
-        latitude = 12.1,
-        longitude = 12.1,
-        likeCount = 5,
-    )
-}
-
-
-// 응답없음용 샘플 데이터
-private fun getDefaultSelectEventData(): List<EventSelectListResponseDTO> {
-    return listOf(
-        EventSelectListResponseDTO(
-            eventIdx = -1,  // 이러한 -1과 같은 값은 일반적으로 데이터가 없음을 나타내기 위해 사용됩니다.
-            image = "default_image_url",
-            title = "응답 없음",
-            subtitle = "응답이 없습니다. 다시 시도해 주세요.",
-            startDate = "",
-            endDate = "",
-            address = "응답 없음",
-            latitude = 0.0,
-            longitude = 0.0,
-            likeCount = 5,
-        )
-    )
-}
+// 응답전 기본베이스
 private fun getDefaultEventDetailData(): EventIndexListResponseDTO {
     return EventIndexListResponseDTO(
-        image = "default_image_url",
-        subImage = "default_image_url",
-        title = "응답 없음",
-        content = "응답이 없습니다. 다시 시도해 주세요.",
+        image = "",
+        subImage = "",
+        title = "",
+        content = "",
         startDate = "",
         endDate = "",
         pageURL = "",
         subEventIdx = -1,
-        address = "응답 없음",
+        address = "",
         latitude = 0.0,
         longitude = 0.0,
-        likeCount = 5,
+        likeCount = 0,
+        isLiked = false,
     )
 }

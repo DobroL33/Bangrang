@@ -21,12 +21,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafyb109.bangrang.R
-import com.ssafyb109.bangrang.api.RegionDTO
+import com.ssafyb109.bangrang.api.MyRankDTO
 import com.ssafyb109.bangrang.view.utill.LocationSelector
 
 @Composable
 fun RankFriendPage(
-    friendRankResponse: List<RegionDTO>?
+    friendRankResponse: MyRankDTO?
 ){
     val searchText = remember { mutableStateOf("") }
     val activeLocation = remember { mutableStateOf("전국") }
@@ -62,28 +62,28 @@ fun RankFriendPage(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        item {
-            PodiumLayout()
-            Spacer(modifier = Modifier.height(32.dp))
-        }
+//        item {
+//            PodiumLayout()
+//            Spacer(modifier = Modifier.height(32.dp))
+//        }
 
-        items((4..10).toList()) { rank ->
-            RankRow(rank = rank, nickname = "Sample Data", percent = 1)
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "•\n•\n•", fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        item {
-            RankRow(rank = 12000, nickname = "박해종", percent = 10)
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(40.dp))
-        }
+//        items((4..10).toList()) { rank ->
+//            RankRow(rank = rank, nickname = "Sample Data", percent = 1)
+//        }
+//
+//        item {
+//            Spacer(modifier = Modifier.height(16.dp))
+//            Text(text = "•\n•\n•", fontSize = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+//            Spacer(modifier = Modifier.height(8.dp))
+//        }
+//
+//        item {
+//            RankRow(rank = 12000, nickname = "박해종", percent = 10)
+//        }
+//
+//        item {
+//            Spacer(modifier = Modifier.height(40.dp))
+//        }
 
     }
 }

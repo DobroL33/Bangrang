@@ -1,8 +1,10 @@
 package com.ssafyb109.bangrang.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.ssafyb109.bangrang.api.MarkerService
 import com.ssafyb109.bangrang.api.markerRequestDTO
+import com.ssafyb109.bangrang.room.BoundaryPoint
 import com.ssafyb109.bangrang.room.CurrentLocation
 import com.ssafyb109.bangrang.room.HistoricalLocation
 import com.ssafyb109.bangrang.room.UserLocationDao
@@ -11,8 +13,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.Response
+import javax.inject.Inject
 
-class LocationRepository(
+class LocationRepository @Inject constructor(
     private val dao: UserLocationDao,
     private val markerService: MarkerService
 ) : BaseRepository() {
@@ -21,27 +24,25 @@ class LocationRepository(
     suspend fun insertCurrentLocation(location: CurrentLocation) {
         dao.insertCurrentLocation(location)
     }
-    // 과거 위치 수집 DB 저장하기
-    suspend fun insertHistoricalLocation(location: HistoricalLocation) {
-        dao.insertHistoricalLocation(location)
-    }
 
     // 현재 위치 수집 DB 비우기
-    suspend fun deleteAllCurrentLocations() {
+    private suspend fun deleteAllCurrentLocations() {
         dao.deleteAllCurrentLocations()
-    }
-    // 과거 위치 수집 DB 비우기
-    suspend fun deleteAllHistoricalLocations() {
-        dao.deleteAllHistoricalLocations()
     }
 
     // 현재 위치 수집 DB 불러오기
     suspend fun getAllCurrentLocations(): List<CurrentLocation> {
         return dao.getCurrentLocations()
     }
+
+    // 과거 위치 수집 DB 비우기
+    private suspend fun deleteAllHistoricalLocations() {
+        dao.deleteAllHistoricalLocations()
+    }
+
     // 과거 위치 수집 DB 불러오기
-    suspend fun getHistoricalLocations(): List<HistoricalLocation> {
-        return dao.getHistoricalLocations()
+    suspend fun getAllBoundaryPoints(): List<BoundaryPoint> {
+        return dao.getAllBoundaryPoints()
     }
 
 
@@ -51,17 +52,36 @@ class LocationRepository(
             // 현재 위치 데이터 불러오기
             val currentLocations = getAllCurrentLocations()
 
+            Log.d("위치1111111111111111111111111","$currentLocations")
+
             // 현재 위치 서버로 전송
             val response = markerService.fetchLocationMark(currentLocations.map { markerRequestDTO(it.latitude, it.longitude) })
 
             if (response.isSuccessful) {
+                // 과거 DB 비우기
+                deleteAllHistoricalLocations()
+
+                Log.d("위치2222222222222222222222","${response.body()}")
+
                 // 서버 응답 과거 DB에 저장
-                response.body()?.let { locations ->
-                    locations.forEach { location ->
-                        insertHistoricalLocation(HistoricalLocation(latitude = location.latitude, longitude = location.longitude))
+                response.body()?.let { nestedLocations ->
+                    nestedLocations.forEach { locations ->
+                        // 과거 위치 객체를 생성하고 데이터베이스에 저장
+                        val historicalLocation = HistoricalLocation()
+                        val historicalLocationId = dao.insertHistoricalLocation(historicalLocation)
+
+                        // 각 위치를 경계점으로 변환하여 데이터베이스에 저장
+                        locations.forEach { location ->
+                            val boundaryPoint = BoundaryPoint(
+                                historicalLocationId = historicalLocationId.toInt(),
+                                latitude = location.latitude,
+                                longitude = location.longitude
+                            )
+                            dao.insertBoundaryPoint(boundaryPoint)
+                        }
                     }
                 }
-                // 현재 위치 데이터를 삭제합니다.
+                // 현재 DB 비우기
                 deleteAllCurrentLocations()
             }
             else {

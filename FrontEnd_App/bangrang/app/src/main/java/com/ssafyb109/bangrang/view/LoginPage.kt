@@ -3,6 +3,7 @@ package com.ssafyb109.bangrang.view
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -68,7 +69,7 @@ fun LoginPage(
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            handleGoogleSignInResult(task, navController, userViewModel)
+            handleGoogleSignInResult(task, navController, userViewModel, context)
         } else {
             Log.d("GoogleSignIn", "실패")
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -82,7 +83,7 @@ fun LoginPage(
     LaunchedEffect(key1 = Unit) {
         googleSignInClient.silentSignIn().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                handleGoogleSignInResult(task, navController, userViewModel)
+                handleGoogleSignInResult(task, navController, userViewModel, context)
             } else {
                 Log.d("GoogleLogin", "자동로그인 실패")
             }
@@ -215,7 +216,12 @@ fun performKakaoLogin(context: Context, navController: NavHostController, viewMo
     }
 }
 
-fun handleGoogleSignInResult(task: Task<GoogleSignInAccount>, navController: NavHostController, viewModel: UserViewModel) {
+fun handleGoogleSignInResult(
+    task: Task<GoogleSignInAccount>,
+    navController: NavHostController,
+    viewModel: UserViewModel,
+    context: Context
+) {
     try {
         val account: GoogleSignInAccount? = task.getResult(ApiException::class.java)
         if (account != null) {
@@ -224,6 +230,8 @@ fun handleGoogleSignInResult(task: Task<GoogleSignInAccount>, navController: Nav
         }
     } catch (e: ApiException) {
         Log.w("GOOGLE_SIGN_IN", "Google sign in failed", e)
+
+        Toast.makeText(context, "Google sign in failed: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
     }
 
     // 이동

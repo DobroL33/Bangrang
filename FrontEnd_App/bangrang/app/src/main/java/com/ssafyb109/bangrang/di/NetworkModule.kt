@@ -7,6 +7,8 @@ import com.ssafyb109.bangrang.api.MarkerService
 import com.ssafyb109.bangrang.api.RankService
 import com.ssafyb109.bangrang.api.RefreshTokenRequestDTO
 import com.ssafyb109.bangrang.api.UserService
+import com.ssafyb109.bangrang.room.AppDatabase
+import com.ssafyb109.bangrang.room.UserLocationDao
 import com.ssafyb109.bangrang.sharedpreferences.NullOnEmptyConverterFactory
 import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import dagger.Module
@@ -153,5 +155,24 @@ class TokenAuthenticator(
         } else {
             throw IOException("Failed to refresh token")
         }
+    }
+}
+
+
+@Module
+@InstallIn(SingletonComponent::class)
+object DatabaseModule {
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        // AppDatabase 인스턴스를 생성 , getDatabase 메서드를 호출
+        return AppDatabase.getDatabase(context)
+    }
+
+    @Provides
+    fun provideUserLocationDao(appDatabase: AppDatabase): UserLocationDao {
+        // UserLocationDao 인스턴스를 제공합니다.
+        return appDatabase.userLocationDao()
     }
 }

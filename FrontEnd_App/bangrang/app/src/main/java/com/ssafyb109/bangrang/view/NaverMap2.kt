@@ -5,10 +5,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -17,7 +18,6 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.CameraPositionState
-import com.naver.maps.map.compose.CircleOverlay
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
@@ -29,28 +29,30 @@ import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.overlay.GroundOverlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.ssafyb109.bangrang.R
-import com.ssafyb109.bangrang.view.utill.location.BusanLocation
-import com.ssafyb109.bangrang.view.utill.location.ChungbukLocation
-import com.ssafyb109.bangrang.view.utill.location.ChungnamLocation
-import com.ssafyb109.bangrang.view.utill.location.DaeguLocation
-import com.ssafyb109.bangrang.view.utill.location.DaejeonLocation
-import com.ssafyb109.bangrang.view.utill.location.GangwonLocation
-import com.ssafyb109.bangrang.view.utill.location.GwangjuLocation
-import com.ssafyb109.bangrang.view.utill.location.GyeongbukLocation
-import com.ssafyb109.bangrang.view.utill.location.GyeonggiLocation
-import com.ssafyb109.bangrang.view.utill.location.GyeongnamLocation
-import com.ssafyb109.bangrang.view.utill.location.IncheonLocation
-import com.ssafyb109.bangrang.view.utill.location.JejuLocation
-import com.ssafyb109.bangrang.view.utill.location.JeollabukLocation
-import com.ssafyb109.bangrang.view.utill.location.JeollanamLocation
-import com.ssafyb109.bangrang.view.utill.location.SejongLocation
-import com.ssafyb109.bangrang.view.utill.location.SeoulLocation
-import com.ssafyb109.bangrang.view.utill.location.UlsanLocation
+import com.ssafyb109.bangrang.viewmodel.LocationViewModel
+import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun NaverMap2(height: Dp = Dp.Unspecified, isCovered: Boolean) {
-    val center = LatLng(36.3555, 127.2986)
+fun NaverMap2(
+    height: Dp = Dp.Unspecified,
+    isCovered: Boolean,
+    locationViewModel: LocationViewModel,
+    userViewModel: UserViewModel,
+    ) {
+
+    // 위치데이터
+    val currentLocations by locationViewModel.currentLocations.collectAsState()
+    val historicalLocations by locationViewModel.boundaryPoints.collectAsState()
+    val currentLocation by userViewModel.currentLocation.collectAsState()
+
+    var center = LatLng(36.3555, 127.2986)
+
+    LaunchedEffect(currentLocation){
+        if(currentLocation != null){
+            center = LatLng(currentLocation!!.latitude, currentLocation!!.longitude)
+        }
+    }
 
     val koreaCoords = listOf(
         LatLng(38.3624684, 128.2379138),
@@ -81,13 +83,32 @@ fun NaverMap2(height: Dp = Dp.Unspecified, isCovered: Boolean) {
         LatLng(38.6025249, 128.4137193)
     )
 
-    val distance = 0.0009 // 대략 100m
-    val squareHole = listOf(
-        LatLng(center.latitude - distance, center.longitude - distance), // 남서
-        LatLng(center.latitude - distance, center.longitude + distance), // 남동
-        LatLng(center.latitude + distance, center.longitude + distance), // 북동
-        LatLng(center.latitude + distance, center.longitude - distance)  // 북서
-    )
+    // 현재 위치를 기반으로 도형 그리기
+    val currentSquares = currentLocations.map { currentLocation ->
+        val lat = currentLocation.latitude
+        val lng = currentLocation.longitude
+        val distance = 0.0009 * 1.414
+        listOf(
+            LatLng(lat - distance, lng - distance), // 남서
+            LatLng(lat - distance, lng + distance), // 남동
+            LatLng(lat + distance, lng + distance), // 북동
+            LatLng(lat + distance, lng - distance)  // 북서
+        )
+    }
+
+    // 과거 위치를 기반으로 도형 그리기
+    val historicalShapes = historicalLocations
+        .groupBy { it.historicalLocationId }
+        .values.map { group ->
+            group.map { LatLng(it.latitude, it.longitude) }
+        }
+
+    // 현재 도형 + 과거 도형
+    val holes = currentSquares + historicalShapes
+
+    LaunchedEffect(holes){
+        Log.d("&&&&&&&&&&&holes&&&&&&&&&&&&&","$holes")
+    }
 
 
 
@@ -113,6 +134,11 @@ fun NaverMap2(height: Dp = Dp.Unspecified, isCovered: Boolean) {
     groundOverlay.image = OverlayImage.fromResource(R.drawable.black256)
     groundOverlay.map = null
 
+    LaunchedEffect(true){
+        locationViewModel.fetchCurrentLocations()
+        locationViewModel.fetchHistoricalLocations()
+    }
+
 
     Box(
         Modifier
@@ -128,7 +154,7 @@ fun NaverMap2(height: Dp = Dp.Unspecified, isCovered: Boolean) {
             if(isCovered) {
                 PolygonOverlay(
                     coords = koreaCoords, // 대한민국 경계를 기준으로 하는 코너 좌표
-                    holes = listOf(squareHole), // 중심점을 기준으로 한 정사각형 구멍
+                    holes = holes, // 중심점을 기준으로 한 정사각형 구멍
                     color = Color.DarkGray, // 다각형의 색
                     outlineWidth = 2.dp, // 외곽선의 두께
                     outlineColor = Color.Black, // 외곽선의 색

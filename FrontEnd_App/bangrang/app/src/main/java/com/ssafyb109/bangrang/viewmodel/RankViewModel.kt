@@ -2,7 +2,8 @@ package com.ssafyb109.bangrang.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssafyb109.bangrang.api.RegionDTO
+import com.ssafyb109.bangrang.api.MyRankDTO
+import com.ssafyb109.bangrang.api.TotalRegionDTO
 import com.ssafyb109.bangrang.repository.RankRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,12 +18,12 @@ class RankViewModel @Inject constructor(
 ) : ViewModel() {
 
     // 전체 랭킹 응답
-    private val _allRankResponse = MutableStateFlow<RegionDTO?>(null)
-    val allRankResponse: StateFlow<RegionDTO?> = _allRankResponse.asStateFlow()
+    private val _allRankResponse = MutableStateFlow<TotalRegionDTO?>(null)
+    val allRankResponse: StateFlow<TotalRegionDTO?> = _allRankResponse.asStateFlow()
 
     // 친구 랭킹 응답
-    private val _friendRankResponse = MutableStateFlow<List<RegionDTO>?>(emptyList())
-    val friendRankResponse: StateFlow<List<RegionDTO>?> = _friendRankResponse.asStateFlow()
+    private val _friendRankResponse = MutableStateFlow<MyRankDTO?>(null)
+    val friendRankResponse: StateFlow<MyRankDTO?> = _friendRankResponse.asStateFlow()
 
     // 에러 메시지
     private val _errorMessage = MutableStateFlow<String?>(null)

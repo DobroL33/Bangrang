@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafyb109.bangrang.R
-import com.ssafyb109.bangrang.api.RegionDTO
+import com.ssafyb109.bangrang.api.MyRankDTO
 import com.ssafyb109.bangrang.ui.theme.heavySkyBlue
 import com.ssafyb109.bangrang.view.utill.BarGraph
 import com.ssafyb109.bangrang.view.utill.HalfPieGraph
@@ -31,7 +31,7 @@ import com.ssafyb109.bangrang.view.utill.HalfPieGraph
 @Composable
 fun RankMyPage(
     animationLaunch : Int,
-    allRankResponse : RegionDTO?
+    allRankResponse : MyRankDTO?
 ) {
     val cityRanks = listOf(
         Pair("서울", 1 to 28),

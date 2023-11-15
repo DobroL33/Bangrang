@@ -1,7 +1,11 @@
 package com.ssafyb109.bangrang.ground
 
 import android.Manifest
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,12 +14,20 @@ import android.os.IBinder
 import android.os.Looper
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.ssafyb109.bangrang.MainActivity
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.room.AppDatabase
 import com.ssafyb109.bangrang.room.CurrentLocation
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LocationService : Service() {
     private val channelId = "방랑지도수집"
