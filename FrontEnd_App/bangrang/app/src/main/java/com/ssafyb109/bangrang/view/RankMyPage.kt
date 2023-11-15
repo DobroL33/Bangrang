@@ -33,21 +33,15 @@ fun RankMyPage(
     animationLaunch : Int,
     allRankResponse : MyRankDTO?
 ) {
-    val cityRanks = listOf(
-        Pair("서울", 1 to 28),
-        Pair("부산", 2 to 17),
-        Pair("인천", 3 to 11),
-        Pair("대전", 4 to 9),
-        Pair("대구", 5 to 7),
-        Pair("광주", 6 to 5),
-        Pair("울산", 7 to 5),
-        Pair("세종", 8 to 4),
-        Pair("제주", 9 to 4),
-        Pair("경주", 10 to 2)
-    )
-    val scrollState = rememberScrollState()
+    val allRate = allRankResponse?.rating
+    val topRate = allRankResponse?.myRatings?.get(0)?.percent?.div(100)
+    val topRank = allRankResponse?.myRatings?.get(0)?.rate?.toInt()
 
-    val sample = 0.842
+    val cityRanks = allRankResponse?.myRatings?.map { myRegionRankDTO ->
+        Pair(myRegionRankDTO.region, myRegionRankDTO.rate.toInt() to myRegionRankDTO.percent.toInt())
+    } ?: emptyList()
+
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
@@ -63,7 +57,12 @@ fun RankMyPage(
                 .fillMaxWidth()
                 .height(200.dp)
         ) {
-            HalfPieGraph(sample,12000,23,animationLaunch)
+            if (allRate != null && topRank != null && topRate != null) {
+                HalfPieGraph(topRate,topRank,allRate,animationLaunch)
+            }
+            else{
+                HalfPieGraph(0.0,0,0,animationLaunch)
+            }
         }
 
         Text(text = "지역별 정복도", fontSize = 24.sp, fontWeight = FontWeight.Bold)
@@ -108,3 +107,4 @@ fun RankRate(cityName: String, rank: Int, percentage: Int) {
         Text(text = "$percentage%", fontSize = 20.sp, color = heavySkyBlue, fontWeight = FontWeight.Bold)
     }
 }
+

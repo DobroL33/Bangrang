@@ -3,12 +3,13 @@ package com.ssafyb109.bangrang.view
 import android.app.Activity
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,9 +22,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,8 +49,8 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.repository.ResultType
-import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -56,6 +60,14 @@ fun LoginPage(
     userViewModel: UserViewModel
 ) {
     val context = LocalContext.current
+
+    // 로딩 상태
+    val isLoading = remember { mutableStateOf(true) }
+
+    LaunchedEffect(key1 = Unit) {
+        delay(1000) // 1초 대기
+        isLoading.value = false // 로딩 상태 종료
+    }
 
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(context.getString(R.string.gcp_id))
@@ -89,84 +101,74 @@ fun LoginPage(
             }
         }
     }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // 로고 부분
-        Image(
-            painter = painterResource(id = R.drawable.app_logo),
-            contentDescription = "로고",
-            contentScale = ContentScale.Fit,
+    if (isLoading.value) {
+        LoadingScreen() // 로딩 화면
+    } else {
+        Column(
             modifier = Modifier
-                .padding(top = 50.dp)
-                .size(200.dp)
-        )
-
-        Spacer(modifier = Modifier.height(160.dp))
-
-        // 카카오 로그인 버튼
-        Image(
-            painter = painterResource(id = R.drawable.kakao_login_medium_wide),
-            contentDescription = "카카오로 로그인",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .clickable {
-                    performKakaoLogin(context, navController, userViewModel)
-                }
-                .width(350.dp)
-                .height(80.dp)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // 구글 로그인 버튼
-        Button(
-            onClick = {
-                googleSignInClient.signInIntent.also {
-                    googleSignInLauncher.launch(googleSignInClient.signInIntent)
-                }
-            },
-            modifier = Modifier
-                .width(350.dp)
-                .height(60.dp),
-            shape = RoundedCornerShape(6.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
-            )
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.google_logo3),
-                    contentDescription = null,
-                    modifier = Modifier.size(84.dp)
+            // 로고 부분
+            Image(
+                painter = painterResource(id = R.drawable.app_logo),
+                contentDescription = "로고",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .padding(top = 50.dp)
+                    .size(200.dp)
+            )
+
+            Spacer(modifier = Modifier.height(160.dp))
+
+            // 카카오 로그인 버튼
+            Image(
+                painter = painterResource(id = R.drawable.kakao_login_medium_wide),
+                contentDescription = "카카오로 로그인",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .clickable {
+                        performKakaoLogin(context, navController, userViewModel)
+                    }
+                    .width(350.dp)
+                    .height(80.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 구글 로그인 버튼
+            Button(
+                onClick = {
+                    googleSignInClient.signInIntent.also {
+                        googleSignInLauncher.launch(googleSignInClient.signInIntent)
+                    }
+                },
+                modifier = Modifier
+                    .width(350.dp)
+                    .height(60.dp),
+                shape = RoundedCornerShape(6.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
                 )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(text = "Sign in with Google", fontSize = 20.sp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.google_logo3),
+                        contentDescription = null,
+                        modifier = Modifier.size(84.dp)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(text = "Sign in with Google", fontSize = 20.sp)
+                }
             }
+            Spacer(modifier = Modifier.height(16.dp))
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        //네이버로그인 = 앱 출시이후 가능
-        
-        // 임시 홈이동
-        Button(onClick = { navController.navigate("Home")}) {
-            Text(text = "임시 홈이동")
-
-        }
-
-        Button(onClick = { navController.navigate("SignUp") }) {
-            Text(text = "임시 닉네임 이동")
-        }
-
     }
 }
 
@@ -225,13 +227,10 @@ fun handleGoogleSignInResult(
     try {
         val account: GoogleSignInAccount? = task.getResult(ApiException::class.java)
         if (account != null) {
-            Log.d("@@@@@@@@@@@@@@@@@2","${account.idToken}")
             viewModel.sendTokenToServer("google",account.idToken ?: "")
         }
     } catch (e: ApiException) {
         Log.w("GOOGLE_SIGN_IN", "Google sign in failed", e)
-
-        Toast.makeText(context, "Google sign in failed: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
     }
 
     // 이동
@@ -248,5 +247,18 @@ fun handleGoogleSignInResult(
                 else -> {}
             }
         }
+    }
+}
+
+@Composable
+fun LoadingScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f)) // 반투명 배경
+            .clickable(enabled = false, onClick = {}), // 클릭 막기
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator() // 로딩 아이콘
     }
 }

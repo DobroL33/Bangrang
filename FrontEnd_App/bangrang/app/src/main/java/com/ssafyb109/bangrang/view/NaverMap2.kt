@@ -129,8 +129,7 @@ fun NaverMap2(
     }
 
     val groundOverlay = GroundOverlay()
-    groundOverlay.bounds = LatLngBounds(
-        LatLng(37.566351, 126.977234), LatLng(37.568528, 126.979980))
+    groundOverlay.bounds = LatLngBounds(LatLng(37.566351, 126.977234), LatLng(37.568528, 126.979980))
     groundOverlay.image = OverlayImage.fromResource(R.drawable.black256)
     groundOverlay.map = null
 

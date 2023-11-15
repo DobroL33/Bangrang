@@ -4,16 +4,18 @@ import android.util.Log
 import com.ssafyb109.bangrang.api.AlarmListResponseDTO
 import com.ssafyb109.bangrang.api.AlarmSettingRequestDTO
 import com.ssafyb109.bangrang.api.AlarmStatusRequesetDTO
+import com.ssafyb109.bangrang.api.FireBaseToken
 import com.ssafyb109.bangrang.api.FriendListResponseDTO
 import com.ssafyb109.bangrang.api.LoginRequestDTO
 import com.ssafyb109.bangrang.api.RefreshTokenRequestDTO
-import com.ssafyb109.bangrang.api.RefreshTokenResponseDTO
 import com.ssafyb109.bangrang.api.StampResponseDTO
 import com.ssafyb109.bangrang.api.UserService
 import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -274,6 +276,24 @@ class UserRepository @Inject constructor(
         } catch (e: Exception) {
             lastError = handleNetworkException(e)
         }
+    }
+
+    // 파이어베이스 토큰 보내기
+    fun sendFirebaseToken(token: String, callback: (Boolean) -> Unit) {
+        userService.sendFirebaseToken(FireBaseToken(token)).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    callback(true)
+                } else {
+                    callback(false)
+                }
+            }
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                // 네트워크 요청 자체가 실패했을 때
+                Log.d("FirebaseTokenError", "Failed to send firebase token: $t")
+                callback(false)
+            }
+        })
     }
 }
 

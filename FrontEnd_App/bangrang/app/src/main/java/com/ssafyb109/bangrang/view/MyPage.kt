@@ -59,8 +59,7 @@ fun MyPage(
 ) {
 
     val allRankResponse by rankViewModel.allRankResponse.collectAsState()
-//    val bangrangPercent = allRankResponse?.korea?.get(0)?.percent
-    val bangrangPercent = 1.1
+    val bangrangPercent = allRankResponse?.myRank?.myRatings?.getOrNull(0)?.percent
 
     // 지금 유저 사진 url
     val userImg = sharedPreferencesUtil.getUserImage()
@@ -155,6 +154,7 @@ fun MyPage(
                         contentDescription = null,
                         modifier = Modifier
                             .padding(top = 30.dp, start = 30.dp)
+                            .size(80.dp)
                             .clip(CircleShape)
                     )
                 } else{
@@ -165,10 +165,10 @@ fun MyPage(
                         contentDescription = null,
                         modifier = Modifier
                             .padding(top = 30.dp, start = 30.dp)
+                            .size(80.dp)
                             .clip(CircleShape)
                     )
                 }
-
 
                 Column(
                     modifier = Modifier.weight(1f),

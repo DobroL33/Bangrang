@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,12 +60,9 @@ fun RankPage(
     val friendRankResponse by rankViewModel.friendRankResponse.collectAsState()
 
     LaunchedEffect(Unit){
-        if(allRankResponse == null){
-            rankViewModel.fetchAllRank()
-            rankViewModel.fetchFriendRank()
-        }
+        rankViewModel.fetchAllRank()
+        rankViewModel.fetchFriendRank()
     }
-
 
     var tabSelection by remember { mutableStateOf("전체") }
     val tabs = listOf("전체", "친구", "나")
@@ -215,7 +211,7 @@ fun TotalRanking(
 
     if(detailRankList.size == 2){
         if(detailRankList[0].userNickname == sharedPreferencesUtil.getUserNickname()){
-            myRanking.value = 1
+            myRanking.longValue = 1
             isFirst.value = true
             isLast.value = false
         }
@@ -243,7 +239,7 @@ fun TotalRanking(
             }
 
             if (allRankResponse != null) {
-                myRanking.value = allRankResponse.myRank.myRatings[locationNumber].rate
+                myRanking.longValue = allRankResponse.myRank.myRatings[locationNumber].rate
                 isFirst.value = false
                 isLast.value = true
             }
@@ -282,11 +278,12 @@ fun TotalRanking(
         }
 
         item {
-            PodiumLayout(rankList, location)
+            PodiumLayout(rankList)
             Spacer(modifier = Modifier.height(32.dp))
         }
 
-        items((4..10).toList()) { rank ->
+        val endRange = minOf(rankList.size, 10) - 1 // 10 안되면 리스트 길이
+        items((3..endRange).toList()) { rank ->
             RankRow(rankList, rank, rank-1)
         }
 
@@ -299,7 +296,7 @@ fun TotalRanking(
         if(!isFirst.value&&!isLast.value){
             item {
                 if (subRankList != null) {
-                    RankRow(rank = myRanking.value.toInt()-1, list = subRankList, number = 0 )
+                    RankRow(rank = myRanking.longValue.toInt()-1, list = subRankList, number = 0 )
                 }
             }
         }
@@ -307,19 +304,18 @@ fun TotalRanking(
         item {
             if (subRankList != null) {
                 if(isFirst.value){
-                    RankRow(rank = myRanking.value.toInt(), list = subRankList, number = 0 )
+                    RankRow(rank = myRanking.longValue.toInt(), list = subRankList, number = 0 )
                 }
                 else{
-                    RankRow(rank = myRanking.value.toInt(), list = subRankList, number = 1 )
+                    RankRow(rank = myRanking.longValue.toInt(), list = subRankList, number = 1 )
                 }
-
             }
         }
 
         if(!isLast.value&&!isFirst.value){
             item {
                 if (subRankList != null) {
-                    RankRow(rank = myRanking.value.toInt()+1, list = subRankList, number = 2 )
+                    RankRow(rank = myRanking.longValue.toInt()+1, list = subRankList, number = 2 )
                 }
             }
         }
@@ -334,7 +330,6 @@ fun TotalRanking(
 @Composable
 fun PodiumLayout(
     rankResponse: List<RankList>,
-    location: String,
 ) {
 
     // 임시 사용자 데이터

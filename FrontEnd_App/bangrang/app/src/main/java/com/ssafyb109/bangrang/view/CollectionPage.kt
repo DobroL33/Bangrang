@@ -2,7 +2,6 @@ package com.ssafyb109.bangrang.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,14 +26,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.mutableStateOf
 import androidx.navigation.NavHostController
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.api.StampDetail
 import com.ssafyb109.bangrang.ui.theme.heavySkyBlue
 import com.ssafyb109.bangrang.ui.theme.lightSkyBlue
-import com.ssafyb109.bangrang.view.utill.DateToKorean
 import com.ssafyb109.bangrang.view.utill.LocationSelector
+import com.ssafyb109.bangrang.view.utill.dateToKorean
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
 
@@ -147,7 +146,7 @@ fun StampItem(stamp: StampDetail) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = stamp.stampLocation, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = DateToKorean(stamp.stampTime), fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            Text(text = dateToKorean(stamp.stampTime), fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
 
         // 오른쪽 이미지

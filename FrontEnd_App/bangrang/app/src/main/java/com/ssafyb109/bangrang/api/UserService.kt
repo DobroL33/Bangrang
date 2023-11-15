@@ -2,6 +2,7 @@ package com.ssafyb109.bangrang.api
 
 import android.provider.ContactsContract.CommonDataKinds.Nickname
 import okhttp3.MultipartBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -104,6 +105,12 @@ interface UserService {
     suspend fun fetchFriend(
     ): Response<List<FriendListResponseDTO>>
 
+    // firebase 토큰
+    @PATCH("api/member/firebase")
+    fun sendFirebaseToken(
+        @Body token: FireBaseToken
+    ): Call<Void>
+
 }
 
 // 카카오 로그인 요청 DTO
@@ -176,4 +183,9 @@ data class AlarmStatusRequesetDTO(
 data class FriendListResponseDTO(
     val nickname: String,
     val userImage: String?,
+)
+
+// firebase 토큰
+data class FireBaseToken(
+    val token: String
 )

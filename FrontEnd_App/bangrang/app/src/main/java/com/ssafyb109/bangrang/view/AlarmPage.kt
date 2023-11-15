@@ -41,6 +41,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.api.AlarmListResponseDTO
+import com.ssafyb109.bangrang.view.utill.dateToKorean
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
 @Composable
@@ -239,7 +240,7 @@ fun AlarmItem(
                         color = textColor
                     )
                     Text( //TODO: FormatDate 적용시키기
-                        text = alarm.alarmCreatedDate,
+                        text = dateToKorean(alarm.alarmCreatedDate),
                         fontSize = 15.sp,
                         color = textColor
                     )

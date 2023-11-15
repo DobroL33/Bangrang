@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ssafyb109.bangrang.api.InquiryListResponseDTO
 import com.ssafyb109.bangrang.ui.theme.heavySkyBlue
-import com.ssafyb109.bangrang.view.utill.DateToKorean
+import com.ssafyb109.bangrang.view.utill.dateToKoreanDate
 import com.ssafyb109.bangrang.viewmodel.InquiryViewModel
 
 @Composable
@@ -186,8 +186,8 @@ fun InquiryItem(number: Int, inquiry: InquiryListResponseDTO, onClick: () -> Uni
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = number.toString(), modifier = Modifier.weight(1f), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-        Text(text = inquiry.title, modifier = Modifier.weight(4f), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-        Text(text = DateToKorean(inquiry.resistDate), modifier = Modifier.weight(4f), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        Text(text = inquiry.title, modifier = Modifier.weight(5f), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        Text(text = dateToKoreanDate(inquiry.resistDate), modifier = Modifier.weight(2f), fontSize = 16.sp, fontWeight = FontWeight.Bold)
     }
 }
 

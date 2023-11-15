@@ -1,11 +1,9 @@
 package com.ssafyb109.bangrang.repository
 
-import com.ssafyb109.bangrang.api.AlarmSettingRequestDTO
 import com.ssafyb109.bangrang.api.EventIndexListResponseDTO
 import com.ssafyb109.bangrang.api.EventLikeRequestDTO
 import com.ssafyb109.bangrang.api.EventSelectListResponseDTO
 import com.ssafyb109.bangrang.api.EventService
-import com.ssafyb109.bangrang.api.InquiryResistRequestDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response

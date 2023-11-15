@@ -41,8 +41,8 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.ssafyb109.bangrang.api.EventSelectListResponseDTO
 import com.ssafyb109.bangrang.view.utill.CardItem
-import com.ssafyb109.bangrang.view.utill.DateToKorean
 import com.ssafyb109.bangrang.view.utill.LocationSelector
+import com.ssafyb109.bangrang.view.utill.dateToKorean
 import com.ssafyb109.bangrang.viewmodel.EventViewModel
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
@@ -80,7 +80,7 @@ fun EventPage(
         item {
             LazyRow(modifier = Modifier.fillMaxWidth()) {
                 items(selectedEvent) { event ->
-                    CardItem(event, navController, eventViewModel)
+                    CardItem(event, navController, eventViewModel, userViewModel, isLike = true, isLocation = false)
                 }
             }
         }
@@ -153,8 +153,8 @@ fun EventItem(event: EventSelectListResponseDTO) {
         ) {
             Text(text = event.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             Text(text = event.address)
-            Text(text = "시작일 : ${DateToKorean(event.startDate)}", fontSize = 14.sp)
-            Text(text = "종료일 : ${DateToKorean(event.endDate)}", fontSize = 14.sp)
+            Text(text = "시작일 : ${dateToKorean(event.startDate)}", fontSize = 14.sp)
+            Text(text = "종료일 : ${dateToKorean(event.endDate)}", fontSize = 14.sp)
         }
 
         Box(

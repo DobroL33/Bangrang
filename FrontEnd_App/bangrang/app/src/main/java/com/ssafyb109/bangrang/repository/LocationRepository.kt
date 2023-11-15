@@ -1,18 +1,12 @@
 package com.ssafyb109.bangrang.repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import com.ssafyb109.bangrang.api.MarkerService
 import com.ssafyb109.bangrang.api.markerRequestDTO
 import com.ssafyb109.bangrang.room.BoundaryPoint
 import com.ssafyb109.bangrang.room.CurrentLocation
 import com.ssafyb109.bangrang.room.HistoricalLocation
 import com.ssafyb109.bangrang.room.UserLocationDao
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import retrofit2.Response
 import javax.inject.Inject
 
 class LocationRepository @Inject constructor(

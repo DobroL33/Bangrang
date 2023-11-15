@@ -142,7 +142,7 @@ fun HomePage(
             item {
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
                     items(filteredEvents) { event ->
-                        CardItem(event, navController, eventViewModel)
+                        CardItem(event, navController, eventViewModel, userViewModel, isLike = false, isLocation = false)
                     }
                 }
             }
@@ -162,7 +162,7 @@ fun HomePage(
             item {
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
                     items(selectedEvent) { event ->
-                        CardItem(event, navController, eventViewModel)
+                        CardItem(event, navController, eventViewModel, userViewModel, isLike = false, isLocation = true)
                     }
                 }
             }

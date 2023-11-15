@@ -6,8 +6,6 @@ import com.ssafyb109.bangrang.api.InquiryService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
-import java.net.ConnectException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class InquiryRepository @Inject constructor(

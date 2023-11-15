@@ -2,7 +2,6 @@ package com.ssafyb109.bangrang.view
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.ssafyb109.bangrang.view.utill.DateToKorean
+import com.ssafyb109.bangrang.view.utill.dateToKorean
 import com.ssafyb109.bangrang.viewmodel.EventViewModel
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
@@ -88,8 +86,8 @@ fun EventDetailPage(
             }
 
             Text(text = eventDetail.title, fontSize = 32.sp, fontWeight = FontWeight.Bold)
-            Text(text = "시작일 : ${DateToKorean(eventDetail.startDate)}", fontSize = 18.sp)
-            Text(text = "종료일 : ${DateToKorean(eventDetail.endDate)}", fontSize = 18.sp)
+            Text(text = "시작일 : ${dateToKorean(eventDetail.startDate)}", fontSize = 18.sp)
+            Text(text = "종료일 : ${dateToKorean(eventDetail.endDate)}", fontSize = 18.sp)
             Button(onClick = { navController.navigate("InquiryResistPage/${index}") }) {
                 Text(text = "문의하기")
             }

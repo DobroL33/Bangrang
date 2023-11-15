@@ -1,6 +1,7 @@
 package com.ssafyb109.bangrang.viewmodel
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.location.Location
 import android.os.Looper
@@ -12,6 +13,8 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafyb109.bangrang.api.AlarmListResponseDTO
 import com.ssafyb109.bangrang.api.AlarmStatusRequesetDTO
 import com.ssafyb109.bangrang.api.FriendListResponseDTO
@@ -189,6 +192,7 @@ class UserViewModel @Inject constructor(
             _loginResponse.emit(ResultType.LOADING)
             val result = userRepository.verifySocialToken(social, token)
             _loginResponse.emit(result)
+            getFirebaseToken()
         }
     }
 
@@ -357,4 +361,31 @@ class UserViewModel @Inject constructor(
             }
         }
     }
+
+    // Firebase Token 가져오기
+    private fun getFirebaseToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+            val firebaseToken = task.result
+            // Null 체크 후 로깅
+            if (firebaseToken != null) {
+                Log.d("FirebaseToken", "Retrieved token: $firebaseToken")
+                userRepository.sendFirebaseToken(firebaseToken) { isSuccess ->
+                    if (isSuccess) {
+                        // 토큰 전송 성공 처리
+                        Log.d("FirebaseToken", "Token sent successfully")
+                    } else {
+                        // 토큰 전송 실패 처리
+                        Log.d("FirebaseToken", "Failed to send token")
+                    }
+                }
+            } else {
+                Log.w("FirebaseToken", "Firebase token is null")
+            }
+        }
+    }
+
 }

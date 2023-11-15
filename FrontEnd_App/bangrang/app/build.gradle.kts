@@ -6,6 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.kapt")
     id("dagger.hilt.android.plugin")
+    id("com.google.gms.google-services")
 }
 
 val properties = Properties()
@@ -108,6 +109,9 @@ dependencies {
     implementation ("io.github.fornewid:naver-map-compose:1.4.0")
     // coil
     implementation("io.coil-kt:coil-compose:2.4.0")
+    // FCM
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-messaging-ktx")
 
 
     // Room
