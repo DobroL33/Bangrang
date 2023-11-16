@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,34 +62,31 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
         // 제일 최신의 MemberMapArea을 DB로부터 불러오는 로직
         // 만약 최신 MemberMapArea가 오늘 날짜(yyyymmdd)면 update, 아니면 create
         // 가장 최근에 생성된 엔티티를 불러오는 메서드
-        List<MemberMapArea> recent = memberMapAreaRepository.findTopByAppMemberIdxOrderByCreatedAtDesc(appMember.getIdx(), PageRequest.of(0, 1));
+        List<MemberMapArea> recent = memberMapAreaRepository.findTopByAppMemberIdxOrderByCreatedAtDesc(appMember.getIdx(), RegionType.KOREA, PageRequest.of(0, 1));
         if(recent.size() >= 1){
             MemberMapArea befoMemberMapArea = recent.get(0);
+            Geometry befoPolygon = befoMemberMapArea.getShape();
 
-            LocalDate currentDate = LocalDate.now(); // 현재 날짜를 가져옵니다.
+            LocalDate currentDate = LocalDate.now(); // 현재 날짜
             LocalDate createdAtDate = befoMemberMapArea.getCreatedAt().toLocalDate(); // 'createdAt'의 날짜 부분을 추출합니다.
 
-            if (createdAtDate.isEqual(currentDate)) {
-                // 'createdAt'의 날짜가 현재 날짜와 같은 경우, 객체 union
-                Geometry befoPolygon = befoMemberMapArea.getShape();
+            // union 객체
+            Geometry unionResult = CascadedPolygonUnion.union(Arrays.asList(new Geometry[] {curUnionResult, befoPolygon}));
 
-//                GeometryCollection geometryCollection = new GeometryCollection(new Geometry[] {curUnionResult, befoPolygon}, new GeometryFactory());
-//                Geometry unionResult = geometryCollection.union();
-                Geometry unionResult = CascadedPolygonUnion.union(Arrays.asList(new Geometry[] {curUnionResult, befoPolygon}));
-
+            // 오늘 이미 만든 객체가 있다면 값만 변경
+            if(createdAtDate.isEqual(currentDate)){
                 befoMemberMapArea.changeShapeAndDimension(unionResult, unionResult.getArea());
-
                 return getBorderPointListOuter(unionResult);
-
-            } else {
-                // 'createdAt'의 날짜가 현재 날짜와 다른 경우, 객체 생성
-                saveMemberMapArea(RegionType.KOREA, curUnionResult, appMember);
-                return getBorderPointListOuter(curUnionResult);
+            // 어제 객체라면 어제 객체 + 현재 객체값을 가진 새 데이터 생성
+            }else{
+                saveMemberMapArea(RegionType.KOREA, unionResult, appMember);
+                return getBorderPointListOuter(unionResult);
             }
         }else{
             // 새 데이터를 넣는 경우
             saveMemberMapArea(RegionType.KOREA, curUnionResult, appMember);
             return getBorderPointListOuter(curUnionResult);
+
         }
 
     }
