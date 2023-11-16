@@ -85,5 +85,6 @@ private fun getDefaultEventDetailData(): EventIndexListResponseDTO {
         longitude = 0.0,
         likeCount = 0,
         isLiked = false,
+        isStamp = false,
     )
 }

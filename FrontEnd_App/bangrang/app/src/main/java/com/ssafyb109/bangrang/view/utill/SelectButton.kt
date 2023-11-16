@@ -15,6 +15,7 @@ import com.ssafyb109.bangrang.ui.theme.skyBlue
 fun SelectButton(
     onClick: () -> Unit,
     text: String,
+    fonSize: Int,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     backgroundColor: Color = heavySkyBlue,
@@ -29,6 +30,6 @@ fun SelectButton(
             contentColor = contentColor,
         )
     ) {
-        Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        Text(text = text, fontSize = fonSize.sp, fontWeight = FontWeight.Bold)
     }
 }

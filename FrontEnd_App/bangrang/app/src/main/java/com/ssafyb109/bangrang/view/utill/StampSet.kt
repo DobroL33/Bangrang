@@ -35,7 +35,8 @@ import com.ssafyb109.bangrang.viewmodel.RankViewModel
 @Composable
 fun StampSet(
     navController: NavHostController,
-    bangrangPercent: Double?
+    bangrangPercent: Double?,
+    totalNum: Long?
 ) {
 
     Box(
@@ -70,9 +71,9 @@ fun StampSet(
                             .padding(4.dp)
                     )
                     Text(
-                        "8개",
+                        if (totalNum != null)"${totalNum}개" else "0개",
                         color = Color.Black,
-                        fontSize = 24.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }

@@ -92,6 +92,10 @@ class UserViewModel @Inject constructor(
     private val _stampsResponse = MutableStateFlow<StampResponseDTO?>(null)
     val stampsResponse: StateFlow<StampResponseDTO?> = _stampsResponse
 
+    // 스탬프 찍기 응답
+    private val _stampPressResponse = MutableStateFlow<Boolean?>(null)
+    val stampPressResponse: StateFlow<Boolean?> = _stampPressResponse
+
     // 친구 추가 응답
     private val _addFriendResponse = MutableStateFlow<Boolean?>(null)
     val addFriendResponse: StateFlow<Boolean?> = _addFriendResponse
@@ -149,8 +153,9 @@ class UserViewModel @Inject constructor(
     @SuppressLint("MissingPermission")
     private fun requestLocationUpdates() {
         val locationRequest = LocationRequest.create()?.apply {
+            fastestInterval = 3000 // 가장 빠른 업데이트 간격
+            smallestDisplacement = 80f // 80미터 간격 업데이트
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = 20000  // 20초마다 위치 업데이트
         }
 
         val locationCallback = object : LocationCallback() {
@@ -320,6 +325,17 @@ class UserViewModel @Inject constructor(
                     val error = response.errorBody()?.string() ?: "알수없는 에러"
                     _errorMessage.emit(error)
                 }
+            }
+        }
+    }
+
+    // 스탬프 찍기
+    fun eventStamp(eventIdx: Long) {
+        viewModelScope.launch {
+            val response = userRepository.eventStamp(eventIdx)
+            _stampPressResponse.value = response
+            if (!response) {
+                _errorMessage.emit(userRepository.lastError ?: "알 수 없는 에러")
             }
         }
     }

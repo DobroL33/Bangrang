@@ -5,6 +5,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import com.ssafyb109.bangrang.viewmodel.LocationViewModel
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 
 @Composable
 fun MapPage(
@@ -12,9 +14,12 @@ fun MapPage(
     userViewModel: UserViewModel,
     locationViewModel: LocationViewModel
 ) {
-    LaunchedEffect(Unit){
-        locationViewModel.sendCurrentLocation()
+    LaunchedEffect(Unit) {
+        while (isActive) {
+            locationViewModel.sendCurrentLocation()
+            delay(20000L) // 20초 간격 재전송
+        }
     }
 
-    NaverMap2(isCovered = true, locationViewModel = locationViewModel, userViewModel = userViewModel)
+    NaverMapDarkMode(isCovered = true, locationViewModel = locationViewModel, userViewModel = userViewModel)
 }

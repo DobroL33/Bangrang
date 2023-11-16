@@ -8,6 +8,7 @@ import com.ssafyb109.bangrang.api.FireBaseToken
 import com.ssafyb109.bangrang.api.FriendListResponseDTO
 import com.ssafyb109.bangrang.api.LoginRequestDTO
 import com.ssafyb109.bangrang.api.RefreshTokenRequestDTO
+import com.ssafyb109.bangrang.api.StampPress
 import com.ssafyb109.bangrang.api.StampResponseDTO
 import com.ssafyb109.bangrang.api.UserService
 import com.ssafyb109.bangrang.sharedpreferences.SharedPreferencesUtil
@@ -227,6 +228,22 @@ class UserRepository @Inject constructor(
             }
         } catch (e: Exception) {
             lastError = handleNetworkException(e)
+        }
+    }
+
+    // 스탬프 찍기
+    suspend fun eventStamp(eventIdx: Long): Boolean {
+        return try {
+            val response = userService.eventStamp(StampPress(eventIdx))
+            if(response.isSuccessful) {
+                true
+            } else {
+                lastError = handleNetworkException(response = response)
+                false
+            }
+        } catch (e: Exception) {
+            lastError = handleNetworkException(e)
+            false
         }
     }
 

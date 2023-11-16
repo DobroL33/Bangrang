@@ -1,6 +1,5 @@
 package com.ssafyb109.bangrang.view
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,15 +33,15 @@ import com.ssafyb109.bangrang.viewmodel.UserViewModel
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun NaverMap2(
+fun NaverMapDarkMode(
     height: Dp = Dp.Unspecified,
     isCovered: Boolean,
     locationViewModel: LocationViewModel,
     userViewModel: UserViewModel,
     ) {
 
+    // 추가
     // 위치데이터
-    val currentLocations by locationViewModel.currentLocations.collectAsState()
     val historicalLocations by locationViewModel.boundaryPoints.collectAsState()
     val currentLocation by userViewModel.currentLocation.collectAsState()
 
@@ -83,34 +82,12 @@ fun NaverMap2(
         LatLng(38.6025249, 128.4137193)
     )
 
-    // 현재 위치를 기반으로 도형 그리기
-    val currentSquares = currentLocations.map { currentLocation ->
-        val lat = currentLocation.latitude
-        val lng = currentLocation.longitude
-        val distance = 0.0009 * 1.414
-        listOf(
-            LatLng(lat - distance, lng - distance), // 남서
-            LatLng(lat - distance, lng + distance), // 남동
-            LatLng(lat + distance, lng + distance), // 북동
-            LatLng(lat + distance, lng - distance)  // 북서
-        )
-    }
-
     // 과거 위치를 기반으로 도형 그리기
     val historicalShapes = historicalLocations
         .groupBy { it.historicalLocationId }
         .values.map { group ->
             group.map { LatLng(it.latitude, it.longitude) }
         }
-
-    // 현재 도형 + 과거 도형
-    val holes = currentSquares + historicalShapes
-
-    LaunchedEffect(holes){
-        Log.d("&&&&&&&&&&&holes&&&&&&&&&&&&&","$holes")
-    }
-
-
 
     val mapProperties by remember {
         mutableStateOf(
@@ -134,7 +111,6 @@ fun NaverMap2(
     groundOverlay.map = null
 
     LaunchedEffect(true){
-        locationViewModel.fetchCurrentLocations()
         locationViewModel.fetchHistoricalLocations()
     }
 
@@ -153,7 +129,7 @@ fun NaverMap2(
             if(isCovered) {
                 PolygonOverlay(
                     coords = koreaCoords, // 대한민국 경계를 기준으로 하는 코너 좌표
-                    holes = holes, // 중심점을 기준으로 한 정사각형 구멍
+                    holes = historicalShapes, // 중심점을 기준으로 한 정사각형 구멍
                     color = Color.DarkGray, // 다각형의 색
                     outlineWidth = 2.dp, // 외곽선의 두께
                     outlineColor = Color.Black, // 외곽선의 색

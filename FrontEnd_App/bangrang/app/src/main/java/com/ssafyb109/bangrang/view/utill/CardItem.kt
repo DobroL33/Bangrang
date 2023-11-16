@@ -1,6 +1,7 @@
 package com.ssafyb109.bangrang.view.utill
 
-import android.util.Log
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,17 +37,35 @@ import coil.compose.rememberAsyncImagePainter
 import com.ssafyb109.bangrang.api.EventSelectListResponseDTO
 import com.ssafyb109.bangrang.viewmodel.EventViewModel
 import com.ssafyb109.bangrang.viewmodel.UserViewModel
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAdjusters
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CardItem(
     event: EventSelectListResponseDTO,
     navController: NavHostController,
     eventViewModel: EventViewModel,
     userViewModel: UserViewModel,
-    isLike: Boolean, // 좋아요한 행사를 필터링 할것인가
-    isLocation: Boolean, // 근처 위치 행사를 필터링 할것인가
+    isWeekEnd: Boolean, // 이번 주말에 진행중인 것인가
+    isLike: Boolean, // 좋아요한 행사를 필터링 할 것인가
+    isLocation: Boolean, // 근처 위치 행사를 필터링 할 것인가
 ) {
     val currentLocation by userViewModel.currentLocation.collectAsState()
+
+    // 날짜 변환
+    val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
+    // 이번주말날짜
+    val today = LocalDate.now()
+    val weekendStart = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
+    val weekendEnd = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+    // 행사 날짜
+    val eventStart = LocalDateTime.parse(event.startDate, formatter).toLocalDate()
+    val eventEnd = LocalDateTime.parse(event.endDate, formatter).toLocalDate()
+    val isEventOnWeekend = !isWeekEnd || (eventStart <= weekendEnd && eventEnd >= weekendStart)
 
     val distance = currentLocation?.let {
         calculateDistance(
@@ -56,14 +75,10 @@ fun CardItem(
             event.longitude
         )
     }
-    Log.d("111111111111111111111111","${currentLocation?.longitude}")
-    Log.d("2222222222222222222222","${currentLocation?.latitude}")
-    Log.d("333333333333333333","${event.longitude}")
-    Log.d("4444444444444444444","${event.latitude}")
-    Log.d("555555555555555555555","$distance")
 
-
-    val shouldShowCard = (!isLike || event.isLiked) && (!isLocation || (distance != null && distance <= 30000))
+    val shouldShowCard = (!isLike || event.isLiked) &&
+            (!isLocation || (distance != null && distance <= 30000)) &&
+            isEventOnWeekend
 
     if (shouldShowCard) {
         var isHeartFilled by remember { mutableStateOf(event.isLiked) }

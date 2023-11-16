@@ -48,7 +48,7 @@ data class EventSelectListResponseDTO(
 // 이벤트 인덱스 선택 응답 DTO
 data class EventIndexListResponseDTO(
     val image: String, // 이미지 URL
-    val subImage: String,
+    val subImage: String?,
     val title: String,
     val content: String,
     val startDate: String,
@@ -59,7 +59,8 @@ data class EventIndexListResponseDTO(
     val latitude: Double,
     val longitude: Double,
     val likeCount: Long, // 좋아요 수
-    val isLiked: Boolean // 이 유저가 좋아요를 했는지
+    val isLiked: Boolean, // 이 유저가 좋아요를 했는지
+    val isStamp: Boolean // 이 유저가 스탬프 찍은건지
 )
 
 // 이벤트 좋아요 요청 DTO

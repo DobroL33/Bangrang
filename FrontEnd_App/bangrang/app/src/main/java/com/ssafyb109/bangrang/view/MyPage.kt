@@ -60,6 +60,8 @@ fun MyPage(
 
     val allRankResponse by rankViewModel.allRankResponse.collectAsState()
     val bangrangPercent = allRankResponse?.myRank?.myRatings?.getOrNull(0)?.percent
+    // 스탬프 숫자
+    val stampsResponse by userViewModel.stampsResponse.collectAsState()
 
     // 지금 유저 사진 url
     val userImg = sharedPreferencesUtil.getUserImage()
@@ -110,6 +112,7 @@ fun MyPage(
     }
 
     LaunchedEffect(Unit){
+        userViewModel.fetchUserStamps() // 스탬프
         if(allRankResponse == null){
             rankViewModel.fetchAllRank()
         }
@@ -207,7 +210,7 @@ fun MyPage(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        StampSet(navController,bangrangPercent)
+        StampSet(navController,bangrangPercent, stampsResponse?.totalNum)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -304,6 +307,7 @@ fun MyPage(
                                 Text(errorMessage!!, color = Color.Red)
                             }
                             SelectButton(
+                                fonSize = 14,
                                 onClick = {
                                     userViewModel.checkNicknameAvailability(newNickname)
                                     if (nicknameAvailability != null) {

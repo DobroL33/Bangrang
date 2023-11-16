@@ -85,7 +85,7 @@ fun CollectionPage(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text("내가 모은 도장", color = Color.Black, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = "${stampsResponse?.totalNum ?: "응답없음"}개 , ${stampsResponse?.totalType ?: "응답없음"}종류", color = heavySkyBlue, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Text(text = "${stampsResponse?.totalNum ?: "응답없음"}개" , color = heavySkyBlue, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                     }
 
                     Box(

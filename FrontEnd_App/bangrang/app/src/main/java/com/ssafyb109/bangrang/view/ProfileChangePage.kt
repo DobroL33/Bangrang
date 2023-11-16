@@ -188,6 +188,7 @@ fun ProfileChangePage(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
+            Spacer(modifier = Modifier.width(20.dp))
             // 현재 이미지 텍스트
             Text(
                 "현재 이미지",
@@ -195,13 +196,22 @@ fun ProfileChangePage(
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.width(128.dp))
+            Spacer(modifier = Modifier.width(108.dp))
 
             // 선택한 이미지 텍스트
             Text(
                 "선택한 이미지",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            Icon(
+                imageVector = Icons.Filled.Edit,
+                contentDescription = "수정 아이콘",
+                modifier = Modifier
+                    .clickable(onClick = { isDialogOpen = true })
             )
         }
 
@@ -221,23 +231,25 @@ fun ProfileChangePage(
                         isFullScreenUrlViewOpen = true
                     })
             ) {
-                if(userImg==null){
+                if (userImg == null) {
                     Image(
                         painter = painterResource(id = R.drawable.emptyperson),
                         contentDescription = null,
                         modifier = Modifier
-                            .padding(top = 30.dp, start = 30.dp)
-                            .clip(CircleShape)
+                            .fillMaxSize()
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop // 비율 유지하며 가득 채우기
                     )
-                } else{
+                } else {
                     Image(
                         painter = rememberAsyncImagePainter(
                             ImageRequest.Builder(LocalContext.current).data(data = userImg).build()
                         ),
                         contentDescription = null,
                         modifier = Modifier
-                            .padding(top = 30.dp, start = 30.dp)
-                            .clip(CircleShape)
+                            .fillMaxSize()
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
                     )
                 }
             }
@@ -258,18 +270,11 @@ fun ProfileChangePage(
                     Image(
                         bitmap = it.asImageBitmap(),
                         contentDescription = "선택한 프로필 사진",
-                        contentScale = ContentScale.FillBounds,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentScale = ContentScale.Crop
                     )
                 }
-                Icon(
-                    imageVector = Icons.Filled.Edit,
-                    contentDescription = "수정 아이콘",
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .offset(y = (+20).dp, x = (+20).dp)
-                        .clickable(onClick = { isDialogOpen = true })
-                )
             }
         }
 
@@ -306,12 +311,13 @@ fun ProfileChangePage(
                     }
                 },
                 text = "수정하기",
+                fonSize = 14,
                 enabled = selectedBitmap != null
             )
 
             Spacer(modifier = Modifier.width(52.dp))
 
-            SelectButton(onClick = { navController.navigate("com.ssafyb109.bangrang.view.MyPage") }, text = "취소")
+            SelectButton(fonSize = 14, onClick = { navController.navigate("com.ssafyb109.bangrang.view.MyPage") }, text = "취소")
         }
         if (isDialogOpen) {
             Dialog(onDismissRequest = { isDialogOpen = false }) {

@@ -261,7 +261,7 @@ fun InquiryResistPage(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    SelectButton(text = "글쓰기", onClick = {
+                    SelectButton(text = "글쓰기", fonSize = 14, onClick = {
                         inquiryViewModel.registerInquiry(eventIdx.toLong(),inquiryType,title,content)
                         navController.navigateUp()
                     })

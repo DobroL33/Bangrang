@@ -93,6 +93,7 @@ fun FriendPage(
         // 검색 버튼
         SelectButton(
             onClick = { userViewModel.addFriend(searchQuery) },
+            fonSize = 14,
             text = "추가",
             modifier = Modifier
                 .align(Alignment.End)

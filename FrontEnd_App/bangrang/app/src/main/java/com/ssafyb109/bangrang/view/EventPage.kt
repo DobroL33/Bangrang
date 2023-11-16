@@ -1,7 +1,9 @@
 package com.ssafyb109.bangrang.view
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -80,7 +83,7 @@ fun EventPage(
         item {
             LazyRow(modifier = Modifier.fillMaxWidth()) {
                 items(selectedEvent) { event ->
-                    CardItem(event, navController, eventViewModel, userViewModel, isLike = true, isLocation = false)
+                    CardItem(event, navController, eventViewModel, userViewModel, isLike = true, isLocation = false, isWeekEnd = false)
                 }
             }
         }
@@ -113,7 +116,7 @@ fun EventPage(
         }
 
         items(filteredEvents) { event ->
-            EventItem(event)
+            EventItem(event, navController, eventViewModel)
             Divider()
         }
 
@@ -126,14 +129,26 @@ fun EventPage(
 }
 
 @Composable
-fun EventItem(event: EventSelectListResponseDTO) {
+fun EventItem(
+    event: EventSelectListResponseDTO,
+    navController: NavHostController,
+    eventViewModel: EventViewModel
+) {
     var isHeartFilled by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() } // 터치상태
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
             .padding(8.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = rememberRipple(bounded = true), // 물결 효과
+                onClick = {
+                    navController.navigate("EventDetailPage/${event.eventIdx}")
+                }
+            )
     ) {
         // Image
         Image(
@@ -162,6 +177,7 @@ fun EventItem(event: EventSelectListResponseDTO) {
                 .weight(0.1f)
                 .fillMaxHeight()
                 .clickable {
+                    eventViewModel.likeEvent(event.eventIdx, isHeartFilled)
                     isHeartFilled = !isHeartFilled
                 },
             contentAlignment = Alignment.Center

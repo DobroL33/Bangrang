@@ -88,6 +88,12 @@ interface UserService {
     suspend fun userStamp(
     ): Response<StampResponseDTO>
 
+    // 내 스탬프 찍기
+    @PATCH("api/member/stamp")
+    suspend fun eventStamp(
+        @Body request: StampPress
+    ): Response<Void>
+
     // 친구 추가
     @POST("api/member/friend/{nickname}")
     suspend fun resistFriend(
@@ -144,6 +150,10 @@ data class StampDetail(
     val stampName: String,
     val stampLocation: String,
     val stampTime: String
+)
+// 스탬프 찍기
+data class StampPress(
+    val eventIdx: Long
 )
 
 // 유저 스탬프 요청 DTO = Void

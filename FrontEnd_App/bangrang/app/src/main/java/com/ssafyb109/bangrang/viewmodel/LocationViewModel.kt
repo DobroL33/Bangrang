@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafyb109.bangrang.repository.LocationRepository
 import com.ssafyb109.bangrang.room.BoundaryPoint
-import com.ssafyb109.bangrang.room.CurrentLocation
-import com.ssafyb109.bangrang.room.HistoricalLocation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,10 +15,6 @@ import javax.inject.Inject
 class LocationViewModel @Inject constructor(
     private val locationRepository: LocationRepository
 ) : ViewModel() {
-
-    // 현재 위치 목록 상태
-    private val _currentLocations = MutableStateFlow<List<CurrentLocation>>(emptyList())
-    val currentLocations: StateFlow<List<CurrentLocation>> = _currentLocations.asStateFlow()
 
     // 과거 위치 목록 상태
     private val _boundaryPoints = MutableStateFlow<List<BoundaryPoint>>(emptyList())
@@ -35,17 +29,6 @@ class LocationViewModel @Inject constructor(
         _errorMessage.value = null
     }
 
-
-    // 현재 위치 데이터 가져오기(지도 그리기용)
-    fun fetchCurrentLocations() = viewModelScope.launch {
-        try {
-            val locations = locationRepository.getAllCurrentLocations()
-            _currentLocations.emit(locations)
-        } catch (e: Exception) {
-            _errorMessage.emit(locationRepository.lastError ?: "Unknown error occurred")
-        }
-    }
-
     // 과거 위치 데이터 가져오기(지도 그리기용)
     fun fetchHistoricalLocations() = viewModelScope.launch {
         try {
@@ -55,7 +38,6 @@ class LocationViewModel @Inject constructor(
             _errorMessage.emit(locationRepository.lastError ?: "Unknown error occurred")
         }
     }
-
 
     // 현재 위치 백엔드 전송, 과거 위치 데이터 받아오기
     fun sendCurrentLocation() = viewModelScope.launch {
