@@ -36,7 +36,7 @@ public class QuartzConfig {
         return TriggerBuilder.newTrigger()
                 .forJob(batchExecuteJobDetail())
                 .withIdentity("batchExecuteTrigger")
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?")) // 매 1분 마다
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?")) // 매일 12시 정각 마다
                 .build();
     }
 }

@@ -343,60 +343,109 @@ public class BatchConfig {
         };
     }
 
+//    @Bean
+//    public JpaPagingItemReader memberReader() {
+//        log.info("[ STPE 03 - READER ] member 데이터 읽는 중... ");
+//
+//        return new JpaPagingItemReaderBuilder<AppMember>()
+//                .name("memberReader")
+//                .entityManagerFactory(entityManagerFactory)
+//                .queryString("select m from AppMember m where m.alarms = :alarms")
+//                .parameterValues(Map.of("alarms", true))
+//                .pageSize(1000)
+//                .build();
+//    }
+
     @Bean
     public JpaPagingItemReader memberReader() {
         log.info("[ STPE 03 - READER ] member 데이터 읽는 중... ");
 
-        return new JpaPagingItemReaderBuilder<MemberMapArea>()
-                .name("memberMapAreaReaderForRanking")
+        return new JpaPagingItemReaderBuilder<AppMember>()
+                .name("memberReader")
                 .entityManagerFactory(entityManagerFactory)
-                .queryString("select m from AppMember m where m.alarms = :alarms")
+                .queryString("select am from AppMember am where am.alarms = :alarms")
                 .parameterValues(Map.of("alarms", true))
                 .pageSize(1000)
                 .build();
     }
 
     @Bean
-    public ItemProcessor<List<AppMember>, List<Alarm>> memberAlarmProcessor() {
+    public ItemProcessor<AppMember, List<Alarm>> memberAlarmProcessor() {
         log.info("[ STPE 03 - PROCESSOR ] alarm 발송 중... ");
+        return appMember -> {
+            LocalDate today = LocalDate.now();
+            LocalDate yesterday = today.minusDays(1);
 
-        return items -> {
-            return items.stream().map(appMember -> {
-                        LocalDate today = LocalDate.now();
-                        LocalDate yesterday = today.minusDays(1);
+            List<Alarm> result = new ArrayList<>();
 
-                        List<Ranking> memberTodayRankingList = rankingRepository.findRankingByAppMemberAndCreatedAt(appMember.getIdx(), today);
-                        List<Ranking> memberYesterdayRankingList = rankingRepository.findRankingByAppMemberAndCreatedAt(appMember.getIdx(), yesterday);
+            List<Ranking> memberTodayRankingList = rankingRepository.findRankingByAppMemberAndCreatedAt(appMember.getIdx(), today);
+            List<Ranking> memberYesterdayRankingList = rankingRepository.findRankingByAppMemberAndCreatedAt(appMember.getIdx(), yesterday);
 
-                        Map<RegionType, Ranking> memberTodayRankingMap = new HashMap();
-                        Map<RegionType, Ranking> memberYesterdayRankingMap = new HashMap<>();
+            Map<RegionType, Ranking> memberTodayRankingMap = new HashMap();
+            Map<RegionType, Ranking> memberYesterdayRankingMap = new HashMap<>();
 
-                        memberTodayRankingList.stream().forEach(ranking -> {
-                            if(!memberTodayRankingMap.containsKey(ranking.getRegionType())){
-                                memberTodayRankingMap.put(ranking.getRegionType(), ranking);
-                            }
-                        });
+            memberTodayRankingList.stream().forEach(ranking -> {
+                if(!memberTodayRankingMap.containsKey(ranking.getRegionType())){
+                    memberTodayRankingMap.put(ranking.getRegionType(), ranking);
+                }
+            });
 
-                        memberYesterdayRankingList.stream().forEach(ranking -> {
-                            if(!memberYesterdayRankingMap.containsKey(ranking.getRegionType())){
-                                memberYesterdayRankingMap.put(ranking.getRegionType(), ranking);
-                            }
-                        });
+            memberYesterdayRankingList.stream().forEach(ranking -> {
+                if(!memberYesterdayRankingMap.containsKey(ranking.getRegionType())){
+                    memberYesterdayRankingMap.put(ranking.getRegionType(), ranking);
+                }
+            });
 
 
 //                        Map<RegionType, Ranking> appMemberRankingYesterday =
 
-                        // 1. 경쟁 알림 전송
-                        List <Alarm> competitorAlarm = getCompetitorAlarm(appMember, memberTodayRankingMap, memberYesterdayRankingMap, today, yesterday);
+            // 1. 경쟁 알림 전송
+            List <Alarm> competitorAlarm = getCompetitorAlarm(appMember, memberTodayRankingMap, memberYesterdayRankingMap, today, yesterday);
 
-                        // 2. 정복율 알림 전송
-                        List<Alarm> percentAlarm = getPercentAlarm(appMember, memberTodayRankingMap, memberYesterdayRankingMap);
+            // 2. 정복율 알림 전송
+            List<Alarm> percentAlarm = getPercentAlarm(appMember, memberTodayRankingMap, memberYesterdayRankingMap);
 
-                        return Stream.concat(competitorAlarm.stream(), percentAlarm.stream()).collect(Collectors.toList());
-                    })
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList());
+            return Stream.concat(competitorAlarm.stream(), percentAlarm.stream()).collect(Collectors.toList());
+
         };
+
+//        return items -> {
+//            return items.stream().map(appMember -> {
+//                        LocalDate today = LocalDate.now();
+//                        LocalDate yesterday = today.minusDays(1);
+//
+//                        List<Ranking> memberTodayRankingList = rankingRepository.findRankingByAppMemberAndCreatedAt(appMember.getIdx(), today);
+//                        List<Ranking> memberYesterdayRankingList = rankingRepository.findRankingByAppMemberAndCreatedAt(appMember.getIdx(), yesterday);
+//
+//                        Map<RegionType, Ranking> memberTodayRankingMap = new HashMap();
+//                        Map<RegionType, Ranking> memberYesterdayRankingMap = new HashMap<>();
+//
+//                        memberTodayRankingList.stream().forEach(ranking -> {
+//                            if(!memberTodayRankingMap.containsKey(ranking.getRegionType())){
+//                                memberTodayRankingMap.put(ranking.getRegionType(), ranking);
+//                            }
+//                        });
+//
+//                        memberYesterdayRankingList.stream().forEach(ranking -> {
+//                            if(!memberYesterdayRankingMap.containsKey(ranking.getRegionType())){
+//                                memberYesterdayRankingMap.put(ranking.getRegionType(), ranking);
+//                            }
+//                        });
+//
+//
+////                        Map<RegionType, Ranking> appMemberRankingYesterday =
+//
+//                        // 1. 경쟁 알림 전송
+//                        List <Alarm> competitorAlarm = getCompetitorAlarm(appMember, memberTodayRankingMap, memberYesterdayRankingMap, today, yesterday);
+//
+//                        // 2. 정복율 알림 전송
+//                        List<Alarm> percentAlarm = getPercentAlarm(appMember, memberTodayRankingMap, memberYesterdayRankingMap);
+//
+//                        return Stream.concat(competitorAlarm.stream(), percentAlarm.stream()).collect(Collectors.toList());
+//                    })
+//                    .flatMap(List::stream)
+//                    .collect(Collectors.toList());
+//        };
     }
 
     /**
