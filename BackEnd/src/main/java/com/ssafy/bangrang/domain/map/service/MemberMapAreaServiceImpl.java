@@ -81,7 +81,7 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
                 Double space = 0.0;
                 if(curUnionResult.intersects(unionResult)) {
                     Geometry intersection = curUnionResult.intersection(unionResult);
-                    space = intersection.getArea();
+                    space = intersection.getArea()* 111319.49079327357 * 111319.49079327357;
                 }
 
                 return MarkerResponseDto
@@ -97,7 +97,7 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
                 Double space = 0.0;
                 if(curUnionResult.intersects(unionResult)) {
                     Geometry intersection = curUnionResult.intersection(unionResult);
-                    space = intersection.getArea();
+                    space = intersection.getArea()* 111319.49079327357 * 111319.49079327357;
                 }
 
                 return MarkerResponseDto
