@@ -59,6 +59,7 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
 
         // Union 연산
         Geometry curUnionResult = CascadedPolygonUnion.union(geometryList);
+        log.info("현재 client로부터 받은 객체가 Empty인지 확인"+curUnionResult.isEmpty());
 
         // 제일 최신의 MemberMapArea을 DB로부터 불러오는 로직
         // 만약 최신 MemberMapArea가 오늘 날짜(yyyymmdd)면 update, 아니면 create
@@ -67,6 +68,7 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
         if(recent.size() >= 1){
             MemberMapArea befoMemberMapArea = recent.get(0);
             Geometry befoPolygon = befoMemberMapArea.getShape();
+            log.info("db로부터 가져온 객체가 null인지 확인"+befoPolygon.isEmpty());
 
             LocalDate currentDate = LocalDate.now(); // 현재 날짜
             LocalDate createdAtDate = befoMemberMapArea.getCreatedAt().toLocalDate(); // 'createdAt'의 날짜 부분을 추출합니다.
