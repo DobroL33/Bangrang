@@ -17,7 +17,12 @@ fun getAddressFromLocation(
             val address = addresses[0]
             val district = address.subLocality // 구 이름
             val neighborhood = address.thoroughfare // 동 이름
-            return "$district $neighborhood"
+
+            return if(neighborhood == null){
+                district
+            } else{
+                "$district $neighborhood"
+            }
         }
     } catch (e: IOException) {
         e.printStackTrace()

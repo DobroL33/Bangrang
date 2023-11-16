@@ -41,7 +41,8 @@ data class EventSelectListResponseDTO(
     val latitude: Double,
     val longitude: Double,
     val likeCount: Long, // 좋아요 수
-    val isLiked: Boolean // 이 유저가 좋아요를 했는지
+    val isLiked: Boolean, // 이 유저가 좋아요를 했는지
+    val isStamp: Boolean // 이 유저가 스탬프 찍은건지
 )
 
 // 이벤트 인덱스 선택 요청 DTO = Path 형식

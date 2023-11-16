@@ -173,7 +173,7 @@ fun AppNavigation(
                         composable("Login") { LoginPage(navController, userViewModel) }
                         composable("SignUp") { SignUpPage(navController, userViewModel) }
 
-                        composable("Home") { HomePage(navController, userViewModel, locationViewModel) }
+                        composable("Home") { HomePage(navController, userViewModel, locationViewModel, sharedPreferencesUtil) }
                         composable("MapPage") { MapPage(navController, userViewModel, locationViewModel) }
                         composable("AlarmPage") { AlarmPage(navController, userViewModel) }
                         composable("EventPage") { EventPage(navController, userViewModel) }

@@ -22,7 +22,6 @@ class EventViewModel @Inject constructor(
     private val _eventDetail = MutableStateFlow(getDefaultEventDetailData())
     val eventDetail: StateFlow<EventIndexListResponseDTO> = _eventDetail
 
-
     // 에러
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
@@ -32,7 +31,7 @@ class EventViewModel @Inject constructor(
         _errorMessage.value = null
     }
 
-    // 이벤트 지역기준 불러오기
+    // 이벤트 받아오기
     fun selectEvent() {
         viewModelScope.launch {
             eventRepository.selectEvent().collect { response ->
@@ -45,6 +44,7 @@ class EventViewModel @Inject constructor(
         }
     }
 
+    // 이벤트 자세히 보기
     fun getEventDetail(index: String) {
         viewModelScope.launch {
             eventRepository.findEvent(index).collect { response ->

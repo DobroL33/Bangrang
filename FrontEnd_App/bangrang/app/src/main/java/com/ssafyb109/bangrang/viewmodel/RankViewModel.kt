@@ -1,5 +1,6 @@
 package com.ssafyb109.bangrang.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafyb109.bangrang.api.MyRankDTO
@@ -52,6 +53,7 @@ class RankViewModel @Inject constructor(
         viewModelScope.launch {
             repository.fetchFriendRank().collect { response ->
                 if (response.isSuccessful) {
+                    Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@","${response.body()}")
                     _friendRankResponse.value = response.body()
                 } else {
                     _errorMessage.value = repository.lastError ?: "알 수 없는 에러"

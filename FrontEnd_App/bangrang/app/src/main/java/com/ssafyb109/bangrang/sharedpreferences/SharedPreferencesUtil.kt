@@ -15,22 +15,23 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         private const val USER_REFRESH_TOKEN = "user_refresh_token"
         private const val USER_ALARM = "false"
         private const val USER_IMAGE = "https://bangrang-bucket.s3.ap-northeast-2.amazonaws.com/image.png"
+        private const val LAST_SEND = "22222222222222"
     }
 
     private val sharedPreferences: SharedPreferences
         get() = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
     // 로그인 상태를 저장하는 메서드
-    fun setLoggedInStatus(isLoggedIn: String) {
+    fun setLoggedInStatus(isLoggedIn: Boolean) {
         with(sharedPreferences.edit()) {
-            putString(IS_LOGGED_IN, isLoggedIn)
+            putBoolean(IS_LOGGED_IN, isLoggedIn)
             apply()
         }
     }
 
     // 현재 로그인 상태를 확인하는 메서드
-    fun isLoggedIn(): String? {
-        return sharedPreferences.getString(IS_LOGGED_IN, "notYet")
+    fun getLoggedIn(): Boolean {
+        return sharedPreferences.getBoolean(IS_LOGGED_IN, false)
     }
 
     // 사용자 idx를 저장하는 메서드
@@ -111,6 +112,18 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         return sharedPreferences.getString(USER_IMAGE, null)
     }
 
+    // 마지막 전송시간 저장
+    private fun setLastSave() {
+        with(sharedPreferences.edit()) {
+            putLong(LAST_SEND, System.currentTimeMillis())
+            apply()
+        }
+    }
 
-
+    // 마지막 전송시간 불러오기
+    fun getLastSave(): Long {
+        val time = sharedPreferences.getLong(LAST_SEND, 0L)
+        setLastSave()
+        return time
+    }
 }

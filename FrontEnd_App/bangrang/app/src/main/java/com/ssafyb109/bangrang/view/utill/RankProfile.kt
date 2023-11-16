@@ -50,7 +50,7 @@ fun RankProfile(image: String?, percentage: Double, userId: String, modifier: Mo
                 )
             )
         )
-        if(image==null){
+        if(image==null || image == "null"){
             Image(
                 painter = painterResource(id = R.drawable.emptyperson),
                 contentDescription = null,

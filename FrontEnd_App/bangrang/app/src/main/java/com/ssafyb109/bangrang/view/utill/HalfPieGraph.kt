@@ -30,9 +30,9 @@ import com.ssafyb109.bangrang.ui.theme.lightSkyBlue
 
 @Composable
 fun HalfPieGraph(
-    percentage: Double,
-    rank: Int,
-    topPercent : Int,
+    percentage: Double, // 정복도 %
+    rank: Int, // 순위
+    topPercent : Int, // 상위 몇 %
     animationLaunch: Int,
 ) {
     val animatedValue = remember { Animatable(0f) }

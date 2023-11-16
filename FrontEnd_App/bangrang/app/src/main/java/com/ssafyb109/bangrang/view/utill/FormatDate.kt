@@ -1,5 +1,7 @@
 package com.ssafyb109.bangrang.view.utill
 
+import java.util.concurrent.TimeUnit
+
 fun dateToKorean(input: String): String {
     if (input.length != 12) {
         return ""
@@ -41,4 +43,16 @@ fun calculateDistance(
     val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
     return R * c // 결과는 미터 단위
+}
+
+fun formatDuration(millis: Long): String {
+    val days = TimeUnit.MILLISECONDS.toDays(millis)
+    val hours = TimeUnit.MILLISECONDS.toHours(millis) % 24
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60
+    return if (days > 0) {
+        String.format("%d일 %02d시 %02d분 %02d초", days, hours, minutes, seconds)
+    } else {
+        String.format("%02d시 %02d분 %02d초", hours, minutes, seconds)
+    }
 }

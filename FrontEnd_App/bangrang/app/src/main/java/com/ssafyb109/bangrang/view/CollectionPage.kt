@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -131,6 +132,20 @@ fun CollectionPage(
 
 @Composable
 fun StampItem(stamp: StampDetail) {
+
+    val imageRes = when {
+        "서울" in stamp.stampLocation -> R.drawable.seoulstamp
+        "부산" in stamp.stampLocation -> R.drawable.busanstamp
+        "인천" in stamp.stampLocation -> R.drawable.incheonstamp
+        "광주" in stamp.stampLocation -> R.drawable.gwangjustamp
+        "대구" in stamp.stampLocation -> R.drawable.daegustamp
+        "대전" in stamp.stampLocation -> R.drawable.daejeonstamp
+        "울산" in stamp.stampLocation -> R.drawable.ulsanstamp
+        "세종" in stamp.stampLocation -> R.drawable.sejongstamp
+        "제주" in stamp.stampLocation -> R.drawable.jejustamp
+        else -> R.drawable.complete // 기본 이미지
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -151,12 +166,16 @@ fun StampItem(stamp: StampDetail) {
 
         // 오른쪽 이미지
         Box(
-            modifier = Modifier.weight(0.3f),
+            modifier = Modifier
+                .weight(0.3f)
+                .fillMaxHeight(),
             contentAlignment = Alignment.CenterEnd
         ) {
             Image(
-                painter = painterResource(id = R.drawable.complete),
-                contentDescription = "Complete"
+                painter = painterResource(imageRes),
+                contentDescription = "Complete",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
         }
     }

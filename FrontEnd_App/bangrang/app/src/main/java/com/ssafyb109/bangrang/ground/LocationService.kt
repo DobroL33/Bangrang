@@ -48,7 +48,8 @@ class LocationService : Service() {
     private fun startLocationUpdates() {
         val locationRequest = LocationRequest.create().apply {
             fastestInterval = 3000 // 가장 빠른 업데이트 간격
-            smallestDisplacement = 80f // 80미터 간격 업데이트
+            interval = 10000 // 10초 간격으로 업데이트
+            smallestDisplacement = 50f // 50미터 간격 업데이트
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 

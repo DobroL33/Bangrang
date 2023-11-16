@@ -1,8 +1,7 @@
 package com.ssafyb109.bangrang.repository
 
-import android.util.Log
+import com.ssafyb109.bangrang.api.MarkerRequestDTO
 import com.ssafyb109.bangrang.api.MarkerService
-import com.ssafyb109.bangrang.api.markerRequestDTO
 import com.ssafyb109.bangrang.room.BoundaryPoint
 import com.ssafyb109.bangrang.room.CurrentLocation
 import com.ssafyb109.bangrang.room.HistoricalLocation
@@ -41,25 +40,25 @@ class LocationRepository @Inject constructor(
 
 
     // 과거 위치 수집 DB 비우고 저장하기
-    suspend fun fetchAndSaveHistoricalLocations() {
+    suspend fun fetchAndSaveHistoricalLocations(): Double? {
+        var spaceValue: Double? = null
         try {
             // 현재 위치 데이터 불러오기
             val currentLocations = getAllCurrentLocations()
 
-            Log.d("위치1111111111111111111111111","$currentLocations")
-
             // 현재 위치 서버로 전송
-            val response = markerService.fetchLocationMark(currentLocations.map { markerRequestDTO(it.latitude, it.longitude) })
+            val response = markerService.fetchLocationMark(currentLocations.map { MarkerRequestDTO(it.latitude, it.longitude) })
 
             if (response.isSuccessful) {
                 // 과거 DB 비우기
                 deleteAllHistoricalLocations()
 
-                Log.d("위치2222222222222222222222","${response.body()}")
+                // 공간값
+                spaceValue = response.body()?.space
 
                 // 서버 응답 과거 DB에 저장
-                response.body()?.let { nestedLocations ->
-                    nestedLocations.forEach { locations ->
+                response.body()?.let { markerResponse ->
+                    markerResponse.list.forEach { locations ->
                         // 과거 위치 객체를 생성하고 데이터베이스에 저장
                         val historicalLocation = HistoricalLocation()
                         val historicalLocationId = dao.insertHistoricalLocation(historicalLocation)
@@ -74,9 +73,9 @@ class LocationRepository @Inject constructor(
                             dao.insertBoundaryPoint(boundaryPoint)
                         }
                     }
+                    // 현재 DB 비우기
+                    deleteAllCurrentLocations()
                 }
-                // 현재 DB 비우기
-                deleteAllCurrentLocations()
             }
             else {
                 lastError = handleNetworkException(response = response)
@@ -84,5 +83,6 @@ class LocationRepository @Inject constructor(
         }catch (e: Exception) {
             lastError = handleNetworkException(e)
         }
+        return spaceValue
     }
 }

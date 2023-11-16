@@ -1,5 +1,6 @@
 package com.ssafyb109.bangrang.view
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.api.MyRankDTO
+import com.ssafyb109.bangrang.api.TotalRegionDTO
 import com.ssafyb109.bangrang.ui.theme.heavySkyBlue
 import com.ssafyb109.bangrang.view.utill.BarGraph
 import com.ssafyb109.bangrang.view.utill.HalfPieGraph
@@ -31,13 +33,14 @@ import com.ssafyb109.bangrang.view.utill.HalfPieGraph
 @Composable
 fun RankMyPage(
     animationLaunch : Int,
-    allRankResponse : MyRankDTO?
+    allRankResponse : MyRankDTO?,
+    totlaRankResponse : TotalRegionDTO?,
 ) {
-    val allRate = allRankResponse?.rating
-    val topRate = allRankResponse?.myRatings?.get(0)?.percent?.div(100)
-    val topRank = allRankResponse?.myRatings?.get(0)?.rate?.toInt()
+    val allRate = allRankResponse?.rating // 상위 몇 %
+    val topRate = allRankResponse?.korea?.get(0)?.percent?.div(100) // 정복도
+    val topRank = totlaRankResponse?.myRank?.myRatings?.get(0)?.rate?.toInt() // 순위
 
-    val cityRanks = allRankResponse?.myRatings?.map { myRegionRankDTO ->
+    val cityRanks = totlaRankResponse?.myRank?.myRatings?.map { myRegionRankDTO ->
         Pair(myRegionRankDTO.region, myRegionRankDTO.rate.toInt() to myRegionRankDTO.percent.toInt())
     } ?: emptyList()
 
@@ -51,6 +54,7 @@ fun RankMyPage(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(text = "전국 정복도", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -58,6 +62,7 @@ fun RankMyPage(
                 .height(200.dp)
         ) {
             if (allRate != null && topRank != null && topRate != null) {
+                // 정복도 % , 순위 , 상위 %
                 HalfPieGraph(topRate,topRank,allRate,animationLaunch)
             }
             else{

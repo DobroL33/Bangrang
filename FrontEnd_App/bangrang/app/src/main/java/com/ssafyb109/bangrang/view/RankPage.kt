@@ -91,7 +91,7 @@ fun RankPage(
                 LaunchedEffect(key1 = tabSelection) {
                     animationLaunch = animationLaunch++
                 }
-                RankMyPage(animationLaunch,friendRankResponse)
+                RankMyPage(animationLaunch,friendRankResponse, allRankResponse)
             }
             "친구" -> {
                 RankFriendPage(friendRankResponse)
@@ -332,10 +332,9 @@ fun PodiumLayout(
     rankResponse: List<RankList>,
 ) {
 
-    // 임시 사용자 데이터
-    val user1 = rankResponse.getOrNull(0)?.let { User(it.userImg, it.percent, it.userNickname) }
-    val user2 = rankResponse.getOrNull(1)?.let { User(it.userImg, it.percent, it.userNickname) }
-    val user3 = rankResponse.getOrNull(2)?.let { User(it.userImg, it.percent, it.userNickname) }
+    val user1 = rankResponse.getOrNull(0)?.let { User(it.userImg ?: "null", it.percent, it.userNickname) }
+    val user2 = rankResponse.getOrNull(1)?.let { User(it.userImg ?: "null", it.percent, it.userNickname) }
+    val user3 = rankResponse.getOrNull(2)?.let { User(it.userImg ?: "null", it.percent, it.userNickname) }
 
     Box(modifier = Modifier.fillMaxWidth()) {
         // 2등

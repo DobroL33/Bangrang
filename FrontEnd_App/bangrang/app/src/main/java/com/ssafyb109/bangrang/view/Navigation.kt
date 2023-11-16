@@ -22,13 +22,11 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,7 +40,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -195,9 +192,9 @@ fun FloatingActionMenu(navController: NavHostController) {
 fun ExpandingCenterMenu(onItemSelected: (String) -> Unit) {
     val items = listOf("마이룸", "랭킹", "행사" )
     val icons = mapOf(
-        "마이룸" to Icons.Default.Person,
-        "랭킹" to Icons.Default.Star,
-        "행사" to Icons.Default.ShoppingCart,
+        "마이룸" to R.drawable.myroomimage,
+        "랭킹" to R.drawable.rankimage,
+        "행사" to R.drawable.eventimage,
     )
 
     val distance = 90f  // 원 중심으로부터 아이콘간의 거리
@@ -245,11 +242,10 @@ fun ExpandingCenterMenu(onItemSelected: (String) -> Unit) {
                     onClick = { onItemSelected(items[i]) },
                     modifier = Modifier.size(60.dp)
                 ) {
-                    Icon(
-                        imageVector = icons[items[i]]!!,
+                    Image(
+                        painter = painterResource(icons[items[i]]!!),
                         contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(35.dp) // 아이콘 크기
+                        modifier = Modifier.size(40.dp) // 아이콘 크기
                     )
                 }
                 Text(

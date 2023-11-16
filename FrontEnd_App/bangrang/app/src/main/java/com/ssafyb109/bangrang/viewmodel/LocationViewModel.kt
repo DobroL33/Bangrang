@@ -1,5 +1,6 @@
 package com.ssafyb109.bangrang.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafyb109.bangrang.repository.LocationRepository
@@ -24,6 +25,10 @@ class LocationViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
+    // 새로운 공간
+    private val _space = MutableStateFlow<Double?>(null)
+    val space: StateFlow<Double?> = _space
+
     // 에러 메시지 리셋
     fun clearErrorMessage() {
         _errorMessage.value = null
@@ -42,7 +47,10 @@ class LocationViewModel @Inject constructor(
     // 현재 위치 백엔드 전송, 과거 위치 데이터 받아오기
     fun sendCurrentLocation() = viewModelScope.launch {
         try {
-            locationRepository.fetchAndSaveHistoricalLocations() // 서버에서 데이터를 과거 테이블에 넣기
+            val spaceValue = locationRepository.fetchAndSaveHistoricalLocations()
+            spaceValue?.let {
+                _space.emit(it)
+            }
 
         } catch (e: Exception) {
             _errorMessage.emit(locationRepository.lastError ?: "Failed to send and fetch locations")

@@ -108,7 +108,6 @@ fun ProfileChangePage(
         }
     }
 
-
     fun Uri.uriToParseBitmap(context: Context): Bitmap {
         return when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> {
