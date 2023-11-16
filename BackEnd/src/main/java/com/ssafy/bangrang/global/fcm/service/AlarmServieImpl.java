@@ -3,7 +3,6 @@ package com.ssafy.bangrang.global.fcm.service;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-import com.ssafy.bangrang.domain.inquiry.repository.InquiryRepository;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
 import com.ssafy.bangrang.global.fcm.api.request.AlarmStatusUpdateRequestDto;
@@ -190,6 +189,11 @@ public class AlarmServieImpl implements AlarmService {
             throw new Exception("알림 타입이 이상해용!");
         }
 
+    }
+
+    @Override
+    public void sendAlarm(AppMember appMember,SendAlarmRequestDto sendAlarmRequestDto) throws Exception{
+        this.sendAlarm(appMember.getIdx(), sendAlarmRequestDto);
     }
 
     public String firebaseNowTime() {

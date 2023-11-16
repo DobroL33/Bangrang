@@ -1,5 +1,6 @@
 package com.ssafy.bangrang.global.fcm.service;
 
+import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.global.fcm.api.request.AlarmStatusUpdateRequestDto;
 import com.ssafy.bangrang.global.fcm.api.request.SendAlarmRequestDto;
 import com.ssafy.bangrang.global.fcm.api.response.AlarmListResponseDto;
@@ -14,4 +15,6 @@ public interface AlarmService {
     List<AlarmListResponseDto> getAlarmList(UserDetails userDetails) throws Exception;
 
     void sendAlarm(Long userIdx, SendAlarmRequestDto sendAlarmRequestDto) throws Exception;
+
+    void sendAlarm(AppMember appMember,SendAlarmRequestDto sendAlarmRequestDto) throws Exception;
 }

@@ -1,6 +1,5 @@
 package com.ssafy.bangrang.global.fcm.entity;
 
-import com.ssafy.bangrang.domain.event.entity.Event;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
 import com.ssafy.bangrang.global.common.entity.CommonEntity;
 import com.ssafy.bangrang.global.fcm.model.vo.AlarmType;
@@ -42,13 +41,12 @@ public class Alarm extends CommonEntity {
     private AppMember appMember;
 
     @Builder
-    public Alarm(Long idx,AlarmType type,String content, Long eventIdx, LocalDateTime createdDate, int status, AppMember appMember){
-        this.idx = idx;
+    public Alarm(AlarmType type,String content, Long eventIdx, LocalDateTime createdDate, int status, AppMember appMember){
         this.type = type;
         this.content = content;
         this.eventIdx = eventIdx;
         this.createdDate = createdDate;
-        this.status = status;
+        this.status = 0;
         this.appMember = appMember;
 
     }

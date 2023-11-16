@@ -5,9 +5,16 @@ import com.ssafy.bangrang.domain.map.entity.MemberMapArea;
 import com.ssafy.bangrang.domain.map.model.vo.RegionType;
 import com.ssafy.bangrang.domain.map.repository.KoreaBorderAreaRepository;
 import com.ssafy.bangrang.domain.map.repository.MemberMapAreaRepository;
-import com.ssafy.bangrang.domain.member.repository.MemberRepository;
+import com.ssafy.bangrang.domain.member.entity.AppMember;
+import com.ssafy.bangrang.domain.member.entity.Friendship;
+import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
+import com.ssafy.bangrang.domain.member.repository.FriendshipRepository;
 import com.ssafy.bangrang.domain.rank.entity.Ranking;
 import com.ssafy.bangrang.domain.rank.repository.RankingRepository;
+import com.ssafy.bangrang.global.fcm.api.request.SendAlarmRequestDto;
+import com.ssafy.bangrang.global.fcm.entity.Alarm;
+import com.ssafy.bangrang.global.fcm.model.vo.AlarmType;
+import com.ssafy.bangrang.global.fcm.service.AlarmService;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
@@ -32,11 +39,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Configuration
 @RequiredArgsConstructor
@@ -47,10 +52,13 @@ public class BatchConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager batchTransactionManager;
     private final EntityManagerFactory entityManagerFactory; // EntityManagerFactory 주입
-    private final MemberRepository memberRepository;
+    private final AppMemberRepository appmemberRepository;
     private final KoreaBorderAreaRepository koreaBorderAreaRepository;
     private final MemberMapAreaRepository memberMapAreaRepository;
     private final RankingRepository rankingRepository;
+    private final FriendshipRepository friendshipRepository;
+    private final AlarmService alarmService;
+
     private static final int BATCH_SIZE = 5;
 
     private static Map<RegionType, Long> curRank;
@@ -61,16 +69,15 @@ public class BatchConfig {
     private static Long totalMemberCnt;
 
 
-
     @PostConstruct
-    public void init(){
+    public void init() {
         initTotalMemberCnt();
         initKoreaBorderAreas();
         initCurRank();
     }
 
-    private void initTotalMemberCnt(){
-        totalMemberCnt = memberRepository.count();
+    private void initTotalMemberCnt() {
+        totalMemberCnt = appmemberRepository.count();
     }
 
     private void initKoreaBorderAreas() {
@@ -80,7 +87,7 @@ public class BatchConfig {
 
         double koreaArea = 0.0;
 
-        for(KoreaBorderArea koreaBorderArea : koreaBorderAreas){
+        for (KoreaBorderArea koreaBorderArea : koreaBorderAreas) {
             double area = koreaBorderArea.getShape().getArea();
             RegionType regionType = convertRegionType(koreaBorderArea.getIdx());
             koreaBorderAreaMap.put(regionType, area);
@@ -94,8 +101,8 @@ public class BatchConfig {
     private void initCurRank() {
         curRank = new HashMap<RegionType, Long>();
 
-        for(RegionType region : RegionType.values()){
-            curRank.put(region, (long)1);
+        for (RegionType region : RegionType.values()) {
+            curRank.put(region, (long) 1);
         }
     }
 
@@ -111,7 +118,7 @@ public class BatchConfig {
                 .start(taskletStep())
                 .next(getRegionMapAreaStep())
                 .next(getMemberRankingStep())
-//                .next(postFCMStep())
+                .next(postFCMStep())
                 .build();
     }
 
@@ -164,9 +171,8 @@ public class BatchConfig {
     }
 
 
-
     @Bean
-    public Step getMemberRankingStep(){
+    public Step getMemberRankingStep() {
         log.info("[ STEP 02 ] 랭킹 계산");
 
         return new StepBuilder("member_ranking_step", jobRepository)
@@ -179,16 +185,17 @@ public class BatchConfig {
     }
 
 
-//    @Bean
-//    public Step postFCMStep(){
-//        log.info("[ STEP 03 ] FCM 메시지 발송");
-//        return new StepBuilder("post_fcm_step", jobRepository)
-//                .allowStartIfComplete(true)
-//                .<String, String>chunk(BATCH_SIZE, batchTransactionManager)
-//                .reader(reader())
-//                .writer(writer())
-//                .build();
-//    }
+    @Bean
+    public Step postFCMStep() {
+        log.info("[ STEP 03 ] FCM 메시지 발송");
+        return new StepBuilder("post_fcm_step", jobRepository)
+                .allowStartIfComplete(true)
+                .<String, String>chunk(BATCH_SIZE, batchTransactionManager)
+                .reader(memberReader())
+                .processor(memberAlarmProcessor())
+                .writer(alarmWriter())
+                .build();
+    }
 
     @Bean
     public JpaPagingItemReader regionMapAreaReader() {
@@ -215,8 +222,8 @@ public class BatchConfig {
                 items
                         .stream()
                         .map(memberMapArea ->
-                            koreaBorderAreas.stream().map(koreaBorderArea -> {
-                                if(koreaBorderArea.getShape().intersects(memberMapArea.getShape())){
+                                koreaBorderAreas.stream().map(koreaBorderArea -> {
+                                    // 교집합이 없는 경우 getArea -> 0.0을 반환
                                     Geometry shape = koreaBorderArea.getShape().intersection(memberMapArea.getShape());
                                     return MemberMapArea.builder()
                                             .shape(shape)
@@ -225,15 +232,12 @@ public class BatchConfig {
                                             .regionType(convertRegionType(koreaBorderArea.getIdx()))
                                             .customDate(yesterday)
                                             .build();
-                                }else{
-                                    return null;
-                                }
-                            }).filter(Objects::nonNull).collect(Collectors.toList())
+
+                                }).collect(Collectors.toList())
                         )
                         .flatMap(List::stream)
                         .collect(Collectors.toList());
     }
-
 
 
     @Bean
@@ -249,7 +253,7 @@ public class BatchConfig {
     }
 
     private RegionType convertRegionType(Long idx) {
-        switch (idx.intValue()){
+        switch (idx.intValue()) {
             case 1:
                 return RegionType.GANGWON;
             case 2:
@@ -303,18 +307,18 @@ public class BatchConfig {
                 .pageSize(1000)
                 .build();
     }
-    
+
     @Bean
-    public ItemProcessor<List<MemberMapArea>, List<Ranking>> rankMapAreaProcessor(){
+    public ItemProcessor<List<MemberMapArea>, List<Ranking>> rankMapAreaProcessor() {
         log.info("[ STPE 02 - PROCESSOR ] mapArea 데이터를 등수 매기는 중... ");
 
         return items -> {
             return items.stream().map(memberMapArea -> {
                 Long rank = curRank.getOrDefault(memberMapArea.getRegionType(), (long) 1);
-                curRank.put(memberMapArea.getRegionType(), rank+1);
+                curRank.put(memberMapArea.getRegionType(), rank + 1);
 
                 Double rating = (double) rank / totalMemberCnt;
-                Double percent = (memberMapArea.getShape().getArea()/koreaBorderAreaMap.get(memberMapArea.getRegionType())) * 100.0;
+                Double percent = (memberMapArea.getShape().getArea() / koreaBorderAreaMap.get(memberMapArea.getRegionType())) * 100.0;
 
                 return Ranking.builder()
                         .regionType(memberMapArea.getRegionType())
@@ -328,10 +332,10 @@ public class BatchConfig {
     }
 
     @Bean
-    public ItemWriter<List<Ranking>> rankingWriter(){
+    public ItemWriter<List<Ranking>> rankingWriter() {
         log.info("[ STPE 02 - WRITER ] 등수 데이터 저장 중... ");
-        return itemLists  -> {
-            for(List<Ranking> itemList : itemLists){
+        return itemLists -> {
+            for (List<Ranking> itemList : itemLists) {
                 itemList.forEach(ranking -> {
                     rankingRepository.save(ranking);
                 });
@@ -339,6 +343,231 @@ public class BatchConfig {
         };
     }
 
+    @Bean
+    public JpaPagingItemReader memberReader() {
+        log.info("[ STPE 03 - READER ] member 데이터 읽는 중... ");
+
+        return new JpaPagingItemReaderBuilder<MemberMapArea>()
+                .name("memberMapAreaReaderForRanking")
+                .entityManagerFactory(entityManagerFactory)
+                .queryString("select m from AppMember m where m.alarms = :alarms")
+                .parameterValues(Map.of("alarms", true))
+                .pageSize(1000)
+                .build();
+    }
+
+    @Bean
+    public ItemProcessor<List<AppMember>, List<Alarm>> memberAlarmProcessor() {
+        log.info("[ STPE 03 - PROCESSOR ] alarm 발송 중... ");
+
+        return items -> {
+            return items.stream().map(appMember -> {
+                        LocalDate today = LocalDate.now();
+                        LocalDate yesterday = today.minusDays(1);
+
+                        List<Ranking> memberTodayRankingList = rankingRepository.findRankingByAppMemberAndCreatedAt(appMember.getIdx(), today);
+                        List<Ranking> memberYesterdayRankingList = rankingRepository.findRankingByAppMemberAndCreatedAt(appMember.getIdx(), yesterday);
+
+                        Map<RegionType, Ranking> memberTodayRankingMap = new HashMap();
+                        Map<RegionType, Ranking> memberYesterdayRankingMap = new HashMap<>();
+
+                        memberTodayRankingList.stream().forEach(ranking -> {
+                            if(!memberTodayRankingMap.containsKey(ranking.getRegionType())){
+                                memberTodayRankingMap.put(ranking.getRegionType(), ranking);
+                            }
+                        });
+
+                        memberYesterdayRankingList.stream().forEach(ranking -> {
+                            if(!memberYesterdayRankingMap.containsKey(ranking.getRegionType())){
+                                memberYesterdayRankingMap.put(ranking.getRegionType(), ranking);
+                            }
+                        });
+
+
+//                        Map<RegionType, Ranking> appMemberRankingYesterday =
+
+                        // 1. 경쟁 알림 전송
+                        List <Alarm> competitorAlarm = getCompetitorAlarm(appMember, memberTodayRankingMap, memberYesterdayRankingMap, today, yesterday);
+
+                        // 2. 정복율 알림 전송
+                        List<Alarm> percentAlarm = getPercentAlarm(appMember, memberTodayRankingMap, memberYesterdayRankingMap);
+
+                        return Stream.concat(competitorAlarm.stream(), percentAlarm.stream()).collect(Collectors.toList());
+                    })
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+        };
+    }
+
+    /**
+     * 10% 단위로 정복도가 달성되었을 때 Member에게 알람 보내기 위한 함수
+     * @param appMember
+     * @param memberTodayRankingMap
+     * @param memberYesterdayRankingMap
+     * @return
+     */
+    private List<Alarm> getPercentAlarm(AppMember appMember, Map<RegionType, Ranking> memberTodayRankingMap, Map<RegionType, Ranking> memberYesterdayRankingMap) {
+        List<Alarm> result = new ArrayList<>();
+        for(RegionType regionType : memberTodayRankingMap.keySet()){
+            Ranking todayRanking = memberTodayRankingMap.get(regionType);
+            String region = todayRanking.getRegionType().getKoreanName();
+            int todayPercent = todayRanking.getPercent().intValue()*100;
+            String content = region + " 정복도 "+todayPercent+"%를 달성했습니다!";
+            if(!memberYesterdayRankingMap.containsKey(regionType)){
+                result.add(Alarm
+                        .builder()
+                                .type(AlarmType.NOTIFICATION)
+                                .content(content)
+                                .appMember(appMember)
+                        .build());
+            }else{
+                Ranking yesterdayRanking = memberYesterdayRankingMap.get(regionType);
+                int yesterdayPercent = yesterdayRanking.getPercent().intValue()*100;
+
+                if(!isSamePercent(todayPercent, yesterdayPercent)){
+                    result.add(Alarm
+                            .builder()
+                            .type(AlarmType.NOTIFICATION)
+                            .content(content)
+                            .appMember(appMember)
+                            .build());
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean isSamePercent(int todayPercent, int yesterdayPercent) {
+        if(todayPercent / 10 == yesterdayPercent / 10) return true;
+        else return false;
+    }
+
+    /**
+     * 전국 랭킹에서 친구가 나보다 앞선 경우 Member에게 알람 보내기 위한 함수
+     * @param appMember
+     * @param memberTodayRankingMap
+     * @param memberYesterdayRankingMap
+     * @return
+     */
+    private List<Alarm> getCompetitorAlarm(AppMember appMember, Map<RegionType, Ranking> memberTodayRankingMap, Map<RegionType, Ranking> memberYesterdayRankingMap, LocalDate today, LocalDate yesterday) {
+        List<Alarm> result = new ArrayList<>();
+
+        // 친구 리스트를 구한다.
+        List<Long> friends = friendshipRepository.findAllByAppMemberJpql(appMember.getIdx()).stream().map(Friendship::getIdx).collect(Collectors.toList());
+
+        // 친구들의 어제 오늘 Ranking을 구한다.
+        List<Ranking> friendsRanking = rankingRepository.findFriendRankingBetweenDateByRegionType(yesterday, today, friends, RegionType.KOREA);
+        Map<Long, List<Ranking>> friendsRankingMap = new HashMap<>();
+
+        friendsRanking.stream().forEach(ranking -> {
+            Long key = ranking.getIdx();
+            if(friendsRankingMap.containsKey(key)){
+                friendsRankingMap.get(key).add(ranking);
+            }else{
+                List<Ranking> value = new ArrayList<>();
+                value.add(ranking);
+                friendsRankingMap.put(key, value);
+            }
+        });
+
+        // 어제 사용자보다 랭킹이 낮고
+        // 오늘 사용자보다 랭킹이 높은
+        // 친구를 구한다.
+
+        // 정렬
+        // 친구가 신규 회원인 경우 -> 오늘만 비교
+        // 친구가 없어진 회원인 경우 -> 1. deletedAt이 지난 경우 아무것도 하지 않음 2. 지나지 않고 어제만 있는 경우 아무것도 하지 않음 3. 둘 다 있는 경우 비교
+        // 결론: size가 1이고 오늘 데이터인 경우에는 alarm을 create
+        // size가 2이상일 때
+        // 일단 오늘 데이터 있는지 확인
+        // 없으면 아무것도 하지 않음
+        // 있으면 어제 데이터 있는지 확인
+        // 어제 데이터 없으면 alarm create
+        // 있으면 두 개만 남기기
+        for(Long friendIdx : friendsRankingMap.keySet()){
+            List<Ranking> friendLankings = friendsRankingMap.get(friendIdx);
+            Collections.sort(friendLankings, (o1, o2) -> o1.getCreatedAt().compareTo(o2.getCreatedAt()));
+
+            if(friendLankings.size() < 1) continue;
+            else if(friendLankings.size() == 1){
+                if(friendLankings.get(0).getCreatedAt().toLocalDate().isEqual(today)){
+                    Optional<AppMember> friendAppMember = appmemberRepository.findByIdx(friendIdx);
+                    if(friendAppMember.isEmpty()) continue;
+                    String content = "이런 "+friendAppMember.get().getNickname()+"님이 당신을 이겼습니다!" ;
+
+                    result.add(Alarm
+                            .builder()
+                                    .type(AlarmType.RANKING)
+                                    .content(content)
+                                    .appMember(appMember)
+                            .build());
+
+                }
+            }else{
+                Ranking yesterdayFriendRanking = null;
+                Ranking todayFriendRanking = null;
+
+                for(Ranking friendRanking : friendLankings){
+                    if(yesterdayFriendRanking == null && friendRanking.getCreatedAt().toLocalDate().isEqual(yesterday)) yesterdayFriendRanking = friendRanking;
+                    if(todayFriendRanking == null && friendRanking.getCreatedAt().toLocalDate().isEqual(today)) todayFriendRanking = friendRanking;
+                }
+
+                if(todayFriendRanking == null) continue;
+
+                if(yesterdayFriendRanking == null){
+                    Optional<AppMember> friendAppMember = appmemberRepository.findByIdx(friendIdx);
+                    if(friendAppMember.isEmpty()) continue;
+                    String content = "이런 "+friendAppMember.get().getNickname()+"님이 당신을 이겼습니다!" ;
+                    result.add(Alarm
+                            .builder()
+                            .type(AlarmType.RANKING)
+                            .content(content)
+                            .appMember(appMember)
+                            .build());
+                }else{
+                    if(!memberYesterdayRankingMap.containsKey(RegionType.KOREA) || !memberTodayRankingMap.containsKey(RegionType.KOREA)) continue;
+
+                    if(yesterdayFriendRanking.getRank() < memberYesterdayRankingMap.get(RegionType.KOREA).getRank() && todayFriendRanking.getRank() > memberTodayRankingMap.get(RegionType.KOREA).getRank()){
+                        Optional<AppMember> friendAppMember = appmemberRepository.findByIdx(friendIdx);
+                        if(friendAppMember.isEmpty()) continue;
+                        String content = "이런 "+friendAppMember.get().getNickname()+"님이 당신을 이겼습니다!" ;
+                        result.add(Alarm
+                                .builder()
+                                .type(AlarmType.RANKING)
+                                .content(content)
+                                .appMember(appMember)
+                                .build());
+                    }
+                }
+
+
+            }
+        }
+        return result;
+    }
+
+    @Bean
+    public ItemWriter<List<Alarm>> alarmWriter() {
+        log.info("[ STPE 03 - WRITER ] 알람 데이터 저장 중... ");
+
+        return itemLists -> {
+            for (List<Alarm> itemList : itemLists) {
+                itemList.forEach(alarm -> {
+                    log.info(alarm.getContent());
+                    try {
+                        alarmService.sendAlarm(alarm.getAppMember().getIdx(), SendAlarmRequestDto
+                                .builder()
+                                .type(alarm.getType())
+                                .content(alarm.getContent())
+                                .eventIdx(alarm.getEventIdx())
+                                .build());
+                    } catch (Exception e) {
+                        log.error("Error sending alarm for " + alarm.getAppMember().getIdx(), e);
+                    }
+                });
+            }
+        };
+    }
 
 }
 

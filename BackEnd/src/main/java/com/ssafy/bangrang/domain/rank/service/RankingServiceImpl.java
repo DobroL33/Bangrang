@@ -7,7 +7,6 @@ import com.ssafy.bangrang.domain.member.repository.FriendshipRepository;
 import com.ssafy.bangrang.domain.rank.api.response.*;
 import com.ssafy.bangrang.domain.rank.entity.Ranking;
 import com.ssafy.bangrang.domain.rank.repository.RankingRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.plaf.synth.Region;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,7 +36,7 @@ public class RankingServiceImpl implements RankingService{
 
         // 1. MyRankDto 생성
         // 나의 ranking 정보를 불러온다.
-        List<Ranking> myRankings = rankingRepository.findTodayRankingByAppMember(appMember.getIdx(), LocalDate.now());
+        List<Ranking> myRankings = rankingRepository.findRankingByAppMemberAndCreatedAt(appMember.getIdx(), LocalDate.now());
 
         List<MyRegionRankDto> myRatings = myRankings
                 .stream()
@@ -61,7 +59,7 @@ public class RankingServiceImpl implements RankingService{
             long rank = ranking.getRank();
             List<Long> upDownAppMember = Arrays.asList(new Long[]{rank-1, rank+1});
 
-            List<RankList> rankLists = rankingRepository.findTodayRankingUpDownAppMember(curRegionType, LocalDate.now(), upDownAppMember).stream()
+            List<RankList> rankLists = rankingRepository.findRankingUpDownAppMemberByCreatedAt(curRegionType, LocalDate.now(), upDownAppMember).stream()
                     .map(newRanking -> RankList
                             .builder()
                             .userNickname(newRanking.getAppMember().getNickname())
@@ -89,7 +87,7 @@ public class RankingServiceImpl implements RankingService{
         // 2. 상위 10명
         Map<RegionType, List<RankList>> rankListMapInTotalRegionDto = new HashMap<>();
         for(RegionType regionType : RegionType.values()){
-            List<RankList> rankLists = rankingRepository.findToday10Ranking(regionType, LocalDate.now(), PageRequest.of(0, 10))
+            List<RankList> rankLists = rankingRepository.findTop10RankingByCreatedAt(regionType, LocalDate.now(), PageRequest.of(0, 10))
                     .stream()
                     .map(ranking -> RankList
                             .builder()

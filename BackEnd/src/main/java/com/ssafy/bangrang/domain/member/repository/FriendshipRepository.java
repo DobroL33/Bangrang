@@ -16,4 +16,7 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
 
     List<Friendship> findAllByAppMember(AppMember appMember);
 
+    @Query("select f from Friendship f where f.appMember.idx = :appMemberIdx")
+    List<Friendship> findAllByAppMemberJpql(@Param("appMemberIdx") Long appMemberIdx);
+
 }
