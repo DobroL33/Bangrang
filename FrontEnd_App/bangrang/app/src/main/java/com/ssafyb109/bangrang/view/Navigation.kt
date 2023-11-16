@@ -1,5 +1,7 @@
+
 package com.ssafyb109.bangrang.view
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,30 +17,38 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.ssafyb109.bangrang.R
 import com.ssafyb109.bangrang.ui.theme.logocolor
 
@@ -55,27 +65,33 @@ fun TopBar(navController: NavHostController) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(42.dp),
+                    .height(80.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Spacer(modifier = Modifier.width(60.dp))
+
+                Image(
+                    painter = painterResource(id = R.drawable.app_logo),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .scale(1f)
+                        .clickable(onClick = { navController.navigate("Home") })
+                )
+
                 val interactionSource = remember { MutableInteractionSource() }
-                Box(modifier = Modifier.padding(top = 24.dp, start = 12.dp)) {
+                Box(modifier = Modifier.padding(end = 12.dp)) {
                     Image(
-                        painter = painterResource(id = R.drawable.logo),
-                        contentDescription = null,
-                        Modifier
-                            .padding(start = 120.dp)
-                            .scale(1.5f)
+                        painter = painterResource(id = R.drawable.alertbell),
+                        contentDescription = "Notification",
+                        modifier = Modifier
                             .clickable(
                                 interactionSource = interactionSource,
                                 indication = null,
-                                onClick = { navController.navigate("Home") }
+                                onClick = { navController.navigate("AlarmPage") }
                             )
                     )
                 }
-
-                Spacer(modifier = Modifier.height(20.dp))
             }
             Spacer(
                 modifier = Modifier
@@ -89,70 +105,156 @@ fun TopBar(navController: NavHostController) {
 
 @Composable
 fun BottomBar(navController: NavHostController) {
-    val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .height(72.dp)
+            .zIndex(2f),
     ) {
         // 그림자 추가를 위한 Box
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(0.2.dp)
-                .shadow(elevation = 0.2.dp, shape = RectangleShape)
+                .height(1.dp)
+                .shadow(elevation = 1.dp, shape = RectangleShape)
         )
         Row(
             modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            BottomBarButton("행사") {
-                navController.navigate("EventPage")
+            Spacer(modifier = Modifier.width(32.dp))
+
+            BottomBarButton("홈") {
+                navController.navigate("Home")
             }
-            BottomBarButton("찜") {
-                navController.navigate("FavoritePage")
+
+            Spacer(modifier = Modifier.width(48.dp))
+
+            BottomBarButton("지도") {
+                navController.navigate("MapPage")
             }
-            if (currentDestination == "Home") {
-                HighlightedBottomBarButton(icon = Icons.Default.LocationOn, color = logocolor) {
-                    navController.navigate("MapPage")
-                }
-            } else {
-                HighlightedBottomBarButton(icon = Icons.Default.Home, color = logocolor) {
-                    navController.navigate("Home")
-                }
-            }
-            BottomBarButton("랭킹") {
-                navController.navigate("RankPage")
-            }
-            BottomBarButton("My방랑") {
-                navController.navigate("MyPage")
-            }
+            Spacer(modifier = Modifier.width(32.dp))
         }
     }
 }
 
 @Composable
-fun HighlightedBottomBarButton(icon: ImageVector, color: Color, onClick: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+fun FloatingActionMenu(navController: NavHostController) {
+    val isMenuExpanded = remember { mutableStateOf(false) }
+
+    Box(
         modifier = Modifier
-            .clickable(onClick = onClick)
-            .widthIn(min = 84.dp, max = 100.dp)
-            .offset(y = (-16).dp)  // 위쪽으로 오프셋
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
-        Box(
+        if (isMenuExpanded.value) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxSize()
+                    .offset(y = 86.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                ExpandingCenterMenu { selectedLabel ->
+                    // ExpandingCenterMenu에서 선택된 항목 처리
+                    isMenuExpanded.value = false
+                    when (selectedLabel) {
+                        "마이룸" -> navController.navigate("MyPage")
+                        "랭킹" -> navController.navigate("RankPage")
+                        "행사" -> navController.navigate("EventPage")
+                    }
+                }
+            }
+        }
+
+        FloatingActionButton(
+            onClick = { isMenuExpanded.value = !isMenuExpanded.value },
             modifier = Modifier
-                .size(72.dp)
-                .background(color = color, shape = CircleShape)
-                .align(Alignment.CenterHorizontally)
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
+                .size(100.dp)
+                .align(Alignment.BottomCenter)
+                .clip(CircleShape)
         ) {
-            Icon(imageVector = icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(40.dp))
+            Image(
+                painter = painterResource(id = R.drawable.centralbutton),
+                contentDescription = "Toggle Menu",
+                modifier = Modifier
+                    .size(100.dp)
+                    .fillMaxSize()
+            )
+        }
+    }
+}
+
+@Composable
+fun ExpandingCenterMenu(onItemSelected: (String) -> Unit) {
+    val items = listOf("마이룸", "랭킹", "행사" )
+    val icons = mapOf(
+        "마이룸" to R.drawable.myroomimage,
+        "랭킹" to R.drawable.rankimage,
+        "행사" to R.drawable.eventimage,
+    )
+
+    val distance = 90f  // 원 중심으로부터 아이콘간의 거리
+
+    Box(
+        modifier = Modifier
+            .size(280.dp)
+            .background(Color.Transparent)
+    ) {
+        Canvas(modifier = Modifier.matchParentSize()) {
+            val arcDiameter = size.width  // 아크의 직경은 캔버스 너비와 같습니다.
+            val arcRadius = arcDiameter / 2
+            val gradientBrush = Brush.verticalGradient(
+                colors = listOf(
+                    Color(0xFF1DAEFF),  // 하늘색
+                    Color(0xFFA776CD)   // 보라색
+                ),
+                startY = arcRadius,
+                endY = 0f
+            )
+            drawArc(
+                brush = gradientBrush,
+                startAngle = 0f,  // 시작하는 각도
+                sweepAngle = -180f,  // 끝나는 각도
+                useCenter = true,  // 센터 포인트
+                topLeft = Offset(0f, 0f),
+                size = Size(arcDiameter, arcDiameter),  // 크기
+                style = Fill  // 반원 내부를 채움
+            )
+        }
+        val startDegree = 18f
+        val totalDegrees = 144f
+        val degreesBetweenIcons = totalDegrees / (items.size - 1)
+        for (i in items.indices) {
+            val angle = startDegree + i * degreesBetweenIcons
+            val offsetX = kotlin.math.cos(Math.toRadians(angle.toDouble())).toFloat() * distance
+            val offsetY = kotlin.math.sin(Math.toRadians(angle.toDouble())).toFloat() * distance
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .offset(x = (offsetX + 110).dp, y = (-offsetY + 82).dp)
+            ) {
+                IconButton(
+                    onClick = { onItemSelected(items[i]) },
+                    modifier = Modifier.size(60.dp)
+                ) {
+                    Image(
+                        painter = painterResource(icons[items[i]]!!),
+                        contentDescription = null,
+                        modifier = Modifier.size(40.dp) // 아이콘 크기
+                    )
+                }
+                Text(
+                    text = items[i],
+                    color = Color.White,
+                    modifier = Modifier
+                        .offset(x = 0.dp, y = (-8).dp)
+                )
+            }
         }
     }
 }
@@ -168,13 +270,9 @@ fun BottomBarButton(label: String, onClick: () -> Unit) {
             .widthIn(min = 64.dp, max = 80.dp)
     ) {
         val icon = when (label) {
-            "행사" -> Icons.Default.ShoppingCart
-            "찜" -> Icons.Default.Star
-            "메인" -> Icons.Default.Home
+            "홈" -> Icons.Default.Home
             "지도" -> Icons.Default.LocationOn
-            "랭킹" -> Icons.Default.Star
-            "My방랑" -> Icons.Default.Person
-            else -> Icons.Default.Home
+            else -> Icons.Default.Home  // 기본값
         }
 
         Icon(
