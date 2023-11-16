@@ -132,16 +132,21 @@ public class RankingServiceImpl implements RankingService{
         });
         memberFriendshipIdx.add(appMember.getIdx());
 
+        log.info("현재 로그인한 사람: "+appMember.getNickname());
+
         log.info(memberFriendships.size()+" => 나 포함 친구 수");
 
         // 사용자 친구의 랭킹을 불러온다.`
         List<Ranking> friendsRankings = rankingRepository.findFriendRanking(LocalDate.now(), memberFriendshipIdx);
 
         Map<RegionType, List<RankList>> friendsRankListMap = new HashMap<>();
+        for(RegionType regionType : RegionType.values()){
+            friendsRankListMap.put(regionType, new ArrayList<RankList>());
+        }
 
         friendsRankings.stream().forEach(ranking -> {
             RegionType curRegionType = ranking.getRegionType();
-            List<RankList> rankLists = friendsRankListMap.getOrDefault(curRegionType, new ArrayList<RankList>());
+            List<RankList> rankLists = friendsRankListMap.get(curRegionType);
             rankLists.add(RankList
                     .builder()
                             .userNickname(ranking.getAppMember().getNickname())
