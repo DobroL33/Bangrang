@@ -1,0 +1,51 @@
+.Page {
+  width: 100%;
+  height: auto;
+  /* background: linear-gradient(
+    to bottom,
+    #ffffff,
+    #ffffff,
+    #ffffff,
+    #90d0f6,
+    #ffffff,
+    #ffffff,
+    #1daeff,
+    #ffffff
+  ); */
+  overflow-x: hidden;
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.Page::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.pageup {
+ 
+  background-color: #1DAEFF;
+  width:70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10000;
+  border: 1px solid white;
+  color:white;
+}
+
+.buttonContainer {
+  position: fixed;
+  bottom: 180px;
+  right: 30px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 1s ease;
+  z-index: 10000;
+  box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.1);
+}
+
+.show {
+  opacity: 1;
+}

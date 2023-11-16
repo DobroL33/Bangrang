@@ -1,0 +1,87 @@
+.homebox {
+    background-color: #E2F5FF;
+    padding: 2% 12% 5% 12%;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.funcbox {
+    width: 100%;
+    height: 95%;
+    border: 1px solid black;
+    border-radius: 1rem;
+    background-color: #FAFAFA;
+}
+
+.filterbar {
+    height: 7%;
+    width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2%;
+    border-top-left-radius: 1rem;
+    background-color: wheat;
+}
+
+.databox {
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    height: 93%;
+    width: 100%;
+    border-bottom-left-radius: 1rem;
+}
+
+.data {
+    background-color:  #E2F5FF;
+    display: flex;
+    height: 12%;
+    width: 27%;
+    justify-content: space-between;
+    align-items: center;
+    margin:2% 3%;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+.data:hover {
+    background-color: greenyellow;
+}
+
+.data_pk {
+    width: 15%;
+}
+
+.data_info {
+    display: flex;
+    flex-direction: column;
+    width: 55%;
+    text-align: start;
+}
+
+.data_status {
+    background-color: gray;
+    width: 25%;
+    display: flex;
+    font-size: 10px;
+    height: 85%;
+    margin-right: 2%;
+    border-radius: 30%;
+    justify-content: center;
+    align-items: center;
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+.detailframe {
+    height: 100%;
+    width: 27%;
+    border-left: 1px solid black;
+    word-wrap: break-word;
+    box-sizing: border-box;
+    padding:2%;
+}

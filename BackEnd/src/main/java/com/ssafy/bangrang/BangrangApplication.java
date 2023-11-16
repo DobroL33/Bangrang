@@ -10,4 +10,5 @@ public class BangrangApplication {
         SpringApplication.run(BangrangApplication.class, args);
     }
 
+
 }

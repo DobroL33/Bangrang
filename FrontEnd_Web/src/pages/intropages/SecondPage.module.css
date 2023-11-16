@@ -1,0 +1,131 @@
+/*SecondPage.module.css*/
+.Page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  cursor: url("https://uploads.codesandbox.io/uploads/user/b3e56831-8b98-4fee-b941-0e27f39883ab/Ad1_-cursor.png")
+      39 39,
+    auto;
+}
+
+.DeckContainer {
+  transform: translateX(-10%);
+  /* position: relative; */
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 2.5;
+  display: flex;
+  margin-top: 5%;
+}
+.metContainer {
+  animation-name: moving;
+  justify-content: center;
+  position: relative;
+  top: 45%;
+  flex: 1;
+  /* display: flex; */
+  animation-iteration-count: infinite;
+  animation-duration: 0.4s;
+  animation-direction: alternate;
+}
+
+@keyframes moving {
+  from {
+    left: 30px;
+  }
+  to {
+    left: -30px;
+  }
+}
+
+@keyframes stamp {
+  0% {
+    transform: rotate(-7.5deg);
+  }
+  50% {
+    transform: rotate(7.5deg);
+  }
+  100% {
+    transform: rotate(-7.5deg);
+  }
+}
+
+.InfoContainer {
+  transform: translateX(10%);
+  flex: 2.5;
+  z-index: 1;
+}
+
+.CommentContainer {
+  width: 30vw;
+  height: 60%;
+  /* margin-top: 5%; */
+  flex: 1.2;
+}
+.CommentContainer > div {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* font-size: 14.5px; */
+}
+.CommentContainer > div > div {
+  margin-top: 5%;
+  width: 100%;
+  height: 20%;
+  background: linear-gradient(90deg, #5ee7df 0%, #f0dafe 100%);
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+}
+.CommentContainer > div > div > h1 {
+  z-index: 4;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: white;
+  text-align: center; /* 텍스트를 가운데 정렬합니다. */
+}
+
+.stampComment {
+  animation-name: stamp;
+  animation-iteration-count: infinite;
+  animation-duration: 0.6s;
+  animation-direction: alternate;
+  display: inline-block;
+}
+
+.deck {
+  position: absolute;
+  max-width: 45%;
+  max-height: 45%;
+  min-width: 35%;
+  min-height: 35%;
+  width: 40%;
+  height: 40%;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.deck > div {
+  /* background-color: white; */
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 45vh;
+  min-width: 100%;
+  max-width: 100%;
+  height: 85vh;
+  min-height: 100%;
+  max-height: 100%;
+  will-change: transform;
+  border-radius: 10px;
+  /* box-shadow: 0 12.5px 100px -10px rgba(50, 50, 73, 0.4),
+    0 10px 10px -10px rgba(50, 50, 73, 0.3); */
+}
