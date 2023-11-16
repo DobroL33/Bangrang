@@ -12,22 +12,22 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RankingRepository extends JpaRepository<Ranking, Long> {
-    @Query("SELECT r FROM Ranking r WHERE r.appMember.idx = :appMemberIdx AND FUNCTION('DATE', r.createdAt) = FUNCTION('DATE', :givenDate)")
+    @Query("SELECT r FROM Ranking r WHERE r.appMember.idx = :appMemberIdx AND FUNCTION('DATE', r.createdAt) = :givenDate")
     List<Ranking> findRankingByAppMemberAndCreatedAt(@Param("appMemberIdx") Long appMemberIdx, @Param("givenDate") LocalDate givenDate);
 
     @Query("SELECT r FROM Ranking r WHERE r.regionType = :regionType AND FUNCTION('DATE', r.createdAt) = FUNCTION('DATE', :givenDate) ORDER BY r.rank")
     List<Ranking> findTop10RankingByCreatedAt(@Param("regionType") RegionType regionType,@Param("givenDate") LocalDate givenDate, Pageable pageable);
 
-    @Query("SELECT r FROM Ranking r WHERE r.regionType = :regionType AND FUNCTION('DATE', r.createdAt) = FUNCTION('DATE', :givenDate) AND r.appMember.idx IN :members ")
+    @Query("SELECT r FROM Ranking r WHERE r.regionType = :regionType AND FUNCTION('DATE', r.createdAt) = FUNCTION('DATE', :givenDate) AND r.appMember.idx IN (:members) ")
     List<Ranking> findRankingUpDownAppMemberByCreatedAt(@Param("regionType") RegionType regionType, @Param("givenDate") LocalDate givenDate, @Param("members") List<Long> members);
 
-    @Query("SELECT r FROM Ranking r WHERE r.appMember.idx = :appMemberIdx AND FUNCTION('DATE', r.createdAt) = FUNCTION('DATE', :givenDate) AND r.regionType = :regionType")
+    @Query("SELECT r FROM Ranking r WHERE r.appMember.idx = :appMemberIdx AND FUNCTION('DATE', r.createdAt) = :givenDate AND r.regionType = :regionType")
     Optional<Ranking> findTodayKoreaRankingByAppMember(@Param("appMemberIdx") Long appMemberIdx, @Param("givenDate") LocalDate givenDate, @Param("regionType") RegionType regionType);
 
-    @Query("SELECT r FROM Ranking r WHERE FUNCTION('DATE', r.createdAt) = FUNCTION('DATE', :givenDate) AND r.appMember.idx IN :friends ORDER BY r.rank DESC")
+    @Query("SELECT r FROM Ranking r WHERE FUNCTION('DATE', r.createdAt) = FUNCTION('DATE', :givenDate) AND r.appMember.idx IN (:friends) ORDER BY r.rank DESC")
     List<Ranking> findFriendRanking(@Param("givenDate") LocalDate givenDate, @Param("friends") List<Long> friends);
 
-    @Query("SELECT r FROM Ranking r WHERE FUNCTION('DATE', r.createdAt) BETWEEN :startDate AND :endDate AND r.appMember.idx IN :friends AND r.regionType = :regionType")
+    @Query("SELECT r FROM Ranking r WHERE FUNCTION('DATE', r.createdAt) BETWEEN :startDate AND :endDate AND r.appMember.idx IN (:friends) AND r.regionType = :regionType")
     List<Ranking> findFriendRankingBetweenDateByRegionType(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("friends") List<Long> friends, @Param("regionType")RegionType regionType);
 
     @Query("SELECT r FROM Ranking r WHERE FUNCTION('DATE', r.createdAt) BETWEEN :startDate AND :endDate AND r.appMember.idx = :appMemberIdx order by r.createdAt desc")

@@ -71,6 +71,9 @@ public class RankingServiceImpl implements RankingService{
             rankListMapInMyRankDto.put(curRegionType, rankLists);
         }
 
+        log.info("나보다 위아래 등수를 가진 사람");
+        log.info(rankListMapInMyRankDto.toString());
+
         MyRankDto myRank = MyRankDto
                 .builder()
                 .myRatings(myRatings)
@@ -79,7 +82,7 @@ public class RankingServiceImpl implements RankingService{
 
         if(myKoreaRanking.isPresent()) {
             // 백분율로 변환
-            myRank.setRating((int) (myKoreaRanking.get().getPercent() * 100));
+            myRank.setRating((int) (myKoreaRanking.get().getRating() * 100));
         }else{
             myRank.setRating(100);
         }
