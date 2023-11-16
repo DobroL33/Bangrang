@@ -79,8 +79,8 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
                 befoMemberMapArea.changeShapeAndDimension(unionResult, unionResult.getArea());
                 List<List<GeometryBorderCoordinate>> list = getBorderPointListOuter(unionResult);
                 Double space = 0.0;
-                if(curUnionResult.intersects(unionResult)) {
-                    Geometry intersection = curUnionResult.intersection(unionResult);
+                if(!unionResult.contains(befoPolygon)) {
+                    Geometry intersection = curUnionResult.difference(unionResult);
                     space = intersection.getArea()* 111319.49079327357 * 111319.49079327357;
                 }
 
@@ -95,8 +95,8 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
                 List<List<GeometryBorderCoordinate>> list = getBorderPointListOuter(unionResult);
 
                 Double space = 0.0;
-                if(curUnionResult.intersects(unionResult)) {
-                    Geometry intersection = curUnionResult.intersection(unionResult);
+                if(!unionResult.contains(befoPolygon)) {
+                    Geometry intersection = curUnionResult.difference(unionResult);
                     space = intersection.getArea()* 111319.49079327357 * 111319.49079327357;
                 }
 
