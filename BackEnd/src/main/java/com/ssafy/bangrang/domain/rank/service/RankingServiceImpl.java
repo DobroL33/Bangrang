@@ -59,7 +59,7 @@ public class RankingServiceImpl implements RankingService{
             long rank = ranking.getRank();
             List<Long> upDownAppMember = Arrays.asList(new Long[]{rank-1, rank+1});
 
-            List<RankList> rankLists = rankingRepository.findRankingUpDownAppMemberByCreatedAt(curRegionType, LocalDate.now(), upDownAppMember).stream()
+            List<RankList> rankLists = rankingRepository.findUpDownRankingrByCreatedAt(curRegionType, LocalDate.now(), upDownAppMember).stream()
                     .map(newRanking -> RankList
                             .builder()
                             .userNickname(newRanking.getAppMember().getNickname())
@@ -70,7 +70,8 @@ public class RankingServiceImpl implements RankingService{
 
             rankListMapInMyRankDto.put(curRegionType, rankLists);
         }
-
+        log.info("나의 등수");
+        log.info(myRatings.toString());
         log.info("나보다 위아래 등수를 가진 사람");
         log.info(rankListMapInMyRankDto.toString());
 
