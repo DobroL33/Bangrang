@@ -2,6 +2,7 @@ package com.ssafy.bangrang.domain.rank.service;
 
 import com.ssafy.bangrang.domain.map.model.vo.RegionType;
 import com.ssafy.bangrang.domain.member.entity.AppMember;
+import com.ssafy.bangrang.domain.member.entity.Friendship;
 import com.ssafy.bangrang.domain.member.repository.AppMemberRepository;
 import com.ssafy.bangrang.domain.member.repository.FriendshipRepository;
 import com.ssafy.bangrang.domain.rank.api.response.*;
@@ -124,11 +125,17 @@ public class RankingServiceImpl implements RankingService{
         Optional<Ranking> myKoreaRanking = rankingRepository.findTodayKoreaRankingByAppMember(appMember.getIdx(), LocalDate.now(), RegionType.KOREA);
 
         // 사용자의 친구 목록을 불러온다.
-        List<Long> memberFriendships = appMember.getFriendships().stream().map(friendship -> friendship.getFriendIdx()).collect(Collectors.toList());
-        memberFriendships.add(appMember.getIdx());
+        List<Friendship> memberFriendships = appMember.getFriendships();
+        List<Long> memberFriendshipIdx = new ArrayList<>();
+        memberFriendships.stream().forEach(friendship -> {
+            memberFriendshipIdx.add(friendship.getFriendIdx());
+        });
+        memberFriendshipIdx.add(appMember.getIdx());
+
+        log.info(memberFriendships.size()+" => 나 포함 친구 수");
 
         // 사용자 친구의 랭킹을 불러온다.`
-        List<Ranking> friendsRankings = rankingRepository.findFriendRanking(LocalDate.now(), memberFriendships);
+        List<Ranking> friendsRankings = rankingRepository.findFriendRanking(LocalDate.now(), memberFriendshipIdx);
 
         Map<RegionType, List<RankList>> friendsRankListMap = new HashMap<>();
 
