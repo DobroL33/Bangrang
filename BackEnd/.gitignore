@@ -4,7 +4,10 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-
+!**/src/main/resources/**/
+# Ignore Spring Boot application.yaml configuration file
+/src/main/resources/application.yaml
+/src/main/resources/application.yml
 ### STS ###
 .apt_generated
 .classpath
@@ -16,7 +19,8 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-
+!**/src/main/resource/application.yml/
+!**/src/main/resource/**.json/
 ### IntelliJ IDEA ###
 .idea
 *.iws
