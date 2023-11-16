@@ -17,6 +17,7 @@ import com.ssafy.bangrang.global.fcm.model.vo.AlarmType;
 import com.ssafy.bangrang.global.fcm.service.AlarmService;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Geometry;
@@ -241,11 +242,13 @@ public class BatchConfig {
 
 
     @Bean
+    @Transactional
     public ItemWriter<List<MemberMapArea>> memberMapAreaWriter() {
         log.info("[ STPE 01 - WRITER ] mapArea 데이터 저장 중... ");
         return itemLists -> {
             for (List<MemberMapArea> itemList : itemLists) {
                 itemList.forEach(item -> {
+                    log.info("[ STEP 01 - WRITER ]: "+item);
                     memberMapAreaRepository.save(item);
                 });
             }
@@ -332,11 +335,13 @@ public class BatchConfig {
     }
 
     @Bean
+    @Transactional
     public ItemWriter<List<Ranking>> rankingWriter() {
         log.info("[ STPE 02 - WRITER ] 등수 데이터 저장 중... ");
         return itemLists -> {
             for (List<Ranking> itemList : itemLists) {
                 itemList.forEach(ranking -> {
+                    log.info("[ STEP 02 - WRITER ] 등수 데이터 "+ranking);
                     rankingRepository.save(ranking);
                 });
             }
