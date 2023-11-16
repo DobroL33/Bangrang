@@ -1,20 +1,42 @@
 package com.ssafy.bangrang.global.quartz;
 
 import org.quartz.*;
-import org.quartz.JobExecutionException;
-import org.springframework.batch.core.*;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.quartz.JobDetailFactoryBean;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Configuration
 public class QuartzConfig {
+//    @Bean
+//    public JobDetail helloWorldJobDetail() {
+//        return JobBuilder.newJob(HelloWorldJob.class)
+//                .withIdentity("helloWorldJob")
+//                .storeDurably()
+//                .build();
+//    }
+//
+//    @Bean
+//    public Trigger helloWorldTrigger() {
+//        return TriggerBuilder.newTrigger()
+//                .forJob(helloWorldJobDetail())
+//                .withIdentity("helloWorldTrigger")
+//                .withSchedule(CronScheduleBuilder.cronSchedule("*/10 * * * * ?")) // 매 10초마다
+//                .build();
+//    }
 
+    @Bean
+    public JobDetail batchExecuteJobDetail(){
+        return JobBuilder.newJob(BatchExecuteJob.class)
+                .withIdentity("batchExecuteJob")
+                .storeDurably()
+                .build();
+    }
+
+    @Bean
+    public Trigger batchExecuteTrigger() {
+        return TriggerBuilder.newTrigger()
+                .forJob(batchExecuteJobDetail())
+                .withIdentity("batchExecuteTrigger")
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?")) // 매 1분 마다
+                .build();
+    }
 }

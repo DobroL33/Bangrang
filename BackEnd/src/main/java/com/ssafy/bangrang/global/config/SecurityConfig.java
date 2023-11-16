@@ -77,7 +77,7 @@ public class SecurityConfig {
             /* 앱 닉네임 중복확인 */
             "/api/member/nicknameCheck/**",
 
-            "/api/event/**",
+            "/api/batch/**"
 
             
     };

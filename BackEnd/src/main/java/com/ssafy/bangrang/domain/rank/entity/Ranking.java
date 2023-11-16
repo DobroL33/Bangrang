@@ -26,10 +26,10 @@ public class Ranking extends CommonEntity {
     private Long rank;
 
     @Column(name = "ranking_rating", nullable = false)
-    private Double rating;
+    private Double rating; // 상위퍼센트
 
     @Column(name = "ranking_percent", nullable = false)
-    private Double percent;
+    private Double percent; //정복율
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_idx")
