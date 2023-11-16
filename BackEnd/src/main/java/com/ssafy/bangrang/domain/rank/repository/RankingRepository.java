@@ -18,7 +18,7 @@ public interface RankingRepository extends JpaRepository<Ranking, Long> {
     @Query("SELECT r FROM Ranking r WHERE r.regionType = :regionType AND FUNCTION('DATE', r.createdAt) = FUNCTION('DATE', :givenDate) ORDER BY r.rank")
     List<Ranking> findTop10RankingByCreatedAt(@Param("regionType") RegionType regionType,@Param("givenDate") LocalDate givenDate, Pageable pageable);
 
-    @Query("SELECT r FROM Ranking r WHERE r.regionType = :regionType AND FUNCTION('DATE', r.createdAt) = FUNCTION('DATE', :givenDate) AND r.rank IN (:membersRankings) ")
+    @Query("SELECT r FROM Ranking r WHERE r.regionType = :regionType AND FUNCTION('DATE', r.createdAt) = FUNCTION('DATE', :givenDate) AND r.rank IN (:membersRankings) order by r.rank")
     List<Ranking> findUpDownRankingrByCreatedAt(@Param("regionType") RegionType regionType, @Param("givenDate") LocalDate givenDate, @Param("membersRankings") List<Long> membersRankings);
 
     @Query("SELECT r FROM Ranking r WHERE r.appMember.idx = :appMemberIdx AND FUNCTION('DATE', r.createdAt) = :givenDate AND r.regionType = :regionType")

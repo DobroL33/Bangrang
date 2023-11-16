@@ -57,7 +57,7 @@ public class RankingServiceImpl implements RankingService{
         for(Ranking ranking : myRankings){
             RegionType curRegionType = ranking.getRegionType();
             long rank = ranking.getRank();
-            List<Long> upDownAppMember = Arrays.asList(new Long[]{rank-1, rank+1});
+            List<Long> upDownAppMember = Arrays.asList(new Long[]{rank-1,rank, rank+1});
 
             List<RankList> rankLists = rankingRepository.findUpDownRankingrByCreatedAt(curRegionType, LocalDate.now(), upDownAppMember).stream()
                     .map(newRanking -> RankList
