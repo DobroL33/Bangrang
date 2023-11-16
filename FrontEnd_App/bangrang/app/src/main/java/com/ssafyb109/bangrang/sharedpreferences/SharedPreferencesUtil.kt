@@ -12,7 +12,10 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         private const val USER_IDX = "1111111111"
         private const val USER_NICKNAME = "user_nickname"
         private const val USER_TOKEN = "user_token"
-        private const val PERMISSIONS_CHECKED = "user_permissions"
+        private const val USER_REFRESH_TOKEN = "user_refresh_token"
+        private const val USER_ALARM = "false"
+        private const val USER_IMAGE = "https://bangrang-bucket.s3.ap-northeast-2.amazonaws.com/image.png"
+        private const val LAST_SEND = "22222222222222"
     }
 
     private val sharedPreferences: SharedPreferences
@@ -27,7 +30,7 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
     }
 
     // 현재 로그인 상태를 확인하는 메서드
-    fun isLoggedIn(): Boolean {
+    fun getLoggedIn(): Boolean {
         return sharedPreferences.getBoolean(IS_LOGGED_IN, false)
     }
 
@@ -70,16 +73,57 @@ class SharedPreferencesUtil @Inject constructor(private val context: Context) {
         return sharedPreferences.getString(USER_TOKEN, null)
     }
 
-    // 권한 확인 여부를 저장하는 메서드
-    fun setPermissionsChecked() {
+    // 사용자 리프레시 토큰을 저장하는 메서드
+    fun setUserRefreshToken(token: String) {
         with(sharedPreferences.edit()) {
-            putBoolean(PERMISSIONS_CHECKED, true)
+            putString(USER_REFRESH_TOKEN, token)
             apply()
         }
     }
 
-    // 권한 확인 여부를 가져오는 메서드
-    fun isPermissionsChecked(): Boolean {
-        return sharedPreferences.getBoolean(PERMISSIONS_CHECKED, false)
+    // 저장된 사용자 리프레시 토큰을 가져오는 메서드
+    fun getUserRefreshToken(): String? {
+        return sharedPreferences.getString(USER_REFRESH_TOKEN, null)
+    }
+
+    // 사용자의 알람 설정 저장
+    fun setUserAlarm(onOff: Boolean) {
+        with(sharedPreferences.edit()) {
+            putBoolean(USER_ALARM, onOff)
+            apply()
+        }
+    }
+
+    // 사용자의 알람 설정 불러오기
+    fun getUserAlarm(): Boolean? {
+        return sharedPreferences.getBoolean(USER_ALARM, false)
+    }
+
+    // 사용자 사진 저장
+    fun setUserImage(imageUrl: String) {
+        with(sharedPreferences.edit()) {
+            putString(USER_IMAGE, imageUrl)
+            apply()
+        }
+    }
+
+    // 사용자 사진 불러오기
+    fun getUserImage(): String? {
+        return sharedPreferences.getString(USER_IMAGE, null)
+    }
+
+    // 마지막 전송시간 저장
+    private fun setLastSave() {
+        with(sharedPreferences.edit()) {
+            putLong(LAST_SEND, System.currentTimeMillis())
+            apply()
+        }
+    }
+
+    // 마지막 전송시간 불러오기
+    fun getLastSave(): Long {
+        val time = sharedPreferences.getLong(LAST_SEND, 0L)
+        setLastSave()
+        return time
     }
 }

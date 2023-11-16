@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "320166350080",
+    "project_id": "bangrang-a8e4f",
+    "storage_bucket": "bangrang-a8e4f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320166350080:android:fa8f48205f52c1a335f7e5",
+        "android_client_info": {
+          "package_name": "com.ssafyb109.bangrang"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSF2fYugspBjllJ1S5PuFuaEIKuI67O_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
