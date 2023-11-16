@@ -2,6 +2,7 @@ package com.ssafy.bangrang.domain.map.service;
 
 import com.ssafy.bangrang.domain.map.api.request.AddMarkersRequestDto;
 import com.ssafy.bangrang.domain.map.api.response.GeometryBorderCoordinate;
+import com.ssafy.bangrang.domain.map.api.response.MarkerResponseDto;
 import com.ssafy.bangrang.domain.map.entity.MemberMapArea;
 import com.ssafy.bangrang.domain.map.model.vo.RegionType;
 import com.ssafy.bangrang.domain.map.repository.MemberMapAreaRepository;
@@ -38,7 +39,7 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
 
     @Transactional
     @Override
-    public List<List<GeometryBorderCoordinate>> addMeberMapArea(UserDetails userDetails, List<AddMarkersRequestDto> addMarkersRequestDtoList){
+    public MarkerResponseDto addMeberMapArea(UserDetails userDetails, List<AddMarkersRequestDto> addMarkersRequestDtoList){
         AppMember appMember = appMemberRepository.findById(userDetails.getUsername()).orElseThrow();
 
         List<Geometry> geometryList = addMarkersRequestDtoList.stream().map(res -> {
@@ -76,17 +77,45 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
             // 오늘 이미 만든 객체가 있다면 값만 변경
             if(createdAtDate.isEqual(currentDate)){
                 befoMemberMapArea.changeShapeAndDimension(unionResult, unionResult.getArea());
-                return getBorderPointListOuter(unionResult);
+                List<List<GeometryBorderCoordinate>> list = getBorderPointListOuter(unionResult);
+                Double space = 0.0;
+                if(curUnionResult.intersects(unionResult)) {
+                    Geometry intersection = curUnionResult.intersection(unionResult);
+                    space = intersection.getArea();
+                }
+
+                return MarkerResponseDto
+                        .builder()
+                        .space(space)
+                        .list(list)
+                        .build();
             // 어제 객체라면 어제 객체 + 현재 객체값을 가진 새 데이터 생성
             }else{
                 saveMemberMapArea(RegionType.KOREA, unionResult, appMember);
-                return getBorderPointListOuter(unionResult);
+                List<List<GeometryBorderCoordinate>> list = getBorderPointListOuter(unionResult);
+
+                Double space = 0.0;
+                if(curUnionResult.intersects(unionResult)) {
+                    Geometry intersection = curUnionResult.intersection(unionResult);
+                    space = intersection.getArea();
+                }
+
+                return MarkerResponseDto
+                        .builder()
+                        .space(space)
+                        .list(list)
+                        .build();
             }
         }else{
             // 새 데이터를 넣는 경우
             saveMemberMapArea(RegionType.KOREA, curUnionResult, appMember);
-            return getBorderPointListOuter(curUnionResult);
-
+//            return getBorderPointListOuter(curUnionResult);
+            List<List<GeometryBorderCoordinate>> list = getBorderPointListOuter(curUnionResult);
+            return MarkerResponseDto
+                    .builder()
+                    .space(curUnionResult.getArea())
+                    .list(list)
+                    .build();
         }
 
     }
