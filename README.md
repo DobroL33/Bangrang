@@ -89,12 +89,12 @@
 <details>
 <summary>3. 방랑 지도</summary>
 
-![Alt text](readmeImg/map/지도1.jpg)
-![Alt text](readmeImg/map/지도2.jpg)
-![Alt text](readmeImg/map/지도3.jpg)
-![Alt text](readmeImg/map/지도4.jpg)
-![Alt text](readmeImg/map/지도5.jpg)
-![Alt text](readmeImg/map/지도6.jpg)
+![Alt text](readmeImg/map/map1.png)
+![Alt text](readmeImg/map/map2.png)
+![Alt text](readmeImg/map/map3.png)
+![Alt text](readmeImg/map/map4.png)
+![Alt text](readmeImg/map/map5.png)
+![Alt text](readmeImg/map/map6.png)
 </details></br>
 
 
