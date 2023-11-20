@@ -60,7 +60,7 @@
 ## 🛠️주요 기능
 
 <details>
-<summary>1. 로그인</summary>
+<summary>1. 메인화면</summary>
 
 ![Alt text](readme사진/image-3.png)
 ![Alt text](readme사진/image-21.png)
@@ -68,7 +68,7 @@
 </details></br>
 
 <details>
-<summary>2. 소개팅</summary>
+<summary>2. 방랑 지도</summary>
 
 ![Alt text](readme사진/image-4.png)
 ![Alt text](readme사진/image-7.png)
@@ -76,18 +76,17 @@
 </details></br>
 
 <details>
-<summary>3. 프로젝트</summary>
+<summary>3. 방랑 도장</summary>
 ![Alt text](readme사진/image-8.png)
 ![Alt text](readme사진/image-9.png)
 ![Alt text](readme사진/image-10.png)
 ![Alt text](readme사진/image-11.png)
 </details></br>
 
+
 <details>
-<summary>4. 채팅</summary>
-![Alt text](readme사진/image-12.png)
-![Alt text](readme사진/image-13.png)
-![Alt text](readme사진/image-14.png)
+<summary>4. 랭킹</summary>
+![Alt text](readmeImg/ranking.gif)
 </details></br>
 
 <details>
@@ -126,6 +125,7 @@
 - react daum-postcode : 3.1.3
 - react-icons : 4.11.0
 - react-router-dom : 6.18.0
+- react-spring : 9.7.3
 - mui material : 5.14.17
 
 🖱**Frontend_Moblie**
