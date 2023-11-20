@@ -109,17 +109,18 @@
 
 <details>
 <summary>5. 부가</summary>
-![Alt text](readmeImg/etc/etc1.jpg)
-![Alt text](readmeImg/etc/etc2.jpg)
-![Alt text](readmeImg/etc/etc3.jpg)
-![Alt text](readmeImg/etc/etc4.jpg)
-![Alt text](readmeImg/etc/etc5.jpg)
-![Alt text](readmeImg/etc/etc6.jpg)
-![Alt text](readmeImg/etc/etc7.jpg)
-![Alt text](readmeImg/etc/etc8.jpg)
-![Alt text](readmeImg/etc/etc9.jpg)
-![Alt text](readmeImg/etc/etc10.jpg)
-![Alt text](readmeImg/etc/etc11.jpg)
+![Alt text](readmeImg/etc/etc1.png)
+![Alt text](readmeImg/etc/etc2.png)
+![Alt text](readmeImg/etc/etc3.png)
+![Alt text](readmeImg/etc/etc4.png)
+![Alt text](readmeImg/etc/etc5.png)
+![Alt text](readmeImg/etc/etc6.png)
+![Alt text](readmeImg/etc/etc7.png)
+![Alt text](readmeImg/etc/etc8.png)
+![Alt text](readmeImg/etc/etc9.png)
+![Alt text](readmeImg/etc/etc10.png)
+![Alt text](readmeImg/etc/etc11.png)
+![Alt text](readmeImg/etc/etc12.png)
 
 </details></br>
 
