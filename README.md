@@ -62,33 +62,36 @@
 <details>
 <summary>1. 접속</summary>
 
-![Alt text](readmeImg/접속1.jpg)
-![Alt text](readmeImg/접속2.jpg)
-![Alt text](readmeImg/접속3.jpg)
-![Alt text](readmeImg/접속4.jpg)
-![Alt text](readmeImg/접속5.jpg)
-![Alt text](readmeImg/접속6.jpg)
-![Alt text](readmeImg/접속7.jpg)
-![Alt text](readmeImg/접속8.jpg)
+![Alt text](readmeImg/connect/접속1.jpg)
+![Alt text](readmeImg/connect/접속2.jpg)
+![Alt text](readmeImg/connect/접속3.jpg)
+![Alt text](readmeImg/connect/접속4.jpg)
+![Alt text](readmeImg/connect/접속5.jpg)
+![Alt text](readmeImg/connect/접속6.jpg)
+![Alt text](readmeImg/connect/접속7.jpg)
+![Alt text](readmeImg/connect/접속8.jpg)
 </details></br>
 
 <details>
 <summary>2. 메인화면</summary>
 
-![Alt text](readmeImg/메인1.jpg)
-![Alt text](readmeImg/메인2.jpg)
-![Alt text](readmeImg/메인3.jpg)
-![Alt text](readmeImg/메인4.jpg)
-![Alt text](readmeImg/메인5.jpg)
-![Alt text](readmeImg/메인6.jpg)
+![Alt text](readmeImg/main/메인1.jpg)
+![Alt text](readmeImg/main/메인2.jpg)
+![Alt text](readmeImg/main/메인3.jpg)
+![Alt text](readmeImg/main/메인4.jpg)
+![Alt text](readmeImg/main/메인5.jpg)
+![Alt text](readmeImg/main/메인6.jpg)
 </details></br>
 
 <details>
 <summary>3. 방랑 지도</summary>
 
-![Alt text](readme사진/image-4.png)
-![Alt text](readme사진/image-7.png)
-![Alt text](readme사진/image-6.png)
+![Alt text](readmeImg/map/지도1.jpg)
+![Alt text](readmeImg/map/지도2.jpg)
+![Alt text](readmeImg/map/지도3.jpg)
+![Alt text](readmeImg/map/지도4.jpg)
+![Alt text](readmeImg/map/지도5.jpg)
+![Alt text](readmeImg/map/지도6.jpg)
 </details></br>
 
 <details>
