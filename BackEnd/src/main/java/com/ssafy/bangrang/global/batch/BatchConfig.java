@@ -221,15 +221,26 @@ public class BatchConfig {
 
         return memberMapArea ->
                                 koreaBorderAreas.stream().map(koreaBorderArea -> {
-                                    // 교집합이 없는 경우 getArea -> 0.0을 반환
                                     Geometry shape = koreaBorderArea.getShape().intersection(memberMapArea.getShape());
-                                    return MemberMapArea.builder()
-                                            .shape(shape)
-                                            .dimension(shape.getArea())
-                                            .appMember(memberMapArea.getAppMember())
-                                            .regionType(convertRegionType(koreaBorderArea.getIdx()))
-                                            .customDate(yesterday)
-                                            .build();
+
+                                    if(koreaBorderArea.getShape().intersects(memberMapArea.getShape())){
+                                        return MemberMapArea.builder()
+                                                .shape(shape)
+                                                .dimension(shape.getArea())
+                                                .appMember(memberMapArea.getAppMember())
+                                                .regionType(convertRegionType(koreaBorderArea.getIdx()))
+                                                .customDate(yesterday)
+                                                .build();
+                                    }else{
+                                        return MemberMapArea.builder()
+                                                .shape(shape)
+                                                .dimension(0.0)
+                                                .appMember(memberMapArea.getAppMember())
+                                                .regionType(convertRegionType(koreaBorderArea.getIdx()))
+                                                .customDate(yesterday)
+                                                .build();
+                                    }
+
 
                                 }).collect(Collectors.toList());
 
