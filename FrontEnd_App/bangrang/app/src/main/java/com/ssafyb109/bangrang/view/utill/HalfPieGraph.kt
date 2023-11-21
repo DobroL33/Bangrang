@@ -76,6 +76,7 @@ fun HalfPieGraph(
             Canvas(modifier = Modifier
                 .size(300.dp)
                 .padding(16.dp)
+                .padding(start = 30.dp)
             ) {
                 drawArc(
                     color = lightSkyBlue,

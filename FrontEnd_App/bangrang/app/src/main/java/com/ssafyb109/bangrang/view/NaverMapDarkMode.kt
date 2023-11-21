@@ -256,13 +256,13 @@ fun NaverMapDarkMode(
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                     )
-                    if (closestEvent != null) {
+                    if (closestEvent != null && distanceToClosestEvent.value != null) {
                         SelectButton(
                             fonSize = 14,
                             onClick = {
                                 navController.navigate("EventDetailPage/${closestEvent.eventIdx}")
                             },
-                            text = "행사 보기"
+                            text = if(distanceToClosestEvent.value!! >= 500)"행사 보기" else "스탬프 찍기"
                         )
                     }
                 }

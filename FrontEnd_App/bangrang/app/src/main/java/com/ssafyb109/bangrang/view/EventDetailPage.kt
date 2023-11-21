@@ -151,8 +151,7 @@ fun EventDetailPage(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-//                if (true) {
-                if (distance != null && distance <= 1000) {
+                if (distance != null && distance <= 500) {
                     SelectButton(
                         onClick = { userViewModel.eventStamp(index.toLong()) },
                         fonSize = 20,
