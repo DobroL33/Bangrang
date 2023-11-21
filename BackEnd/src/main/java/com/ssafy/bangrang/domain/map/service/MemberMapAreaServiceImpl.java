@@ -65,18 +65,18 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
         // 만약 최신 MemberMapArea가 오늘 날짜(yyyymmdd)면 update, 아니면 create
         // 가장 최근에 생성된 엔티티를 불러오는 메서드
         List<MemberMapArea> recent = memberMapAreaRepository.findTopByAppMemberIdxOrderByCreatedAtDesc(appMember.getIdx(), RegionType.KOREA, PageRequest.of(0, 1));
-        if(curUnionResult.isEmpty()){
-            if(recent.size() >= 1) {
-                List<List<GeometryBorderCoordinate>> list = getBorderPointListOuter(recent.get(0).getShape());
-                return MarkerResponseDto
-                        .builder()
-                        .space(curUnionResult.getArea())
-                        .list(list)
-                        .build();
-            }else{
-                return MarkerResponseDto.builder().build();
-            }
-        }
+//        if(curUnionResult.isEmpty()){
+//            if(recent.size() >= 1) {
+//                List<List<GeometryBorderCoordinate>> list = getBorderPointListOuter(recent.get(0).getShape());
+//                return MarkerResponseDto
+//                        .builder()
+//                        .space(curUnionResult.getArea())
+//                        .list(list)
+//                        .build();
+//            }else{
+//                return MarkerResponseDto.builder().build();
+//            }
+//        }
 
         if(recent.size() >= 1){
             MemberMapArea befoMemberMapArea = recent.get(0);
@@ -94,7 +94,7 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
                 befoMemberMapArea.changeShapeAndDimension(unionResult, unionResult.getArea());
                 List<List<GeometryBorderCoordinate>> list = getBorderPointListOuter(unionResult);
                 Double space = 0.0;
-                if(!unionResult.contains(befoPolygon)) {
+                if(!unionResult.equalsExact(befoPolygon)) {
                     Geometry intersection = curUnionResult.difference(unionResult);
                     space = intersection.getArea()* 111319.49079327357 * 111319.49079327357;
                 }
@@ -110,7 +110,7 @@ public class MemberMapAreaServiceImpl implements MemberMapAreaService{
                 List<List<GeometryBorderCoordinate>> list = getBorderPointListOuter(unionResult);
 
                 Double space = 0.0;
-                if(!unionResult.contains(befoPolygon)) {
+                if(!unionResult.equalsExact(befoPolygon)) {
                     Geometry intersection = curUnionResult.difference(unionResult);
                     space = intersection.getArea()* 111319.49079327357 * 111319.49079327357;
                 }

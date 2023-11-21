@@ -231,13 +231,15 @@ fun HomePage(
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
-        UserNotificationDialog(
-            showDialog = showNewSpaceDialog,
-            spanTime = spandTime,
-            newSpace = newSpace,
-            userNickName = userNickName,
-            onDismiss = { showNewSpaceDialog.value = false }
-        )
+        if(spandTime <= 120000000000){
+            UserNotificationDialog(
+                showDialog = showNewSpaceDialog,
+                spanTime = spandTime,
+                newSpace = newSpace,
+                userNickName = userNickName,
+                onDismiss = { showNewSpaceDialog.value = false }
+            )
+        }
     }
 }
 
